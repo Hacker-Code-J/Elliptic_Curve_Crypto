@@ -1,0 +1,358 @@
+\chapter{Elliptic Curves in Cryptography}
+
+\begin{itemize}
+	\item Elliptic Curve (EC) cryptography were first proposed in 1985 independently by Neal Koblitz and Victor Miller.
+	\item The \textbf{discrete logarithm} problem on elliptic curve groups is believed to be more difficult than the corresponding problem in the multiplicative group of non-zero elements of the underlying finite field.
+\end{itemize}
+
+\section*{On finite fields}
+
+Consider \(y^2 \equiv x^3 + 2x + 3 \pmod{5}\)
+
+\begin{align*}
+	x = 0, &\ y^2 = 3 \quad &\text{no solution (mod 5)} \\
+	x = 1, &\ y^2 = 6 \equiv 1, \quad &y = 1,4 \text{ (mod 5)} \\
+	x = 2, &\ y^2 = 15 \equiv 0, \quad &y = 0 \text{ (mod 5)} \\
+	x = 3, &\ y^2 = 36 \equiv 1, \quad &y = 1,4 \text{ (mod 5)} \\
+	x = 4, &\ y^2 = 75 \equiv 0, \quad &y = 0 \text{ (mod 5)}
+\end{align*}
+
+Then points on the elliptic curve are \((1,1)\), \((1,4)\), \((2,0)\), \((3,1)\), \((3,4)\), \((4,0)\) and the point at infinity. Denote it by \( \mathcal{O} \).
+
+\section*{Notation}
+
+\begin{itemize}
+	\item \( GF(q) \) or \( \mathbb{F}_q \): finite field with \( q \) elements, typically, \( q = p \) where \( p \) is prime, or \( 2^m \).
+	\item \( E(\mathbb{F}_q) \): elliptic curve over \( \mathbb{F}_q \).
+	\item \( (x, y) \): point on \( E(\mathbb{F}_q) \).
+	\item \( \mathcal{O} \): point at infinity.
+\end{itemize}
+
+\newpage
+\section*{Definition of Elliptic curves}
+
+\begin{itemize}
+	\item An elliptic curve over a field \( K \) is a non-singular cubic curve in two variables, \( f(x,y) = 0 \) with a rational point (which may be a point at infinity).
+	
+	\item The field \( K \) is usually taken to be the complex numbers, reals, rationals, algebraic extensions of rationals, \( p \)-adic numbers, or a \textit{finite field}.
+	
+	\item Elliptic curves groups for cryptography are examined with the underlying fields of \( \mathbb{F}_p \) (where \( p > 3 \) is a prime) and \( \mathbb{F}_{2^m} \) (a binary representation with \( 2^m \) elements).
+\end{itemize}
+
+\section*{EC}
+
+An \textit{elliptic curve} is a plane curve defined by an equation of the form, when characteristic is neither 2 nor 3, and \ldots{} What the hell?
+
+\[ y^2 = x^3 + ax + b \]
+
+\section*{Hmm...}
+
+\begin{itemize}
+	\item \(x^3 + y^3 + 1 = 0\) is a cubic curve...?
+	\item Let \(x = u + v\), \(y = u - v\).
+	\item Then \( (u+v)^3 + (u-v)^3 + 1 = 0 \).
+	\item This simplifies to \( 2u^3 + 6uv^2 + 1 = 0 \).
+	\item Which leads to \( 6(v/u)^2 = -(1/u)^3 - 2 \).
+	\item So \( X = -6/u\), \( Y = 36v/u \).
+	\item Hence \( Y^2 = X^3 - 432 \).
+\end{itemize}
+
+\section*{Weierstrass Equation}
+
+A two-variable equation \( F(x,y) = 0 \), forms a curve in the plane.
+
+The generalized Weierstrass Equation of elliptic curves:
+\[ y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6 \]
+
+\section*{Quadratic Equation}
+
+\begin{itemize}
+	\item \( x^2 + ax + b = 0 \)
+	\item \( x = t - \frac{a}{2} \)
+	\item \( t^2 - \frac{a^2}{4} - 4b = 0 \)
+\end{itemize}
+
+\section*{Cubic Equation}
+
+\begin{itemize}
+	\item \( x^3 + ax^2 + bx + c = 0 \)
+	\item \( x = t - \frac{a}{3} \)
+	\item \( t^3 + pt + q = 0 \)
+	\item \( p = b - \frac{a^2}{3} \)
+	\item \( q = c + \frac{2a^3}{27} - \frac{ab}{3} \)
+\end{itemize}
+
+\section*{Field Characteristics}
+
+\begin{itemize}
+	\item If characteristic field is not 2:
+	\begin{equation*}
+		\left(v + \frac{a_1x}{2} + \frac{a_3}{2}\right)^2 = x^3 + \left(\frac{a_1^2}{4} + a_2\right)x^2 + a_4x + \left(\frac{a_1a_3}{4} + a_6\right)
+	\end{equation*}
+	\begin{equation*}
+		\Rightarrow y_1^2 = x^3 + a_2'x^2 + a_4'x + a_6'
+	\end{equation*}
+	
+	\item If characteristics of field is neither 2 nor 3:
+	\begin{equation*}
+		x_1 = x + \frac{a_2}{3}
+	\end{equation*}
+	\begin{equation*}
+		\Rightarrow y_1^2 = x_1^3 + \Delta x + B
+	\end{equation*}
+\end{itemize}
+
+\section*{Discriminant}
+
+\begin{itemize}
+	\item Discriminant of \( x^2 + bx + c \) is \( b^2 - 4c \)
+	\item \( b^2 - 4c \) is non-zero \( \Leftrightarrow \) no double roots
+	\item Discriminant of \( x^3 + ax + b \) is \( -4a^3 - 27b^2 \)
+	\item \( -4a^3 - 27b^2 \) is non-zero \( \Leftrightarrow \) no double roots
+\end{itemize}
+
+\section*{j-invariant}
+
+\begin{itemize}
+	\item Define \( j \) of this elliptic curve \( E \) as \( j(E)/1728 = 4a^3/(4a^3 + 27b^2) \)
+	\item If we change \( x = m^2x, y = m^3y \), get \( \tilde{E} \):
+	\item then \( j(E) = j(\tilde{E}) \)
+	\item \( j \)-value fixes \( E \)
+\end{itemize}
+
+\[ y^2 = x^3 + ax + b \]
+
+\section*{j-invariant}
+
+\begin{itemize}
+	\item If we change \( x = m^2x, y = m^3y \), get \( \tilde{E} \):
+	\item then \( j(E) = j(\tilde{E}) \)
+	\item Why not something like \( x = mx + ny^2 + s \)?
+	\item It has to keep the point at infinity and keep the form \( y^2 = x^3 + ax + b \)
+\end{itemize}
+
+\section*{Points on the Elliptic Curve (EC)}
+
+\begin{itemize}
+	\item Elliptic Curve over field \( L \)
+	\item \( E(L) = \{\infty\} \cup \{(x, y) \in L \times L \mid y^2 + \ldots = x^3 + \ldots\} \)
+	\item It is useful to add the point at infinity.
+\end{itemize}
+
+\section*{Group Law}
+
+\begin{itemize}
+	\item A group law may be defined where the sum of two points is the reflection across the x-axis of the third point on the same line
+	\item Chords and tangents
+\end{itemize}
+
+\section*{The Abelian Group}
+
+Given two points \( P, Q \) on \( E \), there is a third point, denoted by \( P+Q \) on \( \bar{E} \), and the following relations hold for all \( P, Q, R \) in \( E \).
+
+\begin{itemize}
+	\item \( P + Q = Q + P \) (commutativity)
+	\item \( (P + Q) + R = P + (Q + R) \) (associativity)
+	\item \( P + O = O + P = P \) (existence of an identity element)
+	\item there exists \( (-P) \) such that \( (-P) + P = O \) (existence of inverses)
+\end{itemize}
+
+\section*{Associativity}
+
+\begin{itemize}
+	\item \( (P+Q)+R = P+(Q+R) \)
+	\item Associativity is non-trivial.
+	\item It gives Pascal's theorem and Pappus's theorem.
+\end{itemize}
+
+\section*{Elliptic Curve Picture}
+
+\begin{itemize}
+	\item Consider elliptic curve \( E: y^2 = x^3 - x + 1 \)
+	\item If \( P_1 \) and \( P_2 \) are on \( E \), we can define \( P_3 = P_1 + P_2 \) as shown in the picture.
+\end{itemize}
+
+\section*{Doubling of a point}
+
+\begin{itemize}
+	\item Let \( P=Q \)
+	\item \( 2y_1 \frac{dy}{dx} = 3x_1^2 + a \)
+	\item \( m = \frac{dy}{dx} = \frac{3x_1^2 + a}{2y_1} \)
+	\item If \( y_1 \neq 0 \) (since then \( P_1 + P_2 = \infty \)):
+	\begin{itemize}
+		\item \( 0 = x^3 - m^2x^2 + \ldots \)
+		\item \( x_3 = m^2 - 2x_1, y_3 = m(x_1 - x_3) - y_1 \)
+	\end{itemize}
+	\item What happens when \( P_2 = \infty = O \)?
+\end{itemize}
+
+
+\section*{Sum of two points}
+
+Define for two points \( P (x_1, y_1) \) and \( Q (x_2, y_2) \) in the Elliptic curve:
+
+\[ \lambda = \begin{cases} 
+	\frac{y_2 - y_1}{x_2 - x_1} & \text{for } x_1 \neq x_2 \\
+	\frac{3x_1^2 + a}{2y_1} & \text{for } x_1 = x_2
+\end{cases} \]
+
+Then \( P + Q \) is given by \( R(x_3, y_3) \):
+
+\[ x_3 = \lambda^2 - x_1 - x_2 \]
+\[ y_3 = \lambda(x_3 - x_1) + y_1 \]
+
+\section*{What is -P?}
+
+\begin{itemize}
+	\item \( y^2 = x^3 + ax + b \)
+	\item \( P = (x_1, y_1) \)
+	\item What is -P? Is -P = \( (x_1, -y_1) \)?
+	\item Yes. But this works only for \( y^2 = x^3 + ax + b \).
+	\item For \( y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6 \)
+	\item -P = \( (x_1, -a_1x_1 - a_3 - y_1) \)
+\end{itemize}
+
+\section*{Motivation}
+
+\begin{itemize}
+	\item over \( \mathbb{F}_3 \)
+	\item \( Y^2Z + 2XYZ + YZ^2 = X^3 - XZ^2 + 7Z^3 \) has a solution (1,2,1).
+	\item Note that (0,1,0) is a solution.
+	\item Important Point 1: We do not say (0,0,0) is a solution of the Weierstrass equation.
+\end{itemize}
+
+\section*{Homogeneous vs Affine}
+
+\begin{itemize}
+	\item Important Point 2: We treat \( (1,2,1) \sim (2,1,2) \), i.e., consider them to be identical and call it a point of the curve given by the Weierstrass equation.
+	\item \( \frac{5^2}{13^2} + \frac{12^2}{13^2} = \frac{13^2}{13^2} \)
+	\item \( \frac{10^2}{26^2} + \frac{24^2}{26^2} = \frac{26^2}{26^2} \)
+	\item \( X^2 + Y^2 = Z^2 \) implies \( \left( \frac{X}{Z} \right)^2 + \left( \frac{Y}{Z} \right)^2 = 1 \)
+\end{itemize}
+
+\section*{Projective Co-ordinates}
+
+\begin{itemize}
+	\item Two-dimensional projective space \( P_K^2 \) over \( K \) is given by the equivalence classes of triples \( (x,y,z) \) with \( x, y, z \) in \( K \) and at least one of \( x, y, z \) non-zero.
+	\item Two triples \( (x_1,y_1,z_1) \) and \( (x_2,y_2,z_2) \) are said to be equivalent if there exists a non-zero element \( \lambda \) in \( K \), such that:
+	\[ (x_1,y_1,z_1) = (\lambda x_2, \lambda y_2, \lambda z_2) \]
+	\item The equivalence class depends only on the ratios and hence is denoted by \( (x : y : z) \).
+\end{itemize}
+
+\section*{Singularity}
+
+\begin{itemize}
+	\item For an elliptic curve \( y^2 = f(x) \), define \( F(x,y) = y^2 - F(x) \). A singularity of the EC is a point \( (x_0,y_0) \) such that:
+	\begin{itemize}
+		\item \( \frac{\partial F}{\partial x}(x_0,y_0) = \frac{\partial F}{\partial y}(x_0,y_0) = 0 \)
+		\item or, \( 2y_0 = -f'(x_0) = 0 \)
+		\item or, \( f(x_0) = f'(x_0) \)
+		\item Therefore, \( f \) has a double root.
+	\end{itemize}
+\end{itemize}
+
+\section*{Singularity}
+
+\begin{itemize}
+	\item \( y^2 = x^2(x-1) \) double roots \( x=0 \)
+	\item Let \( x-1=s^2 \)
+	\item \( y^2 = (s^2+1)^2(s^2) \)
+	\item Hence \( x=s^2+1, y=s(s^2+1) \)
+\end{itemize}
+
+\section*{If singular, then}
+
+\begin{itemize}
+	\item \( K \) = a field
+	\item \( K(x, y) = K(t) \)
+	\item For \( y^2 = x^2(x-1) \), \( x=s^2+1 \), \( y=s(s^2+1) \)
+	\item For \( y^2 = x^3 \), \( y = t^3 \), \( x = t^2 \)
+	\item For an elliptic curve, \( K(x, y) \) is never \( K(t) \).
+\end{itemize}
+
+\section*{Projective Form}
+
+\begin{itemize}
+	\item \( E: Y^2Z + a_1XYZ + a_3Y^2 = X^3 + a_2X^2Z + a_4XZ^2 + a_6Z^3 \)
+	\item has a point \( (0, 1, 0) \), point at infinity, denoted by \( \mathcal{O} \).
+\end{itemize}
+
+\section*{Elliptic Curves in Characteristic 2}
+
+\[ y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6 \]
+
+\begin{itemize}
+	\item If \( a_1 \) is not 0, this reduces to the form:
+	\[ y^2 + xy = x^3 + Ax^2 + B \]
+	\item If \( a_1 \) is 0, the reduced form is:
+	\[ y^2 + a_3y = x^3 + Bx + C \]
+	\item Note that the form cannot be:
+	\[ y^2 = x^3 + Ax + B \]
+\end{itemize}
+
+\section*{EC over Finite Fields}
+
+\begin{itemize}
+	\item An elliptic curve may be defined over any finite field GF(q).
+	\item For $GF(2^m)$, the curve has a different form:
+	\[ y^2 + xy = x^3 + ax^2 + b \]
+	\item where \( b \) is not 0.
+	\item Addition formulae are similar to those over the reals.
+\end{itemize}
+
+\section*{Terminology}
+
+\begin{itemize}
+	\item Order of point \( P \) is the smallest integer \( r \) such that \( [r]P = \mathcal{O} \).
+	\item Order of the curve is the number of points of \( E(\mathbb{F}) \), denoted by \( \#E(\mathbb{F}) \).
+\end{itemize}
+
+\section*{Group Properties}
+
+\begin{itemize}
+	\item Let \( \#E(\mathbb{F}_q) \) denote the number of points on an elliptic curve \( E(\mathbb{F}_q) \), including \( \mathcal{O} \).
+	\item Hasse bound: \( \#E(\mathbb{F}_q) = q + 1 - t \), where \( |t| < 2 \sqrt{q} \).
+	\item The group of points is either cyclic or a product of two cyclic groups.
+\end{itemize}
+
+\section*{So it's an Abelian Group...}
+
+\begin{itemize}
+	\item Group homomorphism? Isogeny, isogenous.
+	\item Endomorphism, isomorphic.
+	\item Examples of endomorphisms are:
+	\begin{itemize}
+		\item \( [2]: E \to E, P \mapsto [2]P \)
+		\item \( [n]: E \to E, P \mapsto [n]P \)
+	\end{itemize}
+\end{itemize}
+
+\section*{Non-trivial Isogeny}
+
+\begin{itemize}
+	\item \( E: y^2 = x^3 - x \)
+	\item \( [i=\sqrt{-1}]: (x, y) \mapsto (-x, iy) \)
+	\item \( [i=\sqrt{-1}]^2 = [i][i]=(-1): (x, y) \mapsto (x, -y), P \mapsto -P \)
+	\item here \( i^2 = -1 \)
+	\item \( 6^2 = -1 \mod 37 \)
+	\item Called complex multiplication.
+\end{itemize}
+
+\section*{Frobenius Map}
+
+\begin{itemize}
+	\item GF(q), \( q = p^k \)
+	\item \( F: \text{GF}(q) \to \text{GF}(q) \)
+	\item \( F(x) = x^p \) for any \( x \)
+	\item \( F \) is an isomorphism of GF(q). So \( F \) defines an isogeny for any elliptic curve over GF(q).
+\end{itemize}
+
+\section*{E[n]}
+
+\begin{itemize}
+	\item For any group \( G \), any natural number \( n \), \( G[n] = \{g | g^n = 1\} \).
+	\item \( E[n] = \{P | [n]P = \mathcal{O}\} \).
+\end{itemize}
+
+
+
