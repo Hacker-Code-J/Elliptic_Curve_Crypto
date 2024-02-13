@@ -130,25 +130,21 @@
 	keywordstyle=[5]{\bfseries\color{Magenta}},
 	keywordstyle=[6]{\bfseries\color{RoyalBlue}},
 	keywordstyle=[7]{\bfseries\color{Turquoise}},
-	otherkeywords={bool},
+	otherkeywords={bool, sscanf, inline},
 	morekeywords=[2]{;},
-	morekeywords=[3]{u8,u32,u64},
+	morekeywords=[3]{i8, i32, i64, u8,u32,u64, size\_t, FILE},
 	morekeywords=[4]{
-		rCon, SubWord, RotWord, MUL\_GF256
+		rdtsc, measure\_cycle, measure\_time
 	},
 	morekeywords=[5]{
-		KeyExpansion, AddRoundKey,
-		SubBytes, InvSubBytes,
-		ShiftRows, InvShiftRows,
-		MixColumns, InvMixColumns,
-		SubMix, InvSubInvMix,
-		AES\_Encrypt, AES\_Decrypt
+		MOVS\_LEA128CBC\_KAT\_TEST,
+		create\_LEA128CBC\_KAT\_ReqFile,
+		create\_LEA128CBC\_KAT\_FaxFile,
+		create\_LEA128CBC\_KAT\_RspFile
 	},
-	morekeywords=[6]{false, true, MAX, MIN},
-	morekeywords=[7]{AES\_VERSION, AES\_BLOCK\_SIZE, ROUND\_KEYS\_SIZE,
-		s\_box, inv\_s\_box, Nk, Nr,
-		Te0, Te1, Te2, Te3,
-		Td0, Td1, Td2, Td3
+	morekeywords=[6]{false, true, MAX, MIN, INITIAL\_BUF\_SIZE},
+	morekeywords=[7]{
+		CryptoData
 	},
 	numberstyle=\tiny\color{gray},
 	stringstyle=\color{purple},
@@ -166,47 +162,29 @@
 	belowskip=0pt,
 	aboveskip=4pt
 }
-\lstdefinestyle{Rust}{
-	language=C, % Set the language to Rust
-	backgroundcolor=\color{white},
-	basicstyle=\ttfamily\color{black},
-	commentstyle=\color{green!70!black},
-	keywordstyle={\bfseries\color{purple}},
-	keywordstyle=[2]{\bfseries\color{red}},
-	keywordstyle=[3]{\bfseries\color{type}},
-	keywordstyle=[4]{\bfseries\color{JungleGreen}},
-	keywordstyle=[5]{\bfseries\color{Magenta}},
-	keywordstyle=[6]{\bfseries\color{RoyalBlue}},
-	keywordstyle=[7]{\bfseries\color{Turquoise}},
-	otherkeywords={let, mut, fn, impl, trait, enum, struct, match, use, pub, crate, mod},
-	morekeywords=[2]{::, ->, =>, |},
-	morekeywords=[3]{i8, i32, i64, u8, u32, u64, f32, f64, usize, isize, bool, String, Vec},
-	morekeywords=[4]{
-		Option, Result, Box, Rc, Arc, Cell, RefCell,
-		Thread, Mutex, RwLock, Condvar, Barrier
-	},
-	morekeywords=[5]{
-		println!, format!, vec!, assert!, panic!, unwrap,
-		expect, match, if, else, while, for, loop
-	},
-	alsoletter={!}, % Treat '!' as part of a keyword
-	morekeywords=[6]{true, false, Some, None, Ok, Err},
-	morekeywords=[7]{std, core, alloc, proc\_macro, test, derive},
-	numberstyle=\tiny\color{gray},
-	stringstyle=\color{purple},
-	showstringspaces=false,
-	breaklines=true,
-	frame=single,
-	framesep=3pt,
-	framexleftmargin=3pt,
-	numbers=left,
-	numberstyle=\small\color{gray},
-	xleftmargin=15pt, % Increase the left margin
-	xrightmargin=5pt,
-	tabsize=4,
-	belowskip=0pt,
-	aboveskip=4pt
+\lstdefinestyle{zsh}{
+	language=bash,                  % Set the language to bash (closest to Zsh)
+	backgroundcolor=\color{backColor},
+	commentstyle=\color{commentColor}\ttfamily,
+	keywordstyle=\color{keywordColor}\bfseries,
+	stringstyle=\color{stringColor}\ttfamily,
+	showspaces=false,               % Don't show spaces as underscores
+	showstringspaces=false,         % Don't highlight spaces in strings
+	breaklines=true,                % Automatic line breaking
+	frame=none,                     % No frame around the code
+	basicstyle=\ttfamily\color{white}, % White basic text color for contrast
+	extendedchars=true,             % Allow extended characters
+	captionpos=b,                   % Caption-position at bottom
+	escapeinside={\%*}{*)},         % Allow LaTeX inside your code
+	morekeywords={echo,ls,cd,pwd,exit,clear,man,unalias,zsh,source}, % Add more keywords
+	upquote=true,                   % Ensure straight quotes are used
+	literate={\$}{{\textcolor{red}{\$}}}1
+	{:}{{\textcolor{red}{:}}}1
+	{~}{{\textcolor{red}{\textasciitilde}}}1, % Color certain characters
 }
+
+% Usage: \lstinputlisting[style=zsh]{sourcefile.sh}
+% or \begin{lstlisting}[style=zsh] ... \end{lstlisting}
 
 
 % Table
@@ -226,8 +204,19 @@
 	urlcolor=titleblue,
 }
 
+%Ceiling and Floor Function
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+
 \newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2$}}
 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
 \newcommand{\F}{\mathbb{F}}
 \newcommand{\zero}{\textcolor{red}{\texttt{0}}}
 \newcommand{\one}{\textcolor{red}{\texttt{1}}}
@@ -238,6 +227,13 @@
 
 \newcommand{\yes}{\textcolor{blue}{O}}
 \newcommand{\no}{\textcolor{red}{X}}
+
+\newcommand{\adjacent}{\parallel}
+
+\newcommand{\src}{\mathsf{src}}
+\newcommand{\dsc}{\mathsf{dsc}}
+\newcommand{\state}{\mathsf{state}}
+\newcommand{\data}{\mathsf{data}}
 
 \begin{document}	
 	% Title page
@@ -267,6 +263,7 @@
 	
 	\newpage
 	\mainmatter
+	\input{chapters/ecc_ch1.tex} % Prime Field Operations
 	\input{chapters/chapter1.tex}
 	\input{chapters/chapter2.tex}
 	% Include more chapters as needed
