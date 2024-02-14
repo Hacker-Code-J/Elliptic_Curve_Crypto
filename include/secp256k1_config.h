@@ -15,14 +15,6 @@
 #ifndef _SECP256K1_CONFIG_H
 #define _SECP256K1_CONFIG_H
 
-typedef int8_t i8;
-typedef int32_t i32;
-typedef int64_t i64;
-
-typedef uint8_t u8;
-typedef uint32_t u32;
-typedef uint64_t u64;
-
 #ifdef _WIN32
     // Windows-specific definitions
     #include <windows.h>
@@ -33,26 +25,26 @@ typedef uint64_t u64;
     // when using a C99 or newer compiler.
     #include <stdint.h> // Ensure this is included for fixed-width types
     
-    typedef int8_t i8;
-    typedef int32_t i32;
-    typedef int64_t i64;
+    typedef int8_t      i8;
+    typedef int32_t     i32;
+    typedef int64_t     i64;
 
-    typedef uint8_t u8;
+    typedef uint8_t     u8;
     // Use Windows-specific types for u32 and u64 for demonstration, though
     // uint32_t and uint64_t could also be used directly.
-    typedef DWORD u32;
-    typedef DWORDLONG u64;
+    typedef DWORD       u32;
+    typedef DWORDLONG   u64;
 #elif defined(__linux__)
     // Linux-specific definitions
     #include <stdint.h>
     
-    typedef int8_t i8;
-    typedef int32_t i32;
-    typedef int64_t i64;
+    typedef int8_t      i8;
+    typedef int32_t     i32;
+    typedef int64_t     i64;
 
-    typedef uint8_t u8;
-    typedef uint32_t u32;
-    typedef uint64_t u64;
+    typedef uint8_t     u8;
+    typedef uint32_t    u32;
+    typedef uint64_t    u64;
 #else
     #error "Unsupported platform"
 #endif
@@ -60,17 +52,23 @@ typedef uint64_t u64;
 // Define this to force 32-bit mode in development
 #define FORCE_32_BIT
 
-// Check if FORCE_32_BIT is defined or if we are not on a 64-bit architecture
-#if defined(FORCE_32_BIT) || !(defined(_WIN64) || defined(__x86_64__) || defined(__ppc64__))
+// Simplified check for 32-bit or forced 32-bit mode
+#if defined(FORCE_32_BIT) || !defined(_WIN64) && !defined(__x86_64__) && !defined(__ppc64__)
+    #define IS_32_BIT_ENV
+#endif
+
+#ifdef IS_32_BIT_ENV
     // 32-bit specific settings
-    typedef u32 word;
-    typedef u32 prime_field[8];
-    #define ONE 0x01
+    #define ONE     0x01
+    #define SIZE    8
+    typedef u32     word;
+    typedef u32     prime_field[SIZE];
 #else
     // 64-bit specific settings
-    typedef u64 word;
-    typedef u64 prime_field[4];
-    #define ONE 0x01LL
+    #define ONE     0x01LL
+    #define SIZE    4
+    typedef u64     word;
+    typedef u64     prime_field[SIZE];
 #endif
 
 #endif /* _SECP256K1_CONFIG_H */

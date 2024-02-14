@@ -56,6 +56,44 @@ double measure_time(void (*func)(u8*, u8*), u8* para1, u8* para2) {
 }
 \end{lstlisting}
 \fi
+
+\section*{Configuration}
+\begin{lstlisting}[style=C]
+#ifdef _WIN32 // Windows-specific definitions
+	#include <windows.h> 
+	/* ... */
+	typedef DWORD 		u32;
+	typedef DWORDLONG 	u64;
+#elif defined(__linux__) // Linux-specific definitions
+	#include <stdint.h>
+	typedef int8_t 		i8;
+	typedef int32_t 	i32;
+	typedef int64_t 	i64;
+	typedef uint8_t 	u8;
+	typedef uint32_t 	u32;
+	typedef uint64_t 	u64;
+#else
+	#error "Unsupported platform"
+#endif
+
+// Simplified check for 32-bit or forced 32-bit mode
+#if !defined(_WIN64) && !defined(__x86_64__)
+	#define IS_32_BIT_ENV
+#endif
+
+#ifdef IS_32_BIT_ENV // 32-bit specific settings
+	#define ONE 	0x01
+	#define SIZE 	8
+	typedef u32 	word;
+	typedef u32 	prime_field[SIZE];
+#else // 64-bit specific settings
+	#define ONE 	0x01LL
+	#define SIZE 	4
+	typedef u64 	word;
+	typedef u64 	prime_field[SIZE];
+#endif
+\end{lstlisting}
+
 \section{Data Representation}
 
 \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25} % Increase row height by 1.5 times
