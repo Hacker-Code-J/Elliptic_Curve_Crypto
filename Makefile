@@ -7,7 +7,7 @@ SRCDIR=./src
 TESTDIR=./tests
 INCDIR=./include
 
-OBJS=$(OBJDIR)/bigint_utils.o \
+OBJS=$(OBJDIR)/secp256k1_bigint.o $(OBJDIR)/secp256k1_utils.o \
 	$(OBJDIR)/main.o
 
 TARGET=$(BINDIR)/a.out
@@ -19,11 +19,7 @@ all: dir $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
-# $(OBJDIR)/main.o: main.c
-# 	$(CC) $(CFLAGS) -c main.c -o $@
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
-$(OBJDIR)/%.o: $(VSSRCDIR)/%.c
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 $(OBJDIR)/%.o: $(TESTDIR)/%.c
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@

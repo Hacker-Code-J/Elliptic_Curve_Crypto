@@ -42,6 +42,12 @@
 \definecolor{type}{HTML}{4EC9B0} %  A turquoise or teal.
 \definecolor{class}{HTML}{4EC9B0} % Similar to types, a turquoise or teal.
 
+% Define custom colors
+\definecolor{commentColor}{rgb}{0.25,0.5,0.35}
+\definecolor{keywordColor}{rgb}{0.6,0.1,0.1}
+\definecolor{stringColor}{rgb}{0.5,0.1,0.5}
+\definecolor{backColor}{rgb}{0,0,0} % Black background
+
 \definecolor{aesblue}{RGB}{30,144,255}
 \definecolor{aesgreen}{RGB}{0,128,0}
 \definecolor{aesred}{RGB}{255,69,0}
@@ -130,19 +136,16 @@
 	keywordstyle=[5]{\bfseries\color{Magenta}},
 	keywordstyle=[6]{\bfseries\color{RoyalBlue}},
 	keywordstyle=[7]{\bfseries\color{Turquoise}},
-	otherkeywords={bool, sscanf, inline},
+	otherkeywords={bool, inline},
 	morekeywords=[2]{;},
-	morekeywords=[3]{i8, i32, i64, u8,u32,u64, size\_t, FILE},
+	morekeywords=[3]{i8, i32, i64, u8, u32, u64, size\_t, FILE},
 	morekeywords=[4]{
-		rdtsc, measure\_cycle, measure\_time
+		rdtsc, measure\_cycle, measure\_time, stringToWord
 	},
 	morekeywords=[5]{
-		MOVS\_LEA128CBC\_KAT\_TEST,
-		create\_LEA128CBC\_KAT\_ReqFile,
-		create\_LEA128CBC\_KAT\_FaxFile,
-		create\_LEA128CBC\_KAT\_RspFile
+		main
 	},
-	morekeywords=[6]{false, true, MAX, MIN, INITIAL\_BUF\_SIZE},
+	morekeywords=[6]{false, true, strlen, sscanf, printf},
 	morekeywords=[7]{
 		CryptoData
 	},
