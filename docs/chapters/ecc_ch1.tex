@@ -115,32 +115,45 @@ double measure_time(void (*func)(u8*, u8*), u8* para1, u8* para2) {
 	\end{tabular}
 \end{table}
 \begin{lstlisting}[style=C]
-void stringToWord(u32* wordArray, const char hexString[]) {
-	size_t length = strlen(hexString) / 8; // 64 / 8 = 8
-
+void stringToWord(word* wordArray, const char* hexString) {
+	size_t length = strlen(hexString) / (SIZE == 8 ? 8 : 16);
+	if (length != SIZE) {
+		printf("Invaild 128-bit Hexa-string Length!\n");
+		return;
+	}
 	for (size_t i = 0; i < length; i++)
-		sscanf(&hexString[i], "%8X", &wordArray[(length-1) - i]);
+#ifdef IS_32_BIT_ENV
+		sscanf(&hexString[i * 8], "%8X", 
+			&wordArray[(length - 1) - i]);
+#else
+		sscanf(&hexString[i * 16], "%16lX",
+			&wordArray[(length - 1) - i]);
+#endif
 }
 \end{lstlisting}
 \begin{lstlisting}[style=C]
 int main(void) {
-	const char string[] =
-	"BD91C935C85617B079C6F2728B987CE4
-	 88BB17B4644D5F8B9C23AF955AB74663";
+	const char* string = "
+		BD91C935C85617B079C6F2728B987CE4
+		88BB17B4644D5F8B9C23AF955AB74663
+	";
 	
-	u32 data[8];
+	word data[SIZE];
 	stringToWord(data, string);
 	
-	for (i32 i = 7; i >=0; i--)
+	for (i32 i = SIZE-1; i >=0; i--)
+#ifdef IS_32_BIT_ENV
 		printf("%8X:", data[i]);
-	
-	return 0;
+#else
+		printf("%16lX:", data[i]);
+#endif
+	puts("");
 }
 \end{lstlisting}
-\begin{lstlisting}[style=zsh]
-BD91C935:D91C935C:91C935C8:1C935C85:
-C935C856:935C8561:35C85617:5C85617B:
-\end{lstlisting}
+{\small\begin{lstlisting}[style=zsh]
+BD91C935:C85617B0:79C6F272:8B987CE4:88BB17B4:644D5F8B:9C23AF95:5AB74663:
+BD91C935C85617B0:79C6F2728B987CE4:88BB17B4644D5F8B:9C23AF955AB74663:
+\end{lstlisting}}
 
 \newpage
 \begin{example}[secp256k1]
@@ -163,6 +176,13 @@ u32 prime[8] = {
 	0xFFFFFC2F, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF,
 	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
 };
+
+u64 prime[4] = {
+	0xFFFFFFFEFFFFFC2F, 0xFFFFFFFFFFFFFFFF,
+	0xFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF
+};
+
+prime_field myField = { /* ... */ };
 \end{lstlisting}
 \end{example}
 
@@ -216,10 +236,51 @@ void subtract_p256(field_element x) {
 \newpage
 \section{Multi-precision Addition}
 
+\begin{tcolorbox}[colframe=procolor,title={\color{white}\bf Upper and Lower Bound of Addition}]
+\begin{proposition}
+	Let $X$ and $Y$ are \(n\)-word and \(m\)-word strings, respectively, \ie, 
+	\begin{align*}
+		X = x[n-1]\adjacent\cdots\adjacent x[0]\in\intco{2^{w(n-1)},2^{wn}}
+	\end{align*}
+	\[
+	A\in[W^{n-1},W^{n}-1],\quad B\in[W^{m-1},W^m-1].
+	\] Then \[
+	W^{\max(n,m)-1}<A+B<W^{\max(m,n)+1}.
+	\]
+\end{proposition}
+\end{tcolorbox}
+\begin{proof}
+	$A$ and $B$ can be expressed as follows: 
+	$\begin{cases}
+		A=aW^{n-1}+A'\\
+		B=bW^{m-1}+B'
+	\end{cases}$ where \[
+	a,b\in(0,W),\quad A'\in[0,W^{n-1}-1],\quad B'\in[0,W^{m-1}-1].
+	\]
+	Suppose that \(n\geq m\) then \begin{align*}
+		W^{n-1}\leq\max(A,B)<A+B
+		&=(aW^{n-1}+A')+(bW^{m-1}+B')\\
+		&<(a+b)W^{n-1}+(W^{n-1}+W^{n-1})\\
+		&=(a+b+2)W^{n-1}\\
+		&\leq((W-1)+(W-1)+2)W^{n-1}\\
+		&=2W^n\leq W^{n+1}.
+	\end{align*} Thus $
+	W^{n-1}<A+B<W^{n+1}.
+	$ Here, \(n=\max(n,m)\).
+\end{proof}
+
+\begin{tcolorbox}[colframe=corcolor,title={\color{white}\bf }]
+	\begin{corollary}
+		\[
+		\len_{\word}(A)=n,\len_{\word}(B)=m\implies\len_{\word}(A+B)\leq\max(n,m)+1.
+		\]
+	\end{corollary}
+\end{tcolorbox}
+
 \begin{algorithm}[H]
 	\DontPrintSemicolon
 	\caption{Multi-Precision Addition}
-	\KwIn{$u,v\intco{0,2^{Wt}}\subseteq\Z$}
+	\KwIn{$u,v\intco{0,2^{Wt}}\subseteq\Z$\tcp*{$(W,t)=(32,8)$ or $(W,t)=(64,4)$ for secp256k1}}
 	\KwOut{$(\varepsilon,Z)$ where $Z=X+Y\bmod 2^{Wt}$ and $\varepsilon\in\set{0,1}$ is carry bit}
 	\BlankLine
 	$(\varepsilon,z[0])\gets x[0]+y[0]$\;
