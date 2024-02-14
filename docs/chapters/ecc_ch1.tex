@@ -1,4 +1,4 @@
-\chapter{Prime Field Operations}
+\chapter{NIST secp256k1}
 \iffalse
 \section{Time Measure in Linux}
 
@@ -56,12 +56,50 @@ double measure_time(void (*func)(u8*, u8*), u8* para1, u8* para2) {
 }
 \end{lstlisting}
 \fi
+
+\section*{Configuration}
+\begin{lstlisting}[style=C]
+#ifdef _WIN32 // Windows-specific definitions
+	#include <windows.h> 
+	/* ... */
+	typedef DWORD 		u32;
+	typedef DWORDLONG 	u64;
+#elif defined(__linux__) // Linux-specific definitions
+	#include <stdint.h>
+	typedef int8_t 		i8;
+	typedef int32_t 	i32;
+	typedef int64_t 	i64;
+	typedef uint8_t 	u8;
+	typedef uint32_t 	u32;
+	typedef uint64_t 	u64;
+#else
+	#error "Unsupported platform"
+#endif
+
+// Simplified check for 32-bit or forced 32-bit mode
+#if !defined(_WIN64) && !defined(__x86_64__)
+	#define IS_32_BIT_ENV
+#endif
+
+#ifdef IS_32_BIT_ENV // 32-bit specific settings
+	#define ONE 	0x01
+	#define SIZE 	8
+	typedef u32 	word;
+	typedef u32 	prime_field[SIZE];
+#else // 64-bit specific settings
+	#define ONE 	0x01LL
+	#define SIZE 	4
+	typedef u64 	word;
+	typedef u64 	prime_field[SIZE];
+#endif
+\end{lstlisting}
+
 \section{Data Representation}
 
 \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25} % Increase row height by 1.5 times
 	\begin{tabular}{@{\extracolsep{\fill}}>{\bfseries}l||c|c|c|c|c|c|c|c|c|c|c|c}
 		\toprule[1.2pt]
-		128-bit Input String & \multicolumn{12}{c}{\texttt{0x77FDDC58464B01FC6606BC465BF5CBCB}} \\
+		128-bit Hexa-string & \multicolumn{12}{c}{\texttt{0x77FDDC58464B01FC6606BC465BF5CBCB}} \\
 		\hline
 		String Index & \cellcolor{red!20}0 & \cellcolor{red!20}$\cdots$ & \cellcolor{red!20}7 & \cellcolor{green!20}8 & \cellcolor{green!20}$\cdots$ & \cellcolor{green!20}15 & \cellcolor{blue!20}16 & \cellcolor{blue!20}$\cdots$ & \cellcolor{blue!20}23 & \cellcolor{orange!20}24 & \cellcolor{orange!20}$\cdots$ & \cellcolor{orange!20}31 \\
 		\hline
@@ -76,8 +114,79 @@ double measure_time(void (*func)(u8*, u8*), u8* para1, u8* para2) {
 		\bottomrule[1.2pt]
 	\end{tabular}
 \end{table}
+\begin{lstlisting}[style=C]
+void stringToWord(word* wordArray, const char* hexString) {
+	size_t length = strlen(hexString) / (SIZE == 8 ? 8 : 16);
+	if (length != SIZE) {
+		printf("Invaild 128-bit Hexa-string Length!\n");
+		return;
+	}
+	for (size_t i = 0; i < length; i++)
+#ifdef IS_32_BIT_ENV
+		sscanf(&hexString[i * 8], "%8X", 
+			&wordArray[(length - 1) - i]);
+#else
+		sscanf(&hexString[i * 16], "%16lX",
+			&wordArray[(length - 1) - i]);
+#endif
+}
+\end{lstlisting}
+\begin{lstlisting}[style=C]
+int main(void) {
+	const char* string = "
+		BD91C935C85617B079C6F2728B987CE4
+		88BB17B4644D5F8B9C23AF955AB74663
+	";
+	
+	word data[SIZE];
+	stringToWord(data, string);
+	
+	for (i32 i = SIZE-1; i >=0; i--)
+#ifdef IS_32_BIT_ENV
+		printf("%8X:", data[i]);
+#else
+		printf("%16lX:", data[i]);
+#endif
+	puts("");
+}
+\end{lstlisting}
+{\small\begin{lstlisting}[style=zsh]
+BD91C935:C85617B0:79C6F272:8B987CE4:88BB17B4:644D5F8B:9C23AF95:5AB74663:
+BD91C935C85617B0:79C6F2728B987CE4:88BB17B4644D5F8B:9C23AF955AB74663:
+\end{lstlisting}}
 
-\section{NIST P256}
+\newpage
+\begin{example}[secp256k1]
+Consider $p = 2^{256} - 2^{32} - 2^{9} - 2^{8} - 2^7 - 2^6 - 2^4 - 1$.
+\begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+{\ttfamily\footnotesize\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ccccccccc}
+		$2^{256}$ &  10000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000\\
+		$-2^{32}$ & & & & & & & & 10000000 \\
+		$-2^{9}$ & & & & & & & & 00000200 \\
+		$-2^{8}$ & & & & & & & & 00000100 \\
+		$-2^{7}$ & & & & & & & & 00000080 \\
+		$-2^{6}$ & & & & & & & & 00000040 \\
+		$-2^{4}$ & & & & & & & & 00000010 \\
+		$-2^{0}$ & & & & & & & & 00000001 \\ \cline{1-9}
+		$p$ & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFE & FFFFFC2F \\
+\end{tabular*}}
+\end{table}
+\begin{lstlisting}[style=C]
+u32 prime[8] = {
+	0xFFFFFC2F, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF,
+	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
+};
+
+u64 prime[4] = {
+	0xFFFFFFFEFFFFFC2F, 0xFFFFFFFFFFFFFFFF,
+	0xFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF
+};
+
+prime_field myField = { /* ... */ };
+\end{lstlisting}
+\end{example}
+
+\section{secp256k1}
 Define a prime number \begin{align*}
 p_{256} &= 2^{256}-2^{224}+2^{192}+2^{96}-1 \\
 &=2^{32*8}-2^{32*7}+2^{32*6}+2^{32*3}-2^{32*0}\\
@@ -90,6 +199,9 @@ For prime $p$, let \begin{align*}
 \item $a = 2^{(t-1)W}A[t-1]$+$\cdots 2^{2W}A[2]+2^{W}A[1]+A[0]$
 \end{itemize}
 
+\newpage
+
+\vspace{4pt}
 \begin{lstlisting}[style=C]
 #ifdef _64BIT_SYSTEM
 typedef u64 field_element[4]; // For 64-bit systems
@@ -124,27 +236,72 @@ void subtract_p256(field_element x) {
 \newpage
 \section{Multi-precision Addition}
 
+\begin{tcolorbox}[colframe=procolor,title={\color{white}\bf Upper and Lower Bound of Addition}]
+\begin{proposition}
+	Let $X$ and $Y$ are \(n\)-word and \(m\)-word strings, respectively, \ie, 
+	\begin{align*}
+		X = x[n-1]\adjacent\cdots\adjacent x[0]\in\intco{2^{w(n-1)},2^{wn}}
+	\end{align*}
+	\[
+	A\in[W^{n-1},W^{n}-1],\quad B\in[W^{m-1},W^m-1].
+	\] Then \[
+	W^{\max(n,m)-1}<A+B<W^{\max(m,n)+1}.
+	\]
+\end{proposition}
+\end{tcolorbox}
+\begin{proof}
+	$A$ and $B$ can be expressed as follows: 
+	$\begin{cases}
+		A=aW^{n-1}+A'\\
+		B=bW^{m-1}+B'
+	\end{cases}$ where \[
+	a,b\in(0,W),\quad A'\in[0,W^{n-1}-1],\quad B'\in[0,W^{m-1}-1].
+	\]
+	Suppose that \(n\geq m\) then \begin{align*}
+		W^{n-1}\leq\max(A,B)<A+B
+		&=(aW^{n-1}+A')+(bW^{m-1}+B')\\
+		&<(a+b)W^{n-1}+(W^{n-1}+W^{n-1})\\
+		&=(a+b+2)W^{n-1}\\
+		&\leq((W-1)+(W-1)+2)W^{n-1}\\
+		&=2W^n\leq W^{n+1}.
+	\end{align*} Thus $
+	W^{n-1}<A+B<W^{n+1}.
+	$ Here, \(n=\max(n,m)\).
+\end{proof}
+
+\begin{tcolorbox}[colframe=corcolor,title={\color{white}\bf }]
+	\begin{corollary}
+		\[
+		\len_{\word}(A)=n,\len_{\word}(B)=m\implies\len_{\word}(A+B)\leq\max(n,m)+1.
+		\]
+	\end{corollary}
+\end{tcolorbox}
+
 \begin{algorithm}[H]
 	\DontPrintSemicolon
 	\caption{Multi-Precision Addition}
-	\KwIn{$u,v\intco{0,2^{Wt}}\subseteq\Z$}
-	\KwOut{$(\varepsilon,w)$ where $w=u+v\bmod 2^{Wt}$ and $\varepsilon\in\set{0,1}$ is carry bit}
+	\KwIn{$u,v\intco{0,2^{Wt}}\subseteq\Z$\tcp*{$(W,t)=(32,8)$ or $(W,t)=(64,4)$ for secp256k1}}
+	\KwOut{$(\varepsilon,Z)$ where $Z=X+Y\bmod 2^{Wt}$ and $\varepsilon\in\set{0,1}$ is carry bit}
 	\BlankLine
-	$(\varepsilon,W[0])\gets U[0]+V[0]$\;
+	$(\varepsilon,z[0])\gets x[0]+y[0]$\;
 	\For{$i=1$ \KwTo $t-1$}{
-		$(\varepsilon,W[i])\gets U[i] + V[i] + \varepsilon$\;
+		$(\varepsilon,z[i])\gets x[i] + y[i] + \varepsilon$\;
 	}
-	\Return $(\varepsilon, w)$\;
+	\Return $(\varepsilon, Z=z[t-1]\adjacent z[t-2]\adjacent\cdots\adjacent z[0])$\;
 \end{algorithm}
 \begin{example}
 \ \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
 	{\ttfamily\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cccccc}
-	$U$ & & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF \\
-	$V$ & + & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF \\
+	$X$ & & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF \\
+	$Y$ & + & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF \\
 	$\varepsilon$ & 1 & 1 & 1 & 1 & 0 \\ \cline{2-6}
-	$W$ & 0x00000001 & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFE \\
+	$Z$ & 0x00000001 & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFE \\
 	\end{tabular*}}
-\end{table}	
+\end{table}
 \end{example}
+
+\begin{note}[How to Compute Carry?]
+	content...
+\end{note}
 
 
