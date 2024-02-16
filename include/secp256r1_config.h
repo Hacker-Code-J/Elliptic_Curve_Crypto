@@ -6,10 +6,10 @@
 
 /**
  * Standard for Efficient Cryptography
- * Parameter p over F_p
- * 256 (bit number of Field Size p)
- * Koblitz Curve
- * 1 (sequence number)
+ * p     Field type = Prime field
+ * 256   Key size = 256
+ * r     Curve type = Verifiably Random
+ * 1     Sequence = 1
 */
 
 #ifndef _SECP256R1_CONFIG_H

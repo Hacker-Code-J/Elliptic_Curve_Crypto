@@ -8,6 +8,7 @@ TESTDIR=./tests
 INCDIR=./include
 
 OBJS=$(OBJDIR)/secp256r1_bigint.o $(OBJDIR)/secp256r1_utils.o \
+	$(OBJDIR)/secp256r1_validation.o \
 	$(OBJDIR)/main.o
 
 TARGET=$(BINDIR)/a.out

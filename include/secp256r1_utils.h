@@ -4,6 +4,6 @@
 #define _SECP256R1_UTILS_H
 
 void stringToWord(word* wordArray, const char* hexString);
-
+void printData(word* data);
 
 #endif /* _SECP256R1_UTILS */

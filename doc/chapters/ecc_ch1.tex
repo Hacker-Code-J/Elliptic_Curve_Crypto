@@ -414,5 +414,25 @@ Let \(x,y\in\intco{0,2^w}\) and \(\varepsilon\in\set{0,1}\). \begin{enumerate}[(
 	}
 	\Return $(\varepsilon, Z=z[t-1]\adjacent z[t-2]\adjacent\cdots\adjacent z[0])$\;
 \end{algorithm}
-
+\begin{example}
+\ \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+{\ttfamily\footnotesize\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cccccccccc}
+$\varepsilon$ & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0\\
+$X$ & & BD91C935 & C85617B0 & 79C6F272 & 8B987CE4 & 88BB17B4 & 644D5F8B & 9C23AF95 & 5AB74663 \\
+$Y$ & + & 4E272A73 & 41569559 & F3E58053 & BE961728 & D67BF71E & FBA44BF2 & 83DAA7ED & 9BF6DDA8 \\ \cline{1-10}
+$Z$ & 1 & 0BB8F3A9 & 09ACAD0A & 6DAC72C6 & 4A2E940D & 5F370ED3 & 5FF1AB7E & 1FFE5782 & F6AE240B \\
+$-p$ & & FFFFFFFF & 00000001 & 00000000 & 00000000 & 00000000 & FFFFFFFF & FFFFFFFF & FFFFFFFF \\ \cline{1-10}
+$Z-p$ & & 0BB8F3AA & 09ACAD09 & 6DAC72C6 & 4A2E940D & 5F370ED2 & 5FF1AB7E & 1FFE5782 & F6AE240C
+\end{tabular*}}
+\end{table}\\
+Note that
+\begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+{\ttfamily\footnotesize\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cccccccccc}
+$\varepsilon$ & 0 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \\
+$Z$ & 1 & 0BB8F3A9 & 09ACAD0A & 6DAC72C6 & 4A2E940D & 5F370ED3 & 5FF1AB7E & 1FFE5782 & F6AE240B \\
+$+p_{\mathsf{inv}}$ & & 00000000 & FFFFFFFE & FFFFFFFF & FFFFFFFF & FFFFFFFF & 00000000 & 00000000 & 00000001 \\ \cline{1-10}
+$Z+p_{\mathsf{inv}}$ & 1 & 0BB8F3AA & 09ACAD09 & 6DAC72C6 & 4A2E940D & 5F370ED2 & 5FF1AB7E & 1FFE5782 & F6AE240C
+\end{tabular*}}
+\end{table}
+\end{example}
 
