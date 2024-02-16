@@ -1,4 +1,4 @@
-\chapter{NIST secp256k1}
+\chapter{NIST P256}
 \iffalse
 \section{Time Measure in Linux}
 
@@ -85,12 +85,12 @@ typedef uint64_t    u64;
 #define ONE     0x01
 #define SIZE    8
 typedef u32     word;
-typedef u32     prime_field[SIZE];
+typedef u32     field[SIZE];
 #else // 64-bit specific settings
 #define ONE     0x01LL
 #define SIZE    4
 typedef u64     word;
-typedef u64     prime_field[SIZE];
+typedef u64     field[SIZE];
 #endif
 \end{lstlisting}
 
@@ -156,49 +156,46 @@ BD91C935C85617B0:79C6F2728B987CE4:88BB17B4644D5F8B:9C23AF955AB74663:
 \end{lstlisting}}
 
 \newpage
-\begin{example}[secp256k1]
-Consider $p = 2^{256} - 2^{32} - 2^{9} - 2^{8} - 2^7 - 2^6 - 2^4 - 1$.
+\begin{example}[secp256r1]
+Consider $p = 2^{256} - 2^{224} + 2^{192} + 2^{96} - 1$.
 \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
-{\ttfamily\footnotesize\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ccccccccc}
-		$2^{256}$ &  10000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000\\
-		$-2^{32}$ & & & & & & & & 10000000 \\
-		$-2^{9}$ & & & & & & & & 00000200 \\
-		$-2^{8}$ & & & & & & & & 00000100 \\
-		$-2^{7}$ & & & & & & & & 00000080 \\
-		$-2^{6}$ & & & & & & & & 00000040 \\
-		$-2^{4}$ & & & & & & & & 00000010 \\
-		$-2^{0}$ & & & & & & & & 00000001 \\ \cline{1-9}
-		$p$ & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFE & FFFFFC2F \\
+{\ttfamily\footnotesize\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cccccccccc}
+		$2^{256}$ & 00000001 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000\\
+		$-2^{224}$ & & 00000001 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 \\
+		$+2^{192}$ & & & 00000001 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000\\
+		$+2^{96}$ & & & & & & 00000001 & 00000000 & 00000000 & 00000000 \\
+		$-2^{0}$ & & & & & & & & & 00000001 \\ \cline{1-10}
+		$p$ & & FFFFFFFF & 00000001 & 00000000 & 00000000 & 00000000 & FFFFFFFF & FFFFFFFF & FFFFFFFF \\
 \end{tabular*}}
 \end{table}
 \begin{lstlisting}[style=C]
 u32 prime[8] = {
-	0xFFFFFC2F, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF,
-	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
+	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000,
+	0x00000000, 0x00000000, 0x00000001, 0xFFFFFFFF
 };
 
 u64 prime[4] = {
-	0xFFFFFFFEFFFFFC2F, 0xFFFFFFFFFFFFFFFF,
-	0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF
+	0xFFFFFFFFFFFFFFFF, 0x00000000FFFFFFFF,
+	0x0000000000000000, 0xFFFFFFFF00000001
 };
 
 #ifdef IS_32_BIT_ENV
-static const prime_field prime = {
-	0xFFFFFC2FU, 0xFFFFFFFEU, 0xFFFFFFFFU, 0xFFFFFFFFU,
-	0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFFU
+static const field PRIME = {
+	0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFFU, 0x00000000U,
+	0x00000000U, 0x00000000U, 0x00000001U, 0xFFFFFFFFU
 };
-static const prime_field complementPrime = {
-	0x000003D0U, 0x00000001U, 0x00000000U, 0x00000000U,
-	0x00000000U, 0x00000000U, 0x00000000U, 0x00000000U
+static const field PRIME_COMPLEMENT = {
+	0x00000000U, 0x00000000U, 0x00000000U, 0xFFFFFFFFU,
+	0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFEU, 0x00000000U
 };
 #else
-static const prime_field prime = {
-	0xFFFFFFFEFFFFFC2FU, 0xFFFFFFFFFFFFFFFFU,
-	0xFFFFFFFFFFFFFFFFU, 0xFFFFFFFFFFFFFFFFU
+static const field PRIME = {
+	0xFFFFFFFFFFFFFFFFU, 0x00000000FFFFFFFFU,
+	0x0000000000000000U, 0xFFFFFFFF00000001U
 };
-static const prime_field complementPrime = {
-	0x00000001000003D0U, 0x0000000000000000U,
-	0x0000000000000000U, 0x0000000000000000U
+static const field PRIME_COMPLEMENT = {
+	0x0000000000000000U, 0xFFFFFFFF00000000U,
+	0xFFFFFFFFFFFFFFFFU, 0x00000000FFFFFFFFU
 };
 #endif
 \end{lstlisting}

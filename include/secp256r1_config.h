@@ -12,8 +12,8 @@
  * 1 (sequence number)
 */
 
-#ifndef _SECP256K1_CONFIG_H
-#define _SECP256K1_CONFIG_H
+#ifndef _SECP256R1_CONFIG_H
+#define _SECP256R1_CONFIG_H
 
 #ifdef _WIN32
 // Windows-specific definitions
@@ -62,13 +62,13 @@ typedef uint64_t    u64;
 #define ONE     0x01
 #define SIZE    8
 typedef u32     word;
-typedef u32     prime_field[SIZE];
+typedef u32     field[SIZE];
 #else
 // 64-bit specific settings
 #define ONE     0x01LL
 #define SIZE    4
 typedef u64     word;
-typedef u64     prime_field[SIZE];
+typedef u64     field[SIZE];
 #endif
 
-#endif /* _SECP256K1_CONFIG_H */
+#endif /* _SECP256R1_CONFIG_H */

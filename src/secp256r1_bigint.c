@@ -1,4 +1,4 @@
-#include "secp256k1_bigint.h"
+#include "secp256r1_bigint.h"
 
 void add_core(bool* pEpsilon, word result[SIZE], const word op1[SIZE], const word op2[SIZE]) {
     result[0] = op1[0] + op2[0];
