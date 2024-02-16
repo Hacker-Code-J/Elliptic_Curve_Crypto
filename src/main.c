@@ -1,5 +1,6 @@
 #include "secp256r1_utils.h"
 #include "secp256r1_bigint.h"
+#include "secp256r1_validation.h"
 
 int main(void) {
     const char* opA = "BD91C935C85617B079C6F2728B987CE488BB17B4644D5F8B9C23AF955AB74663";
@@ -17,5 +18,8 @@ int main(void) {
 
     addition_p256(dst, src1, src2);
     printData(dst);
+
+    addition_test();
+
     return 0;
 }
