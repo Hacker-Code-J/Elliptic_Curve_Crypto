@@ -40,7 +40,7 @@ void parseHexLine(word* dst, const char* src) {
 
 void create_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2) {
     FILE *reqFile1, *reqFile2, *rspFile;
-    size_t bufsize = MAX_LINE_LENGTH;
+    size_t bufsize = 64;
 
     reqFile1 = fopen(reqFileName1, "r");
     reqFile2 = fopen(reqFileName2, "r");
@@ -75,13 +75,18 @@ void create_rspFile(const char* rspFileName, const char* reqFileName1, const cha
 
     // Read the source file line by line
     while (fgets(line1, bufsize, reqFile1) && fgets(line2, bufsize, reqFile2)) { 
-        parseHexLine(data1, line1);
-        parseHexLine(data2, line2);
-        addition_p256(result, data1, data2);
-        for (u8 i = 0; i < SIZE; i++) {
-            fprintf(rspFile, "%08X", result[i]);
+        // if ((line1 == NULL) || (line2 == NULL)) {
+        //     fputc('\n', rspFile);
+        //     continue;
+        // }
+        if ((line1 != NULL) && (line2 != NULL)) {
+            parseHexLine(data1, line1);
+            parseHexLine(data2, line2);
+            addition_p256(result, data1, data2);
+            for (u8 i = 0; i < SIZE; i++) {
+                fprintf(rspFile, "%08X", result[i]);
+            }
         }
-        fputc('\n', rspFile);
     }
     
     free(line1); free(line2);
