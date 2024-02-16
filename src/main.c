@@ -1,4 +1,4 @@
-#include "secp256k1_utils.h"
+#include "secp256r1_utils.h"
 
 int main(void) {
     const char* string = "BD91C935C85617B079C6F2728B987CE488BB17B4644D5F8B9C23AF955AB74663";

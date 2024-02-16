@@ -7,7 +7,7 @@ SRCDIR=./src
 TESTDIR=./tests
 INCDIR=./include
 
-OBJS=$(OBJDIR)/secp256k1_bigint.o $(OBJDIR)/secp256k1_utils.o \
+OBJS=$(OBJDIR)/secp256r1_bigint.o $(OBJDIR)/secp256r1_utils.o \
 	$(OBJDIR)/main.o
 
 TARGET=$(BINDIR)/a.out

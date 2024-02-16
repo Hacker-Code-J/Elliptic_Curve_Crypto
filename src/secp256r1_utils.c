@@ -1,4 +1,4 @@
-#include "secp256k1_utils.h"
+#include "secp256r1_utils.h"
 
 
 void stringToWord(word* wordArray, const char* hexString) {

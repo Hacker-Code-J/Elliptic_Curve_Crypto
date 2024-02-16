@@ -1,4 +1,4 @@
-\chapter{NIST secp256k1}
+\chapter{NIST P256}
 \iffalse
 \section{Time Measure in Linux}
 
@@ -60,37 +60,37 @@ double measure_time(void (*func)(u8*, u8*), u8* para1, u8* para2) {
 \section*{Configuration}
 \begin{lstlisting}[style=C]
 #ifdef _WIN32 // Windows-specific definitions
-	#include <windows.h> 
-	/* ... */
-	typedef DWORD 		u32;
-	typedef DWORDLONG 	u64;
+#include <windows.h>
+#include <stdint.h>
+/* ... */
+typedef DWORD       u32;
+typedef DWORDLONG   u64;
 #elif defined(__linux__) // Linux-specific definitions
-	#include <stdint.h>
-	typedef int8_t 		i8;
-	typedef int32_t 	i32;
-	typedef int64_t 	i64;
-	typedef uint8_t 	u8;
-	typedef uint32_t 	u32;
-	typedef uint64_t 	u64;
+#include <stdint.h>
+typedef int8_t      i8;
+typedef int32_t     i32;
+typedef int64_t     i64;
+typedef uint8_t     u8;
+typedef uint32_t    u32;
+typedef uint64_t    u64;
 #else
-	#error "Unsupported platform"
+#error "Unsupported platform"
 #endif
 
-// Simplified check for 32-bit or forced 32-bit mode
 #if !defined(_WIN64) && !defined(__x86_64__)
-	#define IS_32_BIT_ENV
+#define IS_32_BIT_ENV
 #endif
 
 #ifdef IS_32_BIT_ENV // 32-bit specific settings
-	#define ONE 	0x01
-	#define SIZE 	8
-	typedef u32 	word;
-	typedef u32 	prime_field[SIZE];
+#define ONE     0x01
+#define SIZE    8
+typedef u32     word;
+typedef u32     field[SIZE];
 #else // 64-bit specific settings
-	#define ONE 	0x01LL
-	#define SIZE 	4
-	typedef u64 	word;
-	typedef u64 	prime_field[SIZE];
+#define ONE     0x01LL
+#define SIZE    4
+typedef u64     word;
+typedef u64     field[SIZE];
 #endif
 \end{lstlisting}
 
@@ -156,33 +156,48 @@ BD91C935C85617B0:79C6F2728B987CE4:88BB17B4644D5F8B:9C23AF955AB74663:
 \end{lstlisting}}
 
 \newpage
-\begin{example}[secp256k1]
-Consider $p = 2^{256} - 2^{32} - 2^{9} - 2^{8} - 2^7 - 2^6 - 2^4 - 1$.
+\begin{example}[secp256r1]
+Consider $p = 2^{256} - 2^{224} + 2^{192} + 2^{96} - 1$.
 \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
-{\ttfamily\footnotesize\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ccccccccc}
-		$2^{256}$ &  10000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000\\
-		$-2^{32}$ & & & & & & & & 10000000 \\
-		$-2^{9}$ & & & & & & & & 00000200 \\
-		$-2^{8}$ & & & & & & & & 00000100 \\
-		$-2^{7}$ & & & & & & & & 00000080 \\
-		$-2^{6}$ & & & & & & & & 00000040 \\
-		$-2^{4}$ & & & & & & & & 00000010 \\
-		$-2^{0}$ & & & & & & & & 00000001 \\ \cline{1-9}
-		$p$ & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFE & FFFFFC2F \\
+{\ttfamily\footnotesize\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cccccccccc}
+		$2^{256}$ & 00000001 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000\\
+		$-2^{224}$ & & 00000001 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 \\
+		$+2^{192}$ & & & 00000001 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000 & 00000000\\
+		$+2^{96}$ & & & & & & 00000001 & 00000000 & 00000000 & 00000000 \\
+		$-2^{0}$ & & & & & & & & & 00000001 \\ \cline{1-10}
+		$p$ & & FFFFFFFF & 00000001 & 00000000 & 00000000 & 00000000 & FFFFFFFF & FFFFFFFF & FFFFFFFF \\
 \end{tabular*}}
 \end{table}
 \begin{lstlisting}[style=C]
 u32 prime[8] = {
-	0xFFFFFC2F, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF,
-	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
+	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000,
+	0x00000000, 0x00000000, 0x00000001, 0xFFFFFFFF
 };
 
 u64 prime[4] = {
-	0xFFFFFFFEFFFFFC2F, 0xFFFFFFFFFFFFFFFF,
-	0xFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF
+	0xFFFFFFFFFFFFFFFF, 0x00000000FFFFFFFF,
+	0x0000000000000000, 0xFFFFFFFF00000001
 };
 
-prime_field myField = { /* ... */ };
+#ifdef IS_32_BIT_ENV
+static const field PRIME = {
+	0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFFU, 0x00000000U,
+	0x00000000U, 0x00000000U, 0x00000001U, 0xFFFFFFFFU
+};
+static const field PRIME_COMPLEMENT = {
+	0x00000000U, 0x00000000U, 0x00000000U, 0xFFFFFFFFU,
+	0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFEU, 0x00000000U
+};
+#else
+static const field PRIME = {
+	0xFFFFFFFFFFFFFFFFU, 0x00000000FFFFFFFFU,
+	0x0000000000000000U, 0xFFFFFFFF00000001U
+};
+static const field PRIME_COMPLEMENT = {
+	0x0000000000000000U, 0xFFFFFFFF00000000U,
+	0xFFFFFFFFFFFFFFFFU, 0x00000000FFFFFFFFU
+};
+#endif
 \end{lstlisting}
 \end{example}
 
@@ -236,24 +251,43 @@ void subtract_p256(field_element x) {
 \newpage
 \section{Multi-precision Addition}
 
+\subsection{Theory for Addition}
+
+\begin{note}
+A positive integer $X\in\intco{2^{w(n-1)}, 2^{wn}}$ is a $n$-word string. For example, let $w=32$ and consider $4$-word string
+\begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$x[3]\cdot 2^{w*3}$ & $x[2]\cdot 2^{w*2}$ & $x[1]\cdot 2^{w*1}$ & $x[0]\cdot 2^{w*0}$\\
+\hline
+\end{tabular}
+\end{table}\\
+Then
+\begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+{\ttfamily\begin{tabular}{c|c|c|c|c|l}
+\cline{2-5}
+\textnormal{\bf Minimum} & 00000001 & 00000000 & 00000000 & 00000000 & $=2^{w*3}$\\ \cline{2-5}
+\textnormal{\bf Maximum} & FFFFFFFF & FFFFFFFF & FFFFFFFF & FFFFFFFF & $=2^{w*4}-1$\\ \cline{2-5}
+\end{tabular}}
+\end{table}
+\end{note}
+
 \begin{tcolorbox}[colframe=procolor,title={\color{white}\bf Upper and Lower Bound of Addition}]
 \begin{proposition}
-	Let $X$ and $Y$ are \(n\)-word and \(m\)-word strings, respectively, \ie, 
+	Let $w\in\set{32,64}$ be a word. Let $X$ and $Y$ are \(n\)-word and \(m\)-word strings, respectively, \ie, 
 	\begin{align*}
-		X = x[n-1]\adjacent\cdots\adjacent x[0]\in\intco{2^{w(n-1)},2^{wn}}
-	\end{align*}
-	\[
-	A\in[W^{n-1},W^{n}-1],\quad B\in[W^{m-1},W^m-1].
-	\] Then \[
-	W^{\max(n,m)-1}<A+B<W^{\max(m,n)+1}.
+		X &= x[n-1]\adjacent\cdots\adjacent x[0]\in\intco{2^{w(n-1)},2^{wn}}\quad\text{with}\quad x[n-1]\neq 0\\
+		Y &= y[m-1]\adjacent\cdots\adjacent y[0]\in\intco{2^{w(m-1)},2^{mn}}\quad\text{with}\quad y[m-1]\neq 0\\
+	\end{align*} Then \[
+	{2}^{w\cdot(\max(n,m)-1)}<X+Y<2^{w\cdot(\max(m,n)+1)}.
 	\]
 \end{proposition}
 \end{tcolorbox}
 \begin{proof}
-	$A$ and $B$ can be expressed as follows: 
+	Let $W:=2^w$. Then $X$ and $Y$ can be expressed as follows: 
 	$\begin{cases}
-		A=aW^{n-1}+A'\\
-		B=bW^{m-1}+B'
+		X=xW^{n-1}+X'\\
+		Y=yW^{m-1}+Y'
 	\end{cases}$ where \[
 	a,b\in(0,W),\quad A'\in[0,W^{n-1}-1],\quad B'\in[0,W^{m-1}-1].
 	\]
@@ -272,16 +306,51 @@ void subtract_p256(field_element x) {
 \begin{tcolorbox}[colframe=corcolor,title={\color{white}\bf }]
 	\begin{corollary}
 		\[
-		\len_{\word}(A)=n,\len_{\word}(B)=m\implies\len_{\word}(A+B)\leq\max(n,m)+1.
+		\len_{\word}(X)=t=\len_{\word}(Y)\implies\len_{\word}(X+Y)\leq t+1.
 		\]
 	\end{corollary}
 \end{tcolorbox}
 
+\begin{tcolorbox}[colframe=procolor,title={\color{white}\bf Single-Word Addition \(x[i]+y[i]\)}]
+\begin{proposition}
+Let \(x,y\in\intco{0,2^w}\) are single-words. \begin{enumerate}[(1)]
+	\item \(\len_\word(x+y)\leq 2\).
+	\item (Division Theorem) $$ x+y=q2^w+r,$$ where $q=\floor*{\frac{x+y}{2^w}}$ and $r=(x+y)\bmod 2^w=x\boxplus y$
+	\item (carry) \(\floor*{\frac{x+y}{2^w}}\in\set{0,1}\).
+	\item $(\textcolor{red}{\star})$ $x\boxplus y < x\quad\Leftrightarrow\quad\floor*{\frac{x+y}{2^w}}=1$.
+\end{enumerate}
+\end{proposition}
+\end{tcolorbox}
+\begin{note}
+\ \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{c|c|c}\hline
+	\multirow{2}{*}{$x\boxplus y < x$} & \texttt{True} & carry $=1$\\ \cline{2-3}
+	& \texttt{False} & carry $=0$\\ \hline
+\end{tabular}
+\end{table}
+\end{note}
+
+
+\begin{tcolorbox}[colframe=procolor,title={\color{white}\bf Single-Word Addition with Carry \(x[i]+y[i]+\varepsilon\)}]
+\begin{proposition}
+Let \(x,y\in\intco{0,2^w}\) and \(\varepsilon\in\set{0,1}\). \begin{enumerate}[(1)]
+	\item \(\len_\word(x+y+\varepsilon)\leq 2\).
+	\item (carry) \(\displaystyle\floor*{\frac{x+y+\varepsilon}{2^w}}\in\set{0,1}\).
+	\item \[
+	\floor*{\frac{x+y}{2^w}}=1
+		\implies\floor*{\frac{x+y+\varepsilon}{2^w}}=0.
+	\]
+\end{enumerate}
+\end{proposition}
+\end{tcolorbox}
+
+\subsection{Practice for Addition}
+
 \begin{algorithm}[H]
 	\DontPrintSemicolon
 	\caption{Multi-Precision Addition}
-	\KwIn{$u,v\intco{0,2^{Wt}}\subseteq\Z$\tcp*{$(W,t)=(32,8)$ or $(W,t)=(64,4)$ for secp256k1}}
-	\KwOut{$(\varepsilon,Z)$ where $Z=X+Y\bmod 2^{Wt}$ and $\varepsilon\in\set{0,1}$ is carry bit}
+	\KwIn{$X,Y\intco{0,2^{wt}}\subseteq\Z$\tcp*{$(w,t)=(32,8)$ or $(w,t)=(64,4)$ for secp256k1}}
+	\KwOut{$(\varepsilon,Z)$ where $Z=X+Y\bmod 2^{wt}$ and $\varepsilon\in\set{0,1}$ is carry bit}
 	\BlankLine
 	$(\varepsilon,z[0])\gets x[0]+y[0]$\;
 	\For{$i=1$ \KwTo $t-1$}{
@@ -303,5 +372,18 @@ void subtract_p256(field_element x) {
 \begin{note}[How to Compute Carry?]
 	content...
 \end{note}
+
+\begin{algorithm}[H]
+	\DontPrintSemicolon
+	\caption{Addition in $\F_p$}
+	\KwIn{Modulus $p$, and integer $X,Y\in\intco{0,p}$}
+	\KwOut{$Z = X + Y \bmod p$}
+	\BlankLine
+	$(\varepsilon,z[0])\gets x[0]+y[0]$\;
+	\For{$i=1$ \KwTo $t-1$}{
+		$(\varepsilon,z[i])\gets x[i] + y[i] + \varepsilon$\;
+	}
+	\Return $(\varepsilon, Z=z[t-1]\adjacent z[t-2]\adjacent\cdots\adjacent z[0])$\;
+\end{algorithm}
 
 
