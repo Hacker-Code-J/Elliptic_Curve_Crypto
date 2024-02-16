@@ -1,30 +1,27 @@
 #include "secp256r1_bigint.h"
 
-void add_core(bool* pEpsilon, word result[SIZE], const word op1[SIZE], const word op2[SIZE]) {
-    result[0] = op1[0] + op2[0];
-	bool carry = (op1[0] + op2[0]) < op1[0];
-	for (u8 i = 1; i < SIZE; i++) {
-		result[i] = op1[i] + op2[i] + carry;
-		carry = (op1[i] + op2[i]) < op1[i];
-	}
-	*pEpsilon = carry;
-
-
-	
-	// u64 carry = 0;
-	// for (i32 i = 0; i < SIZE; i++) { // Assuming 64-bit system
-	// 	u64 temp = (u64)(op1[i] + op2[i] + carry);
-	// 	result[i] = temp & 0xFFFFFFFFFFFFFFFF; // Keep only 64 bits
-	// 	carry = temp >> 64; // Carry for the next iteration
-	// }
-	
-	// // Modular reduction if necessary
-	// if (carry || is_greater_or_equal(result, p256)) {
-	// 	// Subtract p256 if result >= p256
-	// 	subtract_p256(result);
-	// }
+void addition_single(word* epsilon, word* dst, const word src1, const word src2) {
+	word tmp = *epsilon;
+	word sum = src1 + src2;
+	*epsilon = (sum < src1); // Set epsilon to 1 if there was a carry-out, otherwise 0
+    sum += tmp; // Add epsilon (this will be either 0 or 1)
+	*epsilon += (sum < *epsilon); // Adjust epsilon if there was a carry-out from this addition
+    *dst = sum; // Set the destination word
 }
 
-void addition_p256(word result[SIZE], const word op1[SIZE], const word op2[SIZE]) {
-	exit(1);
+void addition_core(word* epsilon, word* dst, const word* src1, const word* src2) {
+	for(u8 i = 0; i < SIZE; i++) {
+		addition_single(epsilon, dst + i, src1[i] , src2[i]);
+	}
+}
+
+void addition_p256(word* dst, const word* src1, const word* src2) {
+	word epsilon = 0;
+	word buffer[SIZE];
+	addition_core(&epsilon, buffer, src1, src2);
+	if (epsilon) {
+		addition_core(&epsilon, dst, buffer, PRIME_INVERSE);
+		return;
+	}
+	memcpy(dst, buffer, SIZE * 4);
 }

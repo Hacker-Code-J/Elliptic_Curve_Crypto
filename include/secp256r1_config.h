@@ -6,10 +6,10 @@
 
 /**
  * Standard for Efficient Cryptography
- * Parameter p over F_p
- * 256 (bit number of Field Size p)
- * Koblitz Curve
- * 1 (sequence number)
+ * p     Field type = Prime field
+ * 256   Key size = 256
+ * r     Curve type = Verifiably Random
+ * 1     Sequence = 1
 */
 
 #ifndef _SECP256R1_CONFIG_H
@@ -62,13 +62,13 @@ typedef uint64_t    u64;
 #define ONE     0x01
 #define SIZE    8
 typedef u32     word;
-typedef u32     field[SIZE];
+typedef word    field[SIZE];
 #else
 // 64-bit specific settings
 #define ONE     0x01LL
 #define SIZE    4
 typedef u64     word;
-typedef u64     field[SIZE];
+typedef word    field[SIZE];
 #endif
 
 #endif /* _SECP256R1_CONFIG_H */

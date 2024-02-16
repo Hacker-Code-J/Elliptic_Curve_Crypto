@@ -14,3 +14,23 @@ void stringToWord(word* wordArray, const char* hexString) {
         sscanf(&hexString[i * 16], "%16lX", &wordArray[(length - 1) - i]);
 #endif
 }
+
+void printData(word* data) {
+    for (i32 i = SIZE-1; i >=0; i--) {
+#ifdef IS_32_BIT_ENV
+        printf("%08X:", data[i]);
+#else
+        printf("%016lX:", data[i]);
+#endif
+    } puts("");
+}
+
+void printTestData(word* data) {
+    for (i32 i = SIZE-1; i >=0; i--) {
+#ifdef IS_32_BIT_ENV
+        printf("%08X", data[i]);
+#else
+        printf("%016lX", data[i]);
+#endif
+    } puts("");
+}
