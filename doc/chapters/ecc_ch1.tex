@@ -166,26 +166,17 @@ Consider $p = 2^{256} - 2^{224} + 2^{192} + 2^{96} - 1$.
 		$+2^{96}$ & & & & & & 00000001 & 00000000 & 00000000 & 00000000 \\
 		$-2^{0}$ & & & & & & & & & 00000001 \\ \cline{1-10}
 		$p$ & & FFFFFFFF & 00000001 & 00000000 & 00000000 & 00000000 & FFFFFFFF & FFFFFFFF & FFFFFFFF \\
+		$p_{\mathsf{inv}}$ & & 00000000 & FFFFFFFE & FFFFFFFF & FFFFFFFF & FFFFFFFF & 00000000 & 00000000 & 00000001 \\
 \end{tabular*}}
 \end{table}
 \begin{lstlisting}[style=C]
-u32 prime[8] = {
-	0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000,
-	0x00000000, 0x00000000, 0x00000001, 0xFFFFFFFF
-};
-
-u64 prime[4] = {
-	0xFFFFFFFFFFFFFFFF, 0x00000000FFFFFFFF,
-	0x0000000000000000, 0xFFFFFFFF00000001
-};
-
 #ifdef IS_32_BIT_ENV
 static const field PRIME = {
 	0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFFU, 0x00000000U,
 	0x00000000U, 0x00000000U, 0x00000001U, 0xFFFFFFFFU
 };
-static const field PRIME_COMPLEMENT = {
-	0x00000000U, 0x00000000U, 0x00000000U, 0xFFFFFFFFU,
+static const field PRIME_INVERSE = {
+	0x00000001U, 0x00000000U, 0x00000000U, 0xFFFFFFFFU,
 	0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFEU, 0x00000000U
 };
 #else
@@ -193,7 +184,7 @@ static const field PRIME = {
 	0xFFFFFFFFFFFFFFFFU, 0x00000000FFFFFFFFU,
 	0x0000000000000000U, 0xFFFFFFFF00000001U
 };
-static const field PRIME_COMPLEMENT = {
+static const field PRIME_INVERSE = {
 	0x0000000000000000U, 0xFFFFFFFF00000000U,
 	0xFFFFFFFFFFFFFFFFU, 0x00000000FFFFFFFFU
 };
@@ -201,11 +192,10 @@ static const field PRIME_COMPLEMENT = {
 \end{lstlisting}
 \end{example}
 
-\section{secp256k1}
+\section{secp256r1}
 Define a prime number \begin{align*}
 p_{256} &= 2^{256}-2^{224}+2^{192}+2^{96}-1 \\
-&=2^{32*8}-2^{32*7}+2^{32*6}+2^{32*3}-2^{32*0}\\
-&= 2^{64*4}-2^{64*(7/2)}+2^{64*3}+2^{64*(3/2)}-2^{64*0}
+&=2^{32*8}-2^{32*7}+2^{32*6}+2^{32*3}-2^{32*0}
 \end{align*} that is used in the context of cryptography, particularly in the construction of elliptic curves for cryptographic purposes.
 For prime $p$, let \begin{align*}
 	m = \ceil*{\log_2 p},\quad t=\ceil*{\frac{m}{W}}.
@@ -213,6 +203,33 @@ For prime $p$, let \begin{align*}
 \item $A = A[t-1]\adjacent\cdots\adjacent A[2]\adjacent A[1]\adjacent A[0]$
 \item $a = 2^{(t-1)W}A[t-1]$+$\cdots 2^{2W}A[2]+2^{W}A[1]+A[0]$
 \end{itemize}
+
+\begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{C{.65cm}C{.65cm}C{.65cm}C{.65cm}|C{1.5cm}|C{.65cm}C{.65cm}C{.65cm}C{.65cm}|C{.65cm}C{.65cm}C{.65cm}C{.65cm}}
+	\toprule[1.25pt]
+	sign & $2^2$ & $2^1$ & $2^0$ & {Decimal} & \multicolumn{4}{c|}{{One's Complement}} & \multicolumn{4}{c}{{Two's Complement}} \\
+	\midrule
+	0 & 0 & 0 & 0 & +0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 1 & +1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 \\
+	0 & 0 & 1 & 0 & +2 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 \\
+	0 & 0 & 1 & 1 & +3 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+	0 & 1 & 0 & 0 & +4 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 \\
+	0 & 1 & 0 & 1 & +5 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 \\
+	0 & 1 & 1 & 0 & +6 & 0 & 1 & 1 & 0 & 0 & 1 & 1 & 0 \\
+	0 & 1 & 1 & 1 & +7 & 0 & 1 & 1 & 1 & 0 & 1 & 1 & 1 \\
+	\hline\hline
+	1 & 0 & 0 & 0 & -0 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \\
+	1 & 0 & 0 & 1 & -1 & 1 & 1 & 1 & 0 & 1 & 1 & 1 & 1 \\
+	1 & 0 & 1 & 0 & -2 & 1 & 1 & 0 & 1 & 1 & 1 & 1 & 0 \\
+	1 & 0 & 1 & 1 & -3 & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 1 \\
+	1 & 1 & 0 & 0 & -4 & 1 & 0 & 1 & 1 & 1 & 1 & 0 & 0 \\
+	1 & 1 & 0 & 1 & -5 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 1 \\
+	1 & 1 & 1 & 0 & -6 & 1 & 0 & 0 & 1 & 1 & 0 & 1 & 0 \\
+	1 & 1 & 1 & 1 & -7 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 1 \\
+	 &  &  &  & -8 &  &  &  &  & 1 & 0 & 0 & 0 \\
+	\bottomrule[1.25pt]
+\end{tabular}
+\end{table}
 
 \newpage
 
@@ -315,7 +332,9 @@ Then
 \begin{proposition}
 Let \(x,y\in\intco{0,2^w}\) are single-words. \begin{enumerate}[(1)]
 	\item \(\len_\word(x+y)\leq 2\).
-	\item (Division Theorem) $$ x+y=q2^w+r,$$ where $q=\floor*{\frac{x+y}{2^w}}$ and $r=(x+y)\bmod 2^w=x\boxplus y$
+	\item (Division Theorem) \[
+	x+y=q2^w+r=\floor*{\frac{x+y}{2^w}}\cdot 2^w+(x\boxplus y).
+	\]
 	\item (carry) \(\floor*{\frac{x+y}{2^w}}\in\set{0,1}\).
 	\item $(\textcolor{red}{\star})$ $x\boxplus y < x\quad\Leftrightarrow\quad\floor*{\frac{x+y}{2^w}}=1$.
 \end{enumerate}
@@ -330,33 +349,43 @@ Let \(x,y\in\intco{0,2^w}\) are single-words. \begin{enumerate}[(1)]
 \end{table}
 \end{note}
 
-
-\begin{tcolorbox}[colframe=procolor,title={\color{white}\bf Single-Word Addition with Carry \(x[i]+y[i]+\varepsilon\)}]
+\begin{tcolorbox}[colframe=procolor,title={\color{white}\bf Single-Word Addition with Carry \(x[i]\boxplus y[i]+\varepsilon\)}]
 \begin{proposition}
 Let \(x,y\in\intco{0,2^w}\) and \(\varepsilon\in\set{0,1}\). \begin{enumerate}[(1)]
-	\item \(\len_\word(x+y+\varepsilon)\leq 2\).
-	\item (carry) \(\displaystyle\floor*{\frac{x+y+\varepsilon}{2^w}}\in\set{0,1}\).
+	\item \(\len_\word((x\boxplus y)+\varepsilon)\leq 2\).
+	\item (carry) \(\displaystyle\floor*{\frac{(x\boxplus y)+\varepsilon}{2^w}}\in\set{0,1}\).
 	\item \[
 	\floor*{\frac{x+y}{2^w}}=1
-		\implies\floor*{\frac{x+y+\varepsilon}{2^w}}=0.
+		\implies\floor*{\frac{(x\boxplus y)+\varepsilon}{2^w}}=0.
 	\]
 \end{enumerate}
 \end{proposition}
 \end{tcolorbox}
+\begin{note}
+\ \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+	\begin{tabular}{c|c|c|c|}\hline
+		\multirow{2}{*}{$x\boxplus y < x$} & \texttt{True} & carry $=1$ & \multirow{2}{*}{$\implies$}\\ \cline{2-3}
+		& \texttt{False} & carry $=0$ & \\ \hline
+	\end{tabular}
+\end{table}
+\end{note}
+
 
 \subsection{Practice for Addition}
 
 \begin{algorithm}[H]
-	\DontPrintSemicolon
-	\caption{Multi-Precision Addition}
-	\KwIn{$X,Y\intco{0,2^{wt}}\subseteq\Z$\tcp*{$(w,t)=(32,8)$ or $(w,t)=(64,4)$ for secp256k1}}
-	\KwOut{$(\varepsilon,Z)$ where $Z=X+Y\bmod 2^{wt}$ and $\varepsilon\in\set{0,1}$ is carry bit}
-	\BlankLine
+\DontPrintSemicolon
+\caption{Multi-Precision Addition}
+\KwIn{$X,Y\intco{0,2^{wt}}\subseteq\Z$\tcp*{$(w,t)=(32,8)$ or $(w,t)=(64,4)$ for secp256r1}}
+\KwOut{$(\varepsilon,Z)$ where $Z=(X+Y)\bmod 2^{wt}$ and $\varepsilon\in\set{0,1}$ is carry bit}
+\BlankLine
+\Fn{\textnormal{\Call{Addition\_Core}{$\varepsilon, Z, X, Y$}}}{
 	$(\varepsilon,z[0])\gets x[0]+y[0]$\;
 	\For{$i=1$ \KwTo $t-1$}{
 		$(\varepsilon,z[i])\gets x[i] + y[i] + \varepsilon$\;
 	}
 	\Return $(\varepsilon, Z=z[t-1]\adjacent z[t-2]\adjacent\cdots\adjacent z[0])$\;
+}
 \end{algorithm}
 \begin{example}
 \ \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
@@ -377,9 +406,9 @@ Let \(x,y\in\intco{0,2^w}\) and \(\varepsilon\in\set{0,1}\). \begin{enumerate}[(
 	\DontPrintSemicolon
 	\caption{Addition in $\F_p$}
 	\KwIn{Modulus $p$, and integer $X,Y\in\intco{0,p}$}
-	\KwOut{$Z = X + Y \bmod p$}
+	\KwOut{$Z = (X + Y) \bmod p$}
 	\BlankLine
-	$(\varepsilon,z[0])\gets x[0]+y[0]$\;
+	$(\varepsilon,Z)\gets x[0]+y[0]$\;
 	\For{$i=1$ \KwTo $t-1$}{
 		$(\varepsilon,z[i])\gets x[i] + y[i] + \varepsilon$\;
 	}

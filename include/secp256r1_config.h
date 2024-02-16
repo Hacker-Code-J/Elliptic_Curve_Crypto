@@ -62,13 +62,13 @@ typedef uint64_t    u64;
 #define ONE     0x01
 #define SIZE    8
 typedef u32     word;
-typedef u32     field[SIZE];
+typedef word    field[SIZE];
 #else
 // 64-bit specific settings
 #define ONE     0x01LL
 #define SIZE    4
 typedef u64     word;
-typedef u64     field[SIZE];
+typedef word    field[SIZE];
 #endif
 
 #endif /* _SECP256R1_CONFIG_H */

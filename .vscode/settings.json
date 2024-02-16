@@ -59,6 +59,7 @@
   "files.associations": {
     "p256_utils.h": "c",
     "secp256k1_utils.h": "c",
-    "secp256k1_config.h": "c"
+    "secp256k1_config.h": "c",
+    "secp256r1_bigint.h": "c"
   }
 }
