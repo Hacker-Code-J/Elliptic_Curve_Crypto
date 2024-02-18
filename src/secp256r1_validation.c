@@ -25,22 +25,28 @@ void parseHexLine(word* dst, const char* src) {
 #ifdef IS_32_BIT_ENV
     for (u8 i = 0; i < SIZE; i++) {
         word value;
-        if (sscanf(src + i * 8, "%8x", &value) != 1)
-           dst[i] = 0; // Example: set to zero if parsing fails
-        else
-            dst[i] = value;
+        if (sscanf(src + i * 8, "%8x", &value) != 1) return;
+        else dst[(SIZE - 1) - i] = value;
 #else
-        if (sscanf(src + i * 16, "%16x", &value) != 1)
-           dst[i] = 0; // Example: set to zero if parsing fails
-        else
-            dst[i] = value;
+        if (sscanf(src + i * 16, "%16x", &value) != 1) return;
+        else dst[i] = value;
 #endif
+        // printf("%08X:", value);
     }
+}
+
+bool is_blank_line(const char* line) {
+    while (*line != '\0') {
+        if (!isspace((u8)*line))
+            return 0; // Not a blank line
+        line++;
+    }
+    return 1; // Blank line
 }
 
 void create_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2) {
     FILE *reqFile1, *reqFile2, *rspFile;
-    size_t bufsize = 64;
+    size_t bufsize = MAX_LINE_LENGTH;
 
     reqFile1 = fopen(reqFileName1, "r");
     reqFile2 = fopen(reqFileName2, "r");
@@ -69,23 +75,22 @@ void create_rspFile(const char* rspFileName, const char* reqFileName1, const cha
         fclose(rspFile);
         return;
     }
+
     word data1[SIZE] = { 0x00, };
     word data2[SIZE] = { 0x00, };
     word result[SIZE] = { 0x00, };
-
+    
     // Read the source file line by line
     while (fgets(line1, bufsize, reqFile1) && fgets(line2, bufsize, reqFile2)) { 
-        // if ((line1 == NULL) || (line2 == NULL)) {
-        //     fputc('\n', rspFile);
-        //     continue;
-        // }
-        if ((line1 != NULL) && (line2 != NULL)) {
-            parseHexLine(data1, line1);
-            parseHexLine(data2, line2);
+        
+        if (!is_blank_line(line1) && !is_blank_line(line2)) {
+            stringToWord(data1, line1);
+            stringToWord(data2, line2);
             addition_p256(result, data1, data2);
-            for (u8 i = 0; i < SIZE; i++) {
+            for (i8 i = SIZE-1; i >= 0; i--) {
                 fprintf(rspFile, "%08X", result[i]);
             }
+            fputs("\n\n", rspFile);
         }
     }
     
@@ -93,18 +98,78 @@ void create_rspFile(const char* rspFileName, const char* reqFileName1, const cha
     fclose(reqFile1); fclose(reqFile2);
     fclose(rspFile);
 
-    printf("TV_MY_PFADD.rsp file has been successfully created in 'test_vector/add_and_sub' folder.\n");
+    // printf("TV_MY_PFADD.rsp file has been successfully created in 'test_vector/add_and_sub' folder.\n");
+}
+
+void read_data(FILE* fp, word* data) {
+    char line[MAX_LINE_LENGTH];
+
+    while (fgets(line, sizeof(line), fp)) {
+        if (!is_blank_line(line))
+            stringToWord(data, line);
+    }
+}
+
+bool arrays_are_equal(const word* data1, const word* data2, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        if (data1[i] != data2[i]) {
+            return 0; // Arrays are not equal
+        }
+    }
+    return 1; // Arrays are equal
 }
 
 void addition_test() {
     const char* folderPath = "../test_vector/add_and_sub/";
-    char reqFileName1[100], reqFileName2[100], TV_PFADD[100], rspFileName[100];
+    char reqFileName1[100], reqFileName2[100], faxFileName[100], rspFileName[100];
     
     // Construct full paths for input and output files
     snprintf(reqFileName1, sizeof(reqFileName1), "%s%s", folderPath, "TV_opA.txt");
     snprintf(reqFileName2, sizeof(reqFileName2), "%s%s", folderPath, "TV_opB.txt");
-    snprintf(TV_PFADD, sizeof(TV_PFADD), "%s%s", folderPath, "TV_PFADD.txt");
+    snprintf(faxFileName, sizeof(faxFileName), "%s%s", folderPath, "TV_PFADD.txt");
     snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_PFADD.rsp");
     
     create_rspFile(rspFileName, reqFileName1, reqFileName2);
+
+    printf("\nP-256 Addition Test:\n");
+
+    FILE *file1, *file2;
+    char line1[MAX_LINE_LENGTH], line2[MAX_LINE_LENGTH];
+    int isEqual = 1; // Assume files are equal until proven otherwise
+
+    // Open both files
+    file1 = fopen(faxFileName, "r");
+    file2 = fopen(rspFileName, "r");
+
+    if (file1 == NULL || file2 == NULL) {
+        perror("Error opening file");
+        return;
+    }
+
+    u32 total = 10000;
+    u32 idx = 1;
+
+    // Read and compare each line
+    while (fgets(line1, sizeof(line1), file1) && fgets(line2, sizeof(line2), file2)) {
+        if (is_blank_line(line1) || is_blank_line(line2)) {
+            continue;
+        } else {    
+            if (strncmp(line1, line2, 64) != 0) {
+                isEqual = 0; // Files are not equal
+                break;
+            }
+            printProgressBar(idx++, total);
+        }
+    }
+
+    // Close the files
+    fclose(file1);
+    fclose(file2);
+
+    // Output the result
+    if (isEqual) {
+        printf("\nPASS!\n");
+    } else {
+        printf("\nFAIL!\n");
+    }
 }

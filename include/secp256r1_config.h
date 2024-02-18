@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <ctype.h>
+#include <unistd.h> // For sleep function
 
 /**
  * Standard for Efficient Cryptography

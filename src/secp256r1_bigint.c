@@ -20,6 +20,7 @@ void addition_p256(word* dst, const word* src1, const word* src2) {
 	word buffer[SIZE];
 	addition_core(&epsilon, buffer, src1, src2);
 	if (epsilon) {
+		epsilon = 0;
 		addition_core(&epsilon, dst, buffer, PRIME_INVERSE);
 		return;
 	}

@@ -9,7 +9,10 @@
 void printProgressBar(i32 current, i32 total);
 void parseHexLine(word* dst, const char* src);
 
+bool is_blank_line(const char* line);
 void create_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2);
+
+bool arrays_are_equal(const word* data1, const word* data2, size_t size);
 
 void addition_test();
 
