@@ -63,6 +63,7 @@
     "secp256r1_bigint.h": "c",
     "secp256r1_config.h": "c",
     "secp256r1_validation.h": "c",
-    "ctype.h": "c"
+    "ctype.h": "c",
+    "x86intrin.h": "c"
   }
 }

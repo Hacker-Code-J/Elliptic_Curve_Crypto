@@ -12,8 +12,6 @@ void parseHexLine(word* dst, const char* src);
 bool is_blank_line(const char* line);
 void create_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2);
 
-bool arrays_are_equal(const word* data1, const word* data2, size_t size);
-
-void addition_test();
+void addition_p256_test();
 
 #endif /* _SECP256R1_VALIDATION_H */

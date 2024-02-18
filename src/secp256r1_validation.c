@@ -21,20 +21,6 @@ void printProgressBar(i32 current, i32 total) {
     printf("%s] %d%% (%d/%d)", RESET, (i32)(progress * 100.0), current, total);
 }
 
-void parseHexLine(word* dst, const char* src) {
-#ifdef IS_32_BIT_ENV
-    for (u8 i = 0; i < SIZE; i++) {
-        word value;
-        if (sscanf(src + i * 8, "%8x", &value) != 1) return;
-        else dst[(SIZE - 1) - i] = value;
-#else
-        if (sscanf(src + i * 16, "%16x", &value) != 1) return;
-        else dst[i] = value;
-#endif
-        // printf("%08X:", value);
-    }
-}
-
 bool is_blank_line(const char* line) {
     while (*line != '\0') {
         if (!isspace((u8)*line))
@@ -88,7 +74,11 @@ void create_rspFile(const char* rspFileName, const char* reqFileName1, const cha
             stringToWord(data2, line2);
             addition_p256(result, data1, data2);
             for (i8 i = SIZE-1; i >= 0; i--) {
+#ifdef IS_32_BIT_ENV
                 fprintf(rspFile, "%08X", result[i]);
+#else
+                fprintf(rspFile, "%16lX", result[i]);
+#endif
             }
             fputs("\n\n", rspFile);
         }
@@ -119,7 +109,7 @@ bool arrays_are_equal(const word* data1, const word* data2, size_t size) {
     return 1; // Arrays are equal
 }
 
-void addition_test() {
+void addition_p256_test() {
     const char* folderPath = "../test_vector/add_and_sub/";
     char reqFileName1[100], reqFileName2[100], faxFileName[100], rspFileName[100];
     
