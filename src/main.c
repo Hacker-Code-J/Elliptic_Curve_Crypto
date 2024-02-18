@@ -13,13 +13,19 @@ int main(void) {
     stringToWord(src1, opA);
     stringToWord(src2, opB);
 
-    printData(src1);
-    printData(src2);
+    // printData(src1);
+    // printData(src2);
 
     addition_p256(dst, src1, src2);
-    printData(dst);
+    // printData(dst);
 
-    addition_test();
+    // addition_p256_test();
 
+    u64 cycles;
+    for (u32 i = 0; i < 100000; i++) {
+        cycles = measure_cycles(addition_p256, dst, src1, src2);
+        printf("%" PRIu64 "\n", cycles);
+        printf("%" PRIu64 "\n", cycles / SIZE);
+    }
     return 0;
 }

@@ -3,6 +3,16 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <ctype.h>
+#include <unistd.h> // For sleep function
+
+#include <inttypes.h> // for PRIu64 macro
+
+#ifdef __i386
+#include <x86intrin.h> // Use this on x86 platforms
+#elif defined(__x86_64)
+#include <x86intrin.h> // Use this on x86_64 platforms
+#endif
 
 /**
  * Standard for Efficient Cryptography
