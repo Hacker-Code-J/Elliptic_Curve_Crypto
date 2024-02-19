@@ -30,7 +30,7 @@ bool is_blank_line(const char* line) {
     return 1; // Blank line
 }
 
-void create_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2) {
+void create_add_sub_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2, bool option) {
     FILE *reqFile1, *reqFile2, *rspFile;
     size_t bufsize = MAX_LINE_LENGTH;
 
@@ -71,7 +71,10 @@ void create_rspFile(const char* rspFileName, const char* reqFileName1, const cha
             word result[SIZE] = { 0x00, };
             stringToWord(data1, line1);
             stringToWord(data2, line2);
-            addition_p256(result, data1, data2);
+            if (!option)
+                addition_p256(result, data1, data2);
+            else
+                subtraction_p256(result, data1, data2);
             for (i8 i = SIZE-1; i >= 0; i--) {
 #ifdef IS_32_BIT_ENV
                 fprintf(rspFile, "%08X", result[i]);
@@ -120,9 +123,64 @@ void addition_p256_test() {
     snprintf(faxFileName, sizeof(faxFileName), "%s%s", folderPath, "TV_PFADD.txt");
     snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_PFADD.rsp");
     
-    create_rspFile(rspFileName, reqFileName1, reqFileName2);
+    create_add_sub_rspFile(rspFileName, reqFileName1, reqFileName2, 0);
 
     printf("\nP-256 Addition Test:\n");
+
+    FILE *file1, *file2;
+    char line1[MAX_LINE_LENGTH], line2[MAX_LINE_LENGTH];
+    int isEqual = 1; // Assume files are equal until proven otherwise
+
+    // Open both files
+    file1 = fopen(faxFileName, "r");
+    file2 = fopen(rspFileName, "r");
+
+    if (file1 == NULL || file2 == NULL) {
+        perror("Error opening file");
+        return;
+    }
+
+    u32 total = 10000;
+    u32 idx = 1;
+
+    // Read and compare each line
+    while (fgets(line1, sizeof(line1), file1) && fgets(line2, sizeof(line2), file2)) {
+        if (is_blank_line(line1) || is_blank_line(line2)) {
+            continue;
+        } else {    
+            if (strncmp(line1, line2, 64) != 0) {
+                isEqual = 0; // Files are not equal
+                break;
+            }
+            printProgressBar(idx++, total);
+        }
+    }
+
+    // Close the files
+    fclose(file1);
+    fclose(file2);
+
+    // Output the result
+    if (isEqual) {
+        printf("\nPASS!\n");
+    } else {
+        printf("\nFAIL!\n");
+    }
+}
+
+void subtraction_p256_test() {
+    const char* folderPath = "../test_vector/add_and_sub/";
+    char reqFileName1[100], reqFileName2[100], faxFileName[100], rspFileName[100];
+    
+    // Construct full paths for input and output files
+    snprintf(reqFileName1, sizeof(reqFileName1), "%s%s", folderPath, "TV_opA.txt");
+    snprintf(reqFileName2, sizeof(reqFileName2), "%s%s", folderPath, "TV_opB.txt");
+    snprintf(faxFileName, sizeof(faxFileName), "%s%s", folderPath, "TV_PFSUB.txt");
+    snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_PFSUB.rsp");
+    
+    create_add_sub_rspFile(rspFileName, reqFileName1, reqFileName2, 1);
+
+    printf("\nP-256 Subtraction Test:\n");
 
     FILE *file1, *file2;
     char line1[MAX_LINE_LENGTH], line2[MAX_LINE_LENGTH];

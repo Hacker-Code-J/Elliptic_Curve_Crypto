@@ -266,9 +266,9 @@ void subtract_p256(field_element x) {
 \end{lstlisting}
 
 \newpage
-\section{Multi-precision Addition}
+\section{Multi-Precision Addition}
 
-\subsection{Theory for Addition}
+\subsection{Theory for the Addition}
 
 \begin{note}
 A positive integer $X\in\intco{2^{w(n-1)}, 2^{wn}}$ is a $n$-word string. For example, let $w=32$ and consider $4$-word string
@@ -371,7 +371,7 @@ Let \(x,y\in\intco{0,2^w}\) and \(\varepsilon\in\set{0,1}\). \begin{enumerate}[(
 \end{note}
 
 
-\subsection{Practice for Addition}
+\subsection{Practice for the Addition}
 
 \begin{algorithm}[H]
 \DontPrintSemicolon
@@ -436,3 +436,44 @@ $Z+p_{\mathsf{inv}}$ & 1 & 0BB8F3AA & 09ACAD09 & 6DAC72C6 & 4A2E940D & 5F370ED2 
 \end{table}
 \end{example}
 
+\newpage
+\section{Multi-Precision Subtraction}
+\subsection{Theory for the Subtraction}
+\begin{tcolorbox}[colframe=procolor,title={\color{white}\bf Upper and Lower Bound of Subtraction}]
+\begin{proposition}
+Let $w\in\set{32,64}$ be a word. Let $X$ and $Y$ are \(n\)-word and \(m\)-word strings, respectively, \ie, 
+\begin{align*}
+	X &= x[n-1]\adjacent\cdots\adjacent x[0]\in\intco{2^{w(n-1)},2^{wn}}\quad\text{with}\quad x[n-1]\neq 0\\
+	Y &= y[m-1]\adjacent\cdots\adjacent y[0]\in\intco{2^{w(m-1)},2^{wm}}\quad\text{with}\quad y[m-1]\neq 0\\
+\end{align*} Then, for $X\geq Y$, \[
+0\leq X-Y<X<2^{wn}.
+\]
+\end{proposition}
+\end{tcolorbox}
+
+\subsection{Practice for the Subtraction}
+
+\begin{algorithm}[H]
+	\DontPrintSemicolon
+	\caption{Multi-Precision Subtraction}
+	\KwIn{$X,Y\intco{0,2^{wt}}\subseteq\Z$\tcp*{$(w,t)=(32,8)$ or $(w,t)=(64,4)$ for secp256r1}}
+	\KwOut{$(\varepsilon,Z)$ where $Z=(X-Y)\bmod 2^{wt}$ and $\varepsilon\in\set{0,1}$ is borrow bit}
+	\BlankLine
+	\Fn{\textnormal{\Call{Addition\_Core}{$\varepsilon, Z, X, Y$}}}{
+		$(\varepsilon,z[0])\gets x[0]-y[0]$\;
+		\For{$i=1$ \KwTo $t-1$}{
+			$(\varepsilon,z[i])\gets x[i] - y[i] - \varepsilon$\;
+		}
+		\Return $(\varepsilon, Z=z[t-1]\adjacent z[t-2]\adjacent\cdots\adjacent z[0])$\;
+	}
+\end{algorithm}
+\begin{example}
+\ \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+{\ttfamily\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cccccc}
+$X$ & & 0x00000000 & 0x00000000 & 0x00000000 & 0x00000000 \\
+$-Y$ &  & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF & 0xFFFFFFFF \\
+$-\varepsilon$ & 1 & 1 & 1 & 1 & 0 \\ \cline{2-6}
+$Z$ & 0x00000001 & 0x00000000 & 0x00000000 & 0x00000000 & 0x00000001 \\
+\end{tabular*}}
+\end{table}
+\end{example}

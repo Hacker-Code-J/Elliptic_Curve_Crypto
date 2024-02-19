@@ -22,7 +22,7 @@ void stringToWord(word* wordArray, const char* hexString);
 void printData(word* data);
 void printTestData(word* data);
 
-u64 measure_cycles(void (*func)(word*, const word*, const word*),
-                                  word* dst, const word* src1, const word* src2);
+u64 measure_cycles(void (*func)(field, const field, const field),
+                                  field dst, const field src1, const field src2);
 
 #endif /* _SECP256R1_UTILS */

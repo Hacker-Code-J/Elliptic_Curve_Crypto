@@ -10,8 +10,9 @@ void printProgressBar(i32 current, i32 total);
 void parseHexLine(word* dst, const char* src);
 
 bool is_blank_line(const char* line);
-void create_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2);
+void create_add_sub_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2, bool option);
 
 void addition_p256_test();
+void subtraction_p256_test();
 
 #endif /* _SECP256R1_VALIDATION_H */

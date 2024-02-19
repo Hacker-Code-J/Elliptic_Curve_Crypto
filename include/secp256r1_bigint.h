@@ -24,9 +24,13 @@ static const field PRIME_INVERSE = {
 };
 #endif
 
-void addition_single(word* epsilon, word* dst, const word src1, const word src2);
-void addition_core(word* epsilon, word* dst, const word* src1, const word* src2);
-void addition_p256(word* dst, const word* src1, const word* src2);
+void addition_single(word* epsilon, field dst, const word src1, const word src2);
+void addition_core(word* epsilon, field dst, const field src1, const field src2);
+void addition_p256(field dst, const field src1, const field src2);
+
+void subtraction_single(word* epsilon, field dst, const word src1, const word src2);
+void subtraction_core(word* epsilon, field dst, const field src1, const field src2);
+void subtraction_p256(field dst, const field src1, const field src2);
 
 
 #endif /* _SECP256R1_BIGINT_H */
