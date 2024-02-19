@@ -4,7 +4,7 @@
 #ifndef _SECP256R1_VALIDATION_H
 #define _SECP256R1_VALIDATION_H
 
-#define MAX_LINE_LENGTH 128
+#define MAX_LINE_LENGTH 1024
 
 void printProgressBar(i32 current, i32 total);
 void parseHexLine(word* dst, const char* src);
