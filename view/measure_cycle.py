@@ -34,7 +34,7 @@ ax2.axhline(average_function2, color='crimson', linestyle='dashdot', linewidth=2
 ax1.set_ylabel('Total Cycles', fontsize=16, fontweight='bold', color='dodgerblue')
 ax2.set_ylabel('Cycles per Word', fontsize=16, fontweight='bold', color='crimson')
 ax1.set_xlabel('Run Number', fontsize=16, fontweight='bold')
-ax1.set_title('Measurement of Cycles: 64-bit Addition', fontsize=18, fontweight='bold')
+ax1.set_title('Measurement of Cycles: 64-bit Subtraction', fontsize=18, fontweight='bold')
 
 # Combine legends
 lines, labels = ax1.get_legend_handles_labels()

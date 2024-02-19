@@ -17,16 +17,18 @@ int main(void) {
     // printData(src1);
     // printData(src2);
 
-    addition_p256(dst, src1, src2);
+    subtraction_p256(dst, src1, src2);
     // printData(dst);
 
     // addition_p256_test();
+    // subtraction_p256_test();
 
     u64 cycles;
     for (u32 i = 0; i < 12000; i++) {
         assign_rand(src1, SIZE);
         assign_rand(src2, SIZE);
-        cycles = measure_cycles(addition_p256, dst, src1, src2);
+        // cycles = measure_cycles(addition_p256, dst, src1, src2);
+        cycles = measure_cycles(subtraction_p256, dst, src1, src2);
         if (i >= 1000 && i < 11000) {
             printf("%" PRIu64 "\n", cycles);
             printf("%llu\n", (long long)cycles / (long long)SIZE);
