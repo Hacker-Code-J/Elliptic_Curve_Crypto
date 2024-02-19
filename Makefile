@@ -27,12 +27,13 @@ $(OBJDIR)/%.o: $(TESTDIR)/%.c
 
 -include $(OBJS:.o=.d)
 
-FILES_TO_DELETE = test_vector/add_and_sub/TV_MY_PFADD.rsp
+FILES_TO_DELETE1 = test_vector/add_and_sub/TV_MY_PFADD.rsp \
+				  test_vector/add_and_sub/TV_MY_PFSUB.rsp
 
 clean:
 	rm -f $(OBJS) $(TARGET) $(OBJDIR)/*.d
 	@echo "Removing Validation files ..."
-	rm -rf $(FILES_TO_DELETE)
+	rm -rf $(FILES_TO_DELETE1)
 	@echo "Validation files removal completed  successfully."
 
 dir:

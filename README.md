@@ -9,5 +9,5 @@
 **My Performance**
 | Operation \ Platform | 32-bit | 64-bit |
 | --- | --- | --- |
-| Addition (Total) | 21.85 cycle | 15.14 cycle |
-| Addition (per Word) | 2.5 cycle/word | 3.14 cycle/word |
+| Addition (Total) | 22.23 cycle | 14.52 cycle |
+| Addition (per Word) | 2.50 cycle/word | 3.02 cycle/word |
