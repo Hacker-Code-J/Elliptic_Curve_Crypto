@@ -17,12 +17,12 @@ void addition_core(word* epsilon, word* dst, const word* src1, const word* src2)
 
 void addition_p256(word* dst, const word* src1, const word* src2) {
 	word epsilon = 0;
-	word buffer[SIZE];
+	word buffer[SIZE] = { 0x00, };
 	addition_core(&epsilon, buffer, src1, src2);
 	if (epsilon) {
 		epsilon = 0;
 		addition_core(&epsilon, dst, buffer, PRIME_INVERSE);
-		return;
+	} else {
+		memcpy(dst, buffer, SIZE * sizeof(word));
 	}
-	memcpy(dst, buffer, SIZE * 4);
 }

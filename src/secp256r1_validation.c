@@ -64,12 +64,11 @@ void create_rspFile(const char* rspFileName, const char* reqFileName1, const cha
 
     word data1[SIZE] = { 0x00, };
     word data2[SIZE] = { 0x00, };
-    word result[SIZE] = { 0x00, };
-    
+        
     // Read the source file line by line
     while (fgets(line1, bufsize, reqFile1) && fgets(line2, bufsize, reqFile2)) { 
-        
         if (!is_blank_line(line1) && !is_blank_line(line2)) {
+            word result[SIZE] = { 0x00, };
             stringToWord(data1, line1);
             stringToWord(data2, line2);
             addition_p256(result, data1, data2);
@@ -77,10 +76,12 @@ void create_rspFile(const char* rspFileName, const char* reqFileName1, const cha
 #ifdef IS_32_BIT_ENV
                 fprintf(rspFile, "%08X", result[i]);
 #else
-                fprintf(rspFile, "%16lX", result[i]);
+                fprintf(rspFile, "%016lX", result[i]);
 #endif
             }
             fputs("\n\n", rspFile);
+        } else {
+            continue;
         }
     }
     
