@@ -149,6 +149,11 @@ void addition_p256_test() {
             continue;
         } else {    
             if (strncmp(line1, line2, 64) != 0) {
+                field data1, data2;
+                stringToWord(data1, line1);
+                stringToWord(data2, line2);
+                printf("\nAnswer: "); printData(data1);
+                printf("My-Ans: "); printData(data2);
                 isEqual = 0; // Files are not equal
                 break;
             }
