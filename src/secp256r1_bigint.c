@@ -92,37 +92,26 @@ void multiplication_os(field dst[2], const field src1, const field src2) {
 	for (u8 i = 0; i < SIZE; i++) {
 		for (u8 j = 0; j < SIZE; j++) {
 			memset(tmp, 0, sizeof(field) * 2);
-			printf("i: %u, j: %u\n", i, j);
-			printf("%08X x %08X\n", src1[i], src2[j]);
+			// printf("i: %u, j: %u\n", i, j);
+			// printf("%08X x %08X\n", src1[i], src2[j]);
 			multiplication_single(tmp, src1[i], src2[j]);
-    		printData(tmp[1]);
-			printData(tmp[0]);
-			puts("");
+    		// printData(tmp[1]);
+			// printData(tmp[0]);
+			// puts("");
 
 			shiftField(tmp, i+j);
-			printData(tmp[1]);
-			printData(tmp[0]);
-			puts("");
+			// printData(tmp[1]);
+			// printData(tmp[0]);
+			// puts("");
 			
-			addition_core(&epsilon, buffer[0], dst[0], tmp[0]);
-			addition_core(&epsilon, buffer[1], dst[1], tmp[1]);
+			for (u8 k = 0; k < 2; k++)
+				addition_core(&epsilon, buffer[k], dst[k], tmp[k]);
+			// addition_core(&epsilon, buffer[1], dst[1], tmp[1]);
 			memcpy(dst[0], buffer[0], sizeof(field));
     		memcpy(dst[1], buffer[1], sizeof(field));
-			printData(dst[1]);
-			printData(dst[0]);
-			puts("");
-			// printData(src1);
-			// printData(src2);
-			// for (int i = 0; i < max_len; i++) {
-			// 	if (i % 4 == 0) puts("");
-			// 	printf("%08x, ", tmp[i]);
-			// } puts("");
-			// LEFT_SHIFT_WORD(tmp, i+j, max_len);
-			// for (int i = 0; i < max_len; i++) {
-			// 	if (i % 4 == 0) puts("");
-			// 	printf("%08x, ", tmp[i]);
-			// } puts("");
-			// multiplication_single()
+			// printData(dst[1]);
+			// printData(dst[0]);
+			// puts("");
 		}
 	}
 }

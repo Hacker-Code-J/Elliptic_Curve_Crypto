@@ -95,22 +95,68 @@ void create_add_sub_rspFile(const char* rspFileName, const char* reqFileName1, c
     // printf("TV_MY_PFADD.rsp file has been successfully created in 'test_vector/add_and_sub' folder.\n");
 }
 
-void read_data(FILE* fp, word* data) {
-    char line[MAX_LINE_LENGTH];
+void create_mul_squ_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2, bool option) {
+    FILE *reqFile1, *reqFile2, *rspFile;
+    size_t bufsize = MAX_LINE_LENGTH;
 
-    while (fgets(line, sizeof(line), fp)) {
-        if (!is_blank_line(line))
-            stringToWord(data, line);
+    reqFile1 = fopen(reqFileName1, "r");
+    reqFile2 = fopen(reqFileName2, "r");
+    if ((reqFile1 == NULL) || (reqFile2 == NULL)) {
+        perror("Error opening TV_opA.txt or TV_opB.txt file");
+        return;
     }
-}
 
-bool arrays_are_equal(const word* data1, const word* data2, size_t size) {
-    for (size_t i = 0; i < size; i++) {
-        if (data1[i] != data2[i]) {
-            return 0; // Arrays are not equal
+    // Open the .req file for writing
+    rspFile = fopen(rspFileName, "w");
+    if (rspFile == NULL) {
+        perror("Error opening .rsp file");
+        fclose(reqFile1);
+        fclose(reqFile2);
+        return;
+    }
+    
+    // Allocate initial buffer
+    char* line1 = (char*)calloc(bufsize, sizeof(char));
+    char* line2 = (char*)calloc(bufsize, sizeof(char));
+    
+    if((line1 == NULL) || (line2 == NULL)) {
+        perror("Unable to allocate memory");
+        fclose(reqFile1);
+        fclose(reqFile2);
+        fclose(rspFile);
+        return;
+    }
+
+    word data1[SIZE] = { 0x00, };
+    word data2[SIZE] = { 0x00, };
+        
+    // Read the source file line by line
+    while (fgets(line1, bufsize, reqFile1) && fgets(line2, bufsize, reqFile2)) { 
+        if (!is_blank_line(line1) && !is_blank_line(line2)) {
+            field result[2];
+            stringToWord(data1, line1);
+            stringToWord(data2, line2);
+            if (!option)
+                multiplication_os(result, data1, data2);
+            else
+                multiplication_os(result, data1, data2);
+            for (i8 i = SIZE-1; i >= 0; i--) {
+#ifdef IS_32_BIT_ENV
+                fprintf(rspFile, "%08X", (*(result + 1))[i]);
+                fprintf(rspFile, "%08X", (*result)[i]);
+#else
+                fprintf(rspFile, "%016lX", result[i]);
+#endif
+            }
+            fputs("\n\n", rspFile);
+        } else {
+            continue;
         }
     }
-    return 1; // Arrays are equal
+    
+    free(line1); free(line2);
+    fclose(reqFile1); fclose(reqFile2);
+    fclose(rspFile);
 }
 
 void addition_p256_test() {
@@ -209,6 +255,69 @@ void subtraction_p256_test() {
             continue;
         } else {    
             if (strncmp(line1, line2, 64) != 0) {
+                field data1, data2;
+                stringToWord(data1, line1);
+                stringToWord(data2, line2);
+                printf("\nAnswer: "); printData(data1);
+                printf("My-Ans: "); printData(data2);
+                isEqual = 0; // Files are not equal
+                break;
+            }
+            printProgressBar(idx++, total);
+        }
+    }
+
+    // Close the files
+    fclose(file1);
+    fclose(file2);
+
+    // Output the result
+    if (isEqual) {
+        printf("\nPASS!\n");
+    } else {
+        printf("\nFAIL!\n");
+    }
+}
+
+
+void multiplication_os_test() {
+    const char* folderPath = "../test_vector/mul_and_squ/";
+    char reqFileName1[100], reqFileName2[100], faxFileName[100], rspFileName[100];
+    
+    // Construct full paths for input and output files
+    snprintf(reqFileName1, sizeof(reqFileName1), "%s%s", folderPath, "TV_opA.txt");
+    snprintf(reqFileName2, sizeof(reqFileName2), "%s%s", folderPath, "TV_opB.txt");
+    snprintf(faxFileName, sizeof(faxFileName), "%s%s", folderPath, "TV_MUL.txt");
+    snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_MUL.rsp");
+    
+    create_mul_squ_rspFile(rspFileName, reqFileName1, reqFileName2, 1);
+
+    printf("\n256-bit Multiplication OS Test:\n");
+
+    FILE *file1, *file2;
+    char line1[MAX_LINE_LENGTH], line2[MAX_LINE_LENGTH];
+    int isEqual = 1; // Assume files are equal until proven otherwise
+
+    // Open both files
+    file1 = fopen(faxFileName, "r");
+    file2 = fopen(rspFileName, "r");
+
+    if (file1 == NULL || file2 == NULL) {
+        perror("Error opening file");
+        return;
+    }
+
+    u32 total = 10000;
+    u32 idx = 1;
+
+    // Read and compare each line
+    while (fgets(line1, sizeof(line1), file1) && fgets(line2, sizeof(line2), file2)) {
+        if (is_blank_line(line1) || is_blank_line(line2)) {
+            continue;
+        } else {    
+            if (strncmp(line1, line2, 128) != 0) {
+                printf("\nAnswer: "); printf("%s\n", line1);
+                printf("My-Ans: "); printf("%s\n", line2);
                 isEqual = 0; // Files are not equal
                 break;
             }
