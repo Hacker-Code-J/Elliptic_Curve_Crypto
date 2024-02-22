@@ -67,17 +67,17 @@ typedef DWORD       u32;
 typedef DWORDLONG   u64;
 #elif defined(__linux__) // Linux-specific definitions
 #include <stdint.h>
-typedef int8_t      i8;
-typedef int32_t     i32;
-typedef int64_t     i64;
+/* ... */
 typedef uint8_t     u8;
 typedef uint32_t    u32;
 typedef uint64_t    u64;
 #else
 #error "Unsupported platform"
 #endif
-
-#if !defined(_WIN64) && !defined(__x86_64__)
+// Define this to force 32-bit mode in development
+#define FORCE_32_BIT
+// Simplified check for 32-bit or forced 32-bit mode
+#if defined(FORCE_32_BIT) || !defined(_WIN64) && !defined(__x86_64__)
 #define IS_32_BIT_ENV
 #endif
 
@@ -85,12 +85,12 @@ typedef uint64_t    u64;
 #define ONE     0x01
 #define SIZE    8
 typedef u32     word;
-typedef u32     field[SIZE];
+typedef word    field[SIZE];
 #else // 64-bit specific settings
 #define ONE     0x01LL
 #define SIZE    4
 typedef u64     word;
-typedef u64     field[SIZE];
+typedef word    field[SIZE];
 #endif
 \end{lstlisting}
 

@@ -30,10 +30,15 @@ $(OBJDIR)/%.o: $(TESTDIR)/%.c
 FILES_TO_DELETE1 = test_vector/add_and_sub/TV_MY_PFADD.rsp \
 				  test_vector/add_and_sub/TV_MY_PFSUB.rsp
 
+FILES_TO_DELETE2 = test_vector/mul_and_squ/TV_MY_MUL.rsp \
+				  test_vector/mul_and_squ/TV_MY_SQU.rsp
+
 clean:
 	rm -f $(OBJS) $(TARGET) $(OBJDIR)/*.d
+	rm -rf view/cycle.txt
 	@echo "Removing Validation files ..."
 	rm -rf $(FILES_TO_DELETE1)
+	rm -rf $(FILES_TO_DELETE2)
 	@echo "Validation files removal completed  successfully."
 
 dir:
