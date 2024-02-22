@@ -84,7 +84,7 @@ xy&=(x_12^{w/2}+x_0)(y_12^{w/2}+y_0)\\
 	\BlankLine
 	$z_0\gets z_0\boxplus(t_0\ll w/2)$\tcp*{$z_0=\sbr{x_0y_0 + (x_1y_0+x_0y_1)2^{w/2}}\bmod 2^w$}
 	$z_1\gets z_1 + (t_1\ll w/2) + (t_0\gg w/2) + (z_0<t)$\tcp*{$z_1\in\intco{0,W}$}
-	\Comment{$Z_1=X_1Y_1 + (T_0<T_1)2^{w/2} + \floor*{T_0/2^{w/2}} + $ (carry in line 9)}
+	\Comment{$z_1=x_1y_1 + (t_0<t_1)2^{w/2} + \floor*{t_0/2^{w/2}} + $ (carry in line 9)}
 	\BlankLine
 	\Return $(z_1\ll w) + z_0$\tcp*{$z\gets z_1\parallel z_0\in\intco{0,2^{2w}}$}
 }

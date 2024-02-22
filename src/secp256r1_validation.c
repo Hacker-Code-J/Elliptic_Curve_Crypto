@@ -140,14 +140,14 @@ void create_mul_squ_rspFile(const char* rspFileName, const char* reqFileName1, c
                 multiplication_os(result, data1, data2);
             else
                 multiplication_os(result, data1, data2);
-            for (i8 i = SIZE-1; i >= 0; i--) {
 #ifdef IS_32_BIT_ENV
-                fprintf(rspFile, "%08X", (*(result + 1))[i]);
-                fprintf(rspFile, "%08X", (*result)[i]);
+            for (i32 i = SIZE-1; i >= 0; i--)
+                fprintf(rspFile, "%08X", result[1][i]);
+            for (i32 i = SIZE-1; i >= 0; i--)
+                fprintf(rspFile, "%08X", result[0][i]);
 #else
-                fprintf(rspFile, "%016lX", result[i]);
+            fprintf(rspFile, "%016lX", result[i]);
 #endif
-            }
             fputs("\n\n", rspFile);
         } else {
             continue;

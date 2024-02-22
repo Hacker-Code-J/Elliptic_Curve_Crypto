@@ -23,7 +23,7 @@ int main(void) {
     // subtraction_p256(dst, src1, src2);
     multiplication_os(dst, src1, src2);
 
-    multiplication_os_test();
+    // multiplication_os_test();
     // printData(dst[1]);
     // printData(dst[0]);
     // for (int i = 0; i < 16; i++) {
@@ -42,8 +42,20 @@ int main(void) {
     //     // cycles = measure_cycles(subtraction_p256, dst, src1, src2);
     //     if (i >= 1000 && i < 11000) {
     //         printf("%" PRIu64 "\n", cycles);
-    //         printf("%llu\n", (long long)cycles / (long long)SIZE);
+    //         printf("%" PRIu64 "\n", cycles / (u64)SIZE);
     //     }
     // }
+
+    u64 cycles;
+    for (u32 i = 0; i < 1200; i++) {
+        assign_rand(src1, SIZE);
+        assign_rand(src2, SIZE);
+        cycles = measure_cycles2(multiplication_os, dst, src1, src2);
+        // cycles = measure_cycles(subtraction_p256, dst, src1, src2);
+        if (i >= 100 && i < 1100) {
+            printf("%" PRIu64 "\n", cycles);
+            printf("%" PRIu64 "\n", cycles / (u64)(SIZE * 2));
+        }
+    }
     return 0;
 }

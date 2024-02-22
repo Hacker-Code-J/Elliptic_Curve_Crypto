@@ -24,5 +24,6 @@ void printTestData(word* data);
 
 u64 measure_cycles(void (*func)(field, const field, const field),
                                   field dst, const field src1, const field src2);
-
+u64 measure_cycles2(void (*func)(field*, const field, const field),
+                                  field* dst, const field src1, const field src2);
 #endif /* _SECP256R1_UTILS */

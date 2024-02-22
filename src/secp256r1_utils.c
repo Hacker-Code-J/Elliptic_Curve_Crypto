@@ -16,7 +16,7 @@ void stringToWord(word* wordArray, const char* hexString) {
 }
 
 void printData(word* data) {
-    for (i32 i = SIZE-1; i >=0; i--) {
+    for (i32 i = SIZE-1; i >= 0; i--) {
 #ifdef IS_32_BIT_ENV
         printf("%08X:", data[i]);
 #else
@@ -26,7 +26,7 @@ void printData(word* data) {
 }
 
 void printTestData(word* data) {
-    for (i32 i = SIZE-1; i >=0; i--) {
+    for (i32 i = SIZE-1; i >= 0; i--) {
 #ifdef IS_32_BIT_ENV
         printf("%08X", data[i]);
 #else
@@ -37,6 +37,26 @@ void printTestData(word* data) {
 
 u64 measure_cycles(void (*func)(field, const field, const field),
                                   field dst, const field src1, const field src2) {
+    u32 ui;
+    u64 start, end;
+    const u64 num = 10000;
+    func(dst, src1, src2);
+
+    // Measure the start time
+    start = __rdtscp(&ui); // Serializing read of time stamp counter
+
+    // Execute the function being measured
+    for (u64 i = 0; i < num; i++)
+        func(dst, src1, src2);
+
+    // Measure the end time
+    end = __rdtscp(&ui); // Another serializing read
+
+    return (end - start) / num; // Return the difference, which is the cycle count
+}
+
+u64 measure_cycles2(void (*func)(field*, const field, const field),
+                                  field* dst, const field src1, const field src2) {
     u32 ui;
     u64 start, end;
     const u64 num = 10000;

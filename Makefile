@@ -35,6 +35,7 @@ FILES_TO_DELETE2 = test_vector/mul_and_squ/TV_MY_MUL.rsp \
 
 clean:
 	rm -f $(OBJS) $(TARGET) $(OBJDIR)/*.d
+	rm -rf view/cycle.txt
 	@echo "Removing Validation files ..."
 	rm -rf $(FILES_TO_DELETE1)
 	rm -rf $(FILES_TO_DELETE2)

@@ -85,7 +85,6 @@ void multiplication_single(field dst[2], const word src1, const word src2) {
 
 void multiplication_os(field dst[2], const field src1, const field src2) {
 	memset(dst, 0, sizeof(field) * 2);
-	word epsilon = 0;
 	field tmp[2];
 	field buffer[2];
 
@@ -104,9 +103,10 @@ void multiplication_os(field dst[2], const field src1, const field src2) {
 			// printData(tmp[0]);
 			// puts("");
 			
-			for (u8 k = 0; k < 2; k++)
+			word epsilon = 0;
+			for (u8 k = 0; k < 2; k++) {
 				addition_core(&epsilon, buffer[k], dst[k], tmp[k]);
-			// addition_core(&epsilon, buffer[1], dst[1], tmp[1]);
+			}
 			memcpy(dst[0], buffer[0], sizeof(field));
     		memcpy(dst[1], buffer[1], sizeof(field));
 			// printData(dst[1]);
