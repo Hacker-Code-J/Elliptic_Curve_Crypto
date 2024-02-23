@@ -16,8 +16,8 @@ Y\in\intco{2^{w(m-1)},2^{wm}}
 \end{proof}
 \end{note}
 
-\subsection{Product Scanning (PS)}
-\begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+\begin{note}[Single-Word Multiplication]
+\ \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
 {\ttfamily\footnotesize\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cccc}
 &&& 570D:C5EE\\
 $\times$ &&& 4857:A994\\ 
@@ -26,13 +26,10 @@ $\times$ &&& 4857:A994\\
 +&(570D*A994)$\ll 32/2$ = &   0000:39A9 & E884:0000 \\
 +&(4847*C5EE)$\ll 32/2$ = &   0000:37E1 & D502:0000 \\
 +&(570D*4847)$\ll 32/1$ = &   1893:CC9B & 0000:0000 \\
-%4E272A73 & 41569559 & F3E58053 & BE961728 & D67BF71E & FBA44BF2 & 83DAA7ED & 9BF6DDA8 \\ \cline{1-8}
-%0BB8F3A9 & 09ACAD0A & 6DAC72C6 & 4A2E940D & 5F370ED3 & 5FF1AB7E & 1FFE5782 & F6AE240B \\
-%FFFFFFFF & 00000001 & 00000000 & 00000000 & 00000000 & FFFFFFFF & FFFFFFFF & FFFFFFFF \\ \cline{1-8}
 \cline{1-4}
 & & 1899:AF03 & 9F82:8B98
 \end{tabular*}}
-\end{table}
+\end{table}\\
 \noindent Note that \[
 u,v\in\intco{0,2^{w/2}}\implies uv\in\intco{0,2^w}.
 \]
@@ -61,6 +58,36 @@ xy&=(x_12^{w/2}+x_0)(y_12^{w/2}+y_0)\\
 \end{align*}
 \end{minipage}
 \end{center}
+\end{note}
+
+\subsection{Operand Scanning (School Book)}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$x_{11}:x_{10}$} & \multicolumn{2}{c}{$x_{01}:x_{00}$} \\
+\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$y_{11}:y_{10}$} & \multicolumn{2}{c}{$y_{01}:y_{00}$} \\ \specialrule{1.5pt}{1pt}{1pt}
+\hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{00}$}\\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{00}$} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{00}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{00}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{01}$} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{01}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{01}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{01}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{10}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\multicolumn{2}{|c|}{$x_{11}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\
+\hline
+\end{tabular}
+\end{center}
+\begin{align*}
+Z=XY=\of{\sum_{i=0}^{n-1}x_i2^{iw}}\of{\sum_{j=0}^{m-1}y_j2^{jw}}=\sum_{j=0}^{m-1}\of{\sum_{i=0}^{n-1}(x_iy_j)2^{w(i+j)}}\in\intco{0,2^{w(n+m)}}.
+\end{align*}
 
 \begin{algorithm}[H]
 \caption{Single-Word Multiplication $x[i]\cdot y[i]$}
@@ -110,8 +137,8 @@ xy&=(x_12^{w/2}+x_0)(y_12^{w/2}+y_0)\\
 \Return $Z$
 \end{algorithm}
 
-
-
+\newpage
+\section{Product Scanning (Comba)}
 
 
 

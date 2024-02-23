@@ -51,7 +51,7 @@ void subtraction_p256(field dst, const field src1, const field src2) {
 	}
 }
 
-void multiplication_single(field dst[2], const word src1, const word src2) {
+void multiplication_single(field* dst, const word src1, const word src2) {
 	// word = 32 -> half_w = 4 * 4 = 16
 	// word = 64 -> half_w = 4 * 8 = 32
 	const u8 half_w = 4 * sizeof(word);
@@ -79,11 +79,11 @@ void multiplication_single(field dst[2], const word src1, const word src2) {
 	w0 += (t0 << half_w);
 	w1 += (t1 << half_w) + (t0 >> half_w) + (w0 < t);
 
-	*dst[0] = w0;
-	*(dst[0] + 1) = w1;
+	**(dst + 0) = w0;
+	*(*(dst + 0) + 1) = w1;
 }
 
-void multiplication_os(field dst[2], const field src1, const field src2) {
+void multiplication_os(field* dst, const field src1, const field src2) {
 	memset(dst, 0, sizeof(field) * 2);
 	field tmp[2];
 	field buffer[2];
@@ -114,4 +114,70 @@ void multiplication_os(field dst[2], const field src1, const field src2) {
 			// puts("");
 		}
 	}
+}
+
+void multiplication_ps(field* dst, const field src1, const field src2) {
+	memset(dst, 0, sizeof(field) * 2);
+	
+	field buffer[2];
+	memset(buffer, 0, sizeof(field) * 2);
+
+	for (u8 i = 0; i <= SIZE; i++) {
+		field tmp[2];
+		memset(tmp, 0, sizeof(field) * 2);
+		field t0, t1;
+		memset(t0 , 0, sizeof(field));
+		memset(t1 , 0, sizeof(field));
+		for (u8 j = 0; j < SIZE / 2; j++) {
+			printf("i: %u, j: %u\n", i, j);
+			// word* ptr_t0 = &t0[2 * j];
+			// word* ptr_t1 = &t1[2 * j + 1];
+			printf("t0: %08X x %08X\n", src1[2 * j    ], src2[i]);
+			printf("t1: %08X x %08X\n", src1[2 * j + 1], src2[i]);
+			// // field* p0 = &t0 + (2 * j    );
+			// // field* p1 = &t1 + (2 * j + 1);
+			multiplication_single((field*)(t0 + 2 * j    ), src1[2 * j    ], src2[i]);
+			multiplication_single((field*)(t1 + 2 * j + 1), src1[2 * j + 1], src2[i]);
+			printf("t0: "); printData(t0);
+			printf("t1: "); printData(t1);
+		}
+		word epsilon = 0;
+		addition_core(&epsilon, tmp[0], t0, t1);
+		printf("t0+t1: \n");
+		printData(tmp[1]);
+		printData(tmp[0]);
+		printf("T << %d: \n", i);
+		shiftField(tmp, i);
+		if (epsilon) {
+			**(tmp+1+i) += 1;
+		} epsilon = 0;
+		printData(tmp[1]);
+		printData(tmp[0]);
+
+		printf("Before dst:\n");
+		printData(dst[1]);
+		printData(dst[0]);
+		for (u8 j = 0; j < 2; j++) {
+			addition_core(&epsilon, dst[j], tmp[j], *(buffer+j));
+		}
+		printf(" After dst:\n");
+		printData(dst[1]);
+		printData(dst[0]);
+		memcpy(buffer[0], dst[0], sizeof(field));
+		memcpy(buffer[1], dst[1], sizeof(field));	
+	}
+
+	// for (u8 i = 0; i < SIZE; i++) {
+	// 	for (u8 j = 0; j < SIZE; j++) {
+	// 		memset(tmp, 0, sizeof(field) * 2);
+	// 		multiplication_single(tmp, src1[i], src2[j]);
+    // 		shiftField(tmp, i+j);
+	// 		word epsilon = 0;
+	// 		for (u8 k = 0; k < 2; k++) {
+	// 			addition_core(&epsilon, buffer[k], dst[k], tmp[k]);
+	// 		}
+	// 		memcpy(dst[0], buffer[0], sizeof(field));
+    // 		memtmpcpy(dst[1], buffer[1], sizeof(field));
+	// 	}
+	// }
 }

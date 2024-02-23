@@ -146,7 +146,10 @@ void create_mul_squ_rspFile(const char* rspFileName, const char* reqFileName1, c
             for (i32 i = SIZE-1; i >= 0; i--)
                 fprintf(rspFile, "%08X", result[0][i]);
 #else
-            fprintf(rspFile, "%016lX", result[i]);
+            for (i32 i = SIZE-1; i >= 0; i--)
+                fprintf(rspFile, "%016lX", result[1][i]);
+            for (i32 i = SIZE-1; i >= 0; i--)
+                fprintf(rspFile, "%016lX", result[0][i]);
 #endif
             fputs("\n\n", rspFile);
         } else {
