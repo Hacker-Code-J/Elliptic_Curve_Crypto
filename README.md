@@ -20,6 +20,7 @@
 | Addition (per Word) | 2.50 cycle/word | 3.02 cycle/word |
 | Subtraction (per Word) | 3.02 cycle/word | 3.54 cycle/word |
 | --- | --- | --- |
+| Single-Word Multiplication| 4.09 cycle | 4.02 cycle |
 | Multiplication OS | 2721.69 cycle | 417.32 cycle |
 | Multiplication PS | - cycle | - cycle |
 | Multiplication PS2 | - cycle | - cycle |

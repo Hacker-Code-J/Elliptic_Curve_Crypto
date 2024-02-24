@@ -116,6 +116,47 @@ void multiplication_os(field* dst, const field src1, const field src2) {
 	}
 }
 
+/*
+x7 || x6 || x5 || x4 || x3 || x2 || x1 || x0
+y7 || y6 || y5 || y4 || y3 || y2 || y1 || y0
+
+for j = 0
+	for i = 0;
+	T0 = x0y0 		 (T0 in 2^{2w})
+	T1 = x1y0 || 0^w (T1 in 2^{3w})
+	for i = 1;
+	T0 = x2y0 		 (T0 in 2^{2w})
+	T1 = x3y0 || 0^w (T1 in 2^{3w})
+	for i = 2;
+	T0 = x4y0 		 (T0 in 2^{2w})
+	T1 = x5y0 || 0^w (T1 in 2^{3w})
+	for i = 3;
+	T0 = x6y0 		 (T0 in 2^{2w})
+	T1 = x7y0 || 0^w (T1 in 2^{3w})
+	
+	T <- T0 + T1
+	T << w * 0
+	Z += T
+
+for j = 1
+	for i = 0;
+	T0 = x0y1 		 (T0 in 2^{2w})
+	T1 = x1y1 || 0^w (T1 in 2^{3w})
+	for i = 1;
+	T0 = x2y1 		 (T0 in 2^{2w})
+	T1 = x3y1 || 0^w (T1 in 2^{3w})
+	for i = 2;
+	T0 = x4y1 		 (T0 in 2^{2w})
+	T1 = x5y1 || 0^w (T1 in 2^{3w})
+	for i = 3;
+	T0 = x6y1 		 (T0 in 2^{2w})
+	T1 = x7y1 || 0^w (T1 in 2^{3w})
+	
+	T <- T0 + T1
+	T << w * 1
+	Z += T
+*/
+
 void multiplication_ps(field* dst, const field src1, const field src2) {
 	memset(dst, 0, sizeof(field) * 2);
 	
