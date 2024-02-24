@@ -178,8 +178,9 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 			// // field* p0 = &t0 + (2 * j    );
 			// // field* p1 = &t1 + (2 * j + 1);
 			multiplication_single((field*)(t0 + 2 * j    ), src1[2 * j    ], src2[i]);
-			u16* midpoint = (u16*)(&t1[2 * j]) + 1;
-			multiplication_single((field*)(midpoint), src1[2 * j + 1], src2[i]);
+			multiplication_single((field*)(t0 + 2 * j + 1), src1[2 * j    ], src2[i]);
+			// u16* midpoint = (u16*)(&t1[2 * j]) + 1;
+			// multiplication_single((field*)&t1, src1[2 * j + 1], src2[i]);
 			printf("t0: "); printData(t0);
 			printf("t1: "); printData(t1);
 		}

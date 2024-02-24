@@ -153,7 +153,7 @@ Let $x,y\in\intco{2^{w(t-1)},2^{wt}}$.
 
 \begin{algorithm}[H]
 \DontPrintSemicolon
-\caption{Operand Scanning Multiplication}
+\caption{School-Book Multiplication}
 \BlankLine
 \KwIn{\(X,Y\in\intco{2^{w(t-1)},2^{wt}}\)\tcp*{$(w,t)=(32,8)$ or $(w,t)=(64,4)$ for secp256r1}}
 \KwOut{\(Z=X\cdot Y\in\intco{2^{2w(t-1)},2^{wt+wt}}\)}
@@ -201,6 +201,22 @@ Let $n=2p$ and $m=2q$, and let \begin{align*}
 X=x_{2p-1}\adjacent\cdots\adjacent x_0=\sum_{i=1}^{2p-1}x_i2^{wi},\quad
 Y=y_{2q-1}\adjacent\cdots\adjacent y_0=\sum_{j=1}^{2q-1}y_j2^{wj}
 \end{align*} with $x_i,y_i\in\intco{0,2^w}$.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{1}{c||}{$x_3$} & \multicolumn{1}{c||}{$x_2$} & \multicolumn{1}{c||}{$x_1$} & \multicolumn{1}{c}{$x_0$}\\
+\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{1}{c||}{$y_3$} & \multicolumn{1}{c||}{$y_2$} & \multicolumn{1}{c||}{$y_1$} & \multicolumn{1}{c}{$y_0$}\\
+\specialrule{1.5pt}{1pt}{1pt} \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_2y_0$} & \multicolumn{2}{c|}{$x_0y_0$} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_3y_0$} & \multicolumn{2}{c|}{$x_1y_0$} & \hspace{15pt} \\ \hline\hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_2y_1$} & \multicolumn{2}{c|}{$x_0y_1$} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_3y_1$} & \multicolumn{2}{c|}{$x_1y_1$} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_2y_2$} & \multicolumn{2}{c|}{$x_0y_2$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \multicolumn{2}{c|}{$x_3y_2$} & \multicolumn{2}{c|}{$x_1y_2$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+\hspace{15pt} & \multicolumn{2}{c|}{$x_2y_3$} & \multicolumn{2}{c|}{$x_0y_3$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\multicolumn{2}{|c|}{$x_3y_3$} & \multicolumn{2}{c|}{$x_1y_2$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\end{tabular}
+\end{center}
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
