@@ -57,7 +57,7 @@ void multiplication_single(field* dst, const word src1, const word src2) {
 	const u8 half_w = 4 * sizeof(word);
 
 	// word = 32 -> MASK = 0x0000FFFF
-	// word = 32 -> MASK = 0x00000000FFFFFFFF
+	// word = 64 -> MASK = 0x00000000FFFFFFFF
 	const word MASK = (ONE << half_w) - 1;
 
 	word u0 = src1 & MASK;
@@ -129,7 +129,7 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 		memset(t0 , 0, sizeof(field));
 		memset(t1 , 0, sizeof(field));
 		for (u8 j = 0; j < SIZE / 2; j++) {
-			printf("i: %u, j: %u\n", i, j);
+			printf("\ni: %u, j: %u\n", i, j);
 			// word* ptr_t0 = &t0[2 * j];
 			// word* ptr_t1 = &t1[2 * j + 1];
 			printf("t0: %08X x %08X\n", src1[2 * j    ], src2[i]);
@@ -137,7 +137,8 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 			// // field* p0 = &t0 + (2 * j    );
 			// // field* p1 = &t1 + (2 * j + 1);
 			multiplication_single((field*)(t0 + 2 * j    ), src1[2 * j    ], src2[i]);
-			multiplication_single((field*)(t1 + 2 * j + 1), src1[2 * j + 1], src2[i]);
+			u16* midpoint = (u16*)(&t1[2 * j]) + 1;
+			multiplication_single((field*)(midpoint), src1[2 * j + 1], src2[i]);
 			printf("t0: "); printData(t0);
 			printf("t1: "); printData(t1);
 		}
@@ -149,17 +150,19 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 		printf("T << %d: \n", i);
 		shiftField(tmp, i);
 		if (epsilon) {
-			**(tmp+1+i) += 1;
-		} epsilon = 0;
+			*(*(tmp+1)+i) += 1;
+		}
 		printData(tmp[1]);
 		printData(tmp[0]);
 
 		printf("Before dst:\n");
 		printData(dst[1]);
 		printData(dst[0]);
-		for (u8 j = 0; j < 2; j++) {
-			addition_core(&epsilon, dst[j], tmp[j], *(buffer+j));
-		}
+		
+		epsilon = 0;
+		addition_core(&epsilon, dst[0], tmp[0], *(buffer + 0));
+		addition_core(&epsilon, dst[1], tmp[1], *(buffer + 1));
+		
 		printf(" After dst:\n");
 		printData(dst[1]);
 		printData(dst[0]);

@@ -6,7 +6,13 @@
 
 ## NIST P-256 (secp256r1)
 
-**My Performance**
+### Environment
+- Model Name: AMD Ryzen 5 5625U with Radeon Graphics
+- Frequency : 2.3 GHz
+- Cores     : 6
+- Threads   : 12
+
+### My Performance
 | Operation \ Platform | 32-bit | 64-bit |
 | --- | --- | --- |
 | Addition (Total) | 22.23 cycle | 14.52 cycle |
