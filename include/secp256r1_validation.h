@@ -15,5 +15,6 @@ void create_mul_squ_rspFile(const char* rspFileName, const char* reqFileName1, c
 void addition_p256_test();
 void subtraction_p256_test();
 void multiplication_os_test();
+void multiplication_ps_test();
 
 #endif /* _SECP256R1_VALIDATION_H */

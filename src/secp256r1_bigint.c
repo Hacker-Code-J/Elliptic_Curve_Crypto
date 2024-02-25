@@ -172,45 +172,39 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 		for (u8 i = 0; i < SIZE / 2; i++) {
 			word* p0 = &t0[0][0];
 			word* p1 = &t1[0][0];
-			printf("\nj: %u, i: %u\n", j, i);
-			// word* ptr_t0 = &t0[2 * j];
-			// word* ptr_t1 = &t1[2 * j + 1];
-			printf("t0: %08X x %08X\n", src1[2 * i    ], src2[j]);
-			printf("t1: %08X x %08X\n", src1[2 * i + 1], src2[j]);
-			// field* p0 = &t0 + (2 * j    );
-			// field* p1 = &t1 + (2 * j + 1);
+			// printf("\nj: %u, i: %u\n", j, i);
+			// printf("t0: %08X x %08X\n", src1[2 * i    ], src2[j]);
+			// printf("t1: %08X x %08X\n", src1[2 * i + 1], src2[j]);
 			multiplication_single((field*)(p0 + 2 * i    ), src1[2 * i    ], src2[j]);
 			multiplication_single((field*)(p1 + 2 * i + 1), src1[2 * i + 1], src2[j]);
-			// u16* midpoint = (u16*)(&t1[2 * j]) + 1;
-			// multiplication_single((field*)&t1, src1[2 * j + 1], src2[i]);
-			printf("t0: \n"); printData(t0[1]); printData(t0[0]);
-			printf("t1: \n"); printData(t1[1]); printData(t1[0]);
+		// 	printf("t0: \n"); printData(t0[1]); printData(t0[0]);
+		// 	printf("t1: \n"); printData(t1[1]); printData(t1[0]);
 		}
 		word epsilon = 0;
 		addition_core(&epsilon, tmp[0], t0[0], t1[0]);
 		addition_core(&epsilon, tmp[1], t0[1], t1[1]);
-		printf("t0+t1: \n");
-		printData(tmp[1]);
-		printData(tmp[0]);
-		printf("T << %d: \n", j);
-		shiftField(tmp, j);
+		// printf("t0+t1: \n");
+		// printData(tmp[1]);
+		// printData(tmp[0]);
+		// printf("T << %d: \n", j);
+		shift_field_data(tmp, j);
 		if (epsilon) {
 			*(*(tmp+1)+j) += 1;
 		}
-		printData(tmp[1]);
-		printData(tmp[0]);
+		// printData(tmp[1]);
+		// printData(tmp[0]);
 
-		printf("Before dst:\n");
-		printData(dst[1]);
-		printData(dst[0]);
+		// printf("Before dst:\n");
+		// printData(dst[1]);
+		// printData(dst[0]);
 		
 		epsilon = 0;
 		addition_core(&epsilon, dst[0], tmp[0], *(buffer + 0));
 		addition_core(&epsilon, dst[1], tmp[1], *(buffer + 1));
 		
-		printf(" After dst:\n");
-		printData(dst[1]);
-		printData(dst[0]);
+		// printf(" After dst:\n");
+		// printData(dst[1]);
+		// printData(dst[0]);
 		memcpy(buffer[0], dst[0], sizeof(field));
 		memcpy(buffer[1], dst[1], sizeof(field));	
 	}

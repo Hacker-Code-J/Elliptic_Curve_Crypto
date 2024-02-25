@@ -16,17 +16,17 @@ int main(void) {
     stringToWord(src1, opA);
     stringToWord(src2, opB);
 
-    printData(src1);
-    printData(src2);
+    // printData(src1);
+    // printData(src2);
 
     // addition_p256(dst, src1, src2);
     // subtraction_p256(dst, src1, src2);
-    multiplication_os(dst, src1, src2);
-    // multiplication_ps(dst, src1, src2);
+    // multiplication_os(dst, src1, src2);
+    multiplication_ps(dst, src1, src2);
 
     // multiplication_os_test();
-    printData(dst[1]);
-    printData(dst[0]);
+    // printData(dst[1]);
+    // printData(dst[0]);
     // for (int i = 0; i < 16; i++) {
 	// 	if (i % 4 == 0) puts("");
 	// 	printf("%08x, ", *dst[i]);
@@ -71,7 +71,8 @@ int main(void) {
 // /* === Test for Accuracy === */
     // addition_p256_test();
     // subtraction_p256_test();
-    multiplication_os_test();
+    // multiplication_os_test();
+    // multiplication_ps_test();
 
 
 /* === Measurement of Cycles === */
@@ -87,17 +88,17 @@ int main(void) {
     //     }
     // }
 
-    // u64 cycles;
-    // for (u32 i = 0; i < 12000; i++) {
-    //     assign_rand(src1, SIZE);
-    //     assign_rand(src2, SIZE);
-    //     cycles = measure_cycles2(multiplication_single, dst, src1, src2);
-    //     // cycles = measure_cycles2(multiplication_os, dst, src1, src2);
-    //     if (i >= 1000 && i < 11000) {
-    //         printf("%" PRIu64 "\n", cycles);
-    //         // printf("%" PRIu64 "\n", cycles / (u64)(SIZE * 2));
-    //     }
-    // }
+    u64 cycles;
+    for (u32 i = 0; i < 1200; i++) {
+        assign_rand(src1, SIZE);
+        assign_rand(src2, SIZE);
+        // cycles = measure_cycles2(multiplication_single, dst, src1, src2);
+        // cycles = measure_cycles2(multiplication_os, dst, src1, src2);
+        cycles = measure_cycles2(multiplication_ps, dst, src1, src2);
+        if (i >= 100 && i < 1100) {
+            printf("%" PRIu64 "\n", cycles);
+        }
+    }
 
     // field t0, t1; // Define two fields, each with SIZE elements
     // word *ptr_t0, *ptr_t1; // Define pointers to elements of type u32
