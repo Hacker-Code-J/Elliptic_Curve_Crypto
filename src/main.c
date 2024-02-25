@@ -89,13 +89,13 @@ int main(void) {
     // }
 
     u64 cycles;
-    for (u32 i = 0; i < 1200; i++) {
+    for (u32 i = 0; i < 12000; i++) {
         assign_rand(src1, SIZE);
         assign_rand(src2, SIZE);
         // cycles = measure_cycles2(multiplication_single, dst, src1, src2);
         // cycles = measure_cycles2(multiplication_os, dst, src1, src2);
         cycles = measure_cycles2(multiplication_ps, dst, src1, src2);
-        if (i >= 100 && i < 1100) {
+        if (i >= 1000 && i < 11000) {
             printf("%" PRIu64 "\n", cycles);
         }
     }
