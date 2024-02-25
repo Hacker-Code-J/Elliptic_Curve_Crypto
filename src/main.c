@@ -16,27 +16,62 @@ int main(void) {
     stringToWord(src1, opA);
     stringToWord(src2, opB);
 
-    // printData(src1);
-    // printData(src2);
+    printData(src1);
+    printData(src2);
 
     // addition_p256(dst, src1, src2);
     // subtraction_p256(dst, src1, src2);
-    // multiplication_os(dst, src1, src2);
+    multiplication_os(dst, src1, src2);
     // multiplication_ps(dst, src1, src2);
 
     // multiplication_os_test();
-    // printData(dst[1]);
-    // printData(dst[0]);
+    printData(dst[1]);
+    printData(dst[0]);
     // for (int i = 0; i < 16; i++) {
 	// 	if (i % 4 == 0) puts("");
 	// 	printf("%08x, ", *dst[i]);
 	// } puts("");
 
+    // field data[2] = {
+    //     {0xC, 0xCC, 0xCCC, 0xCCCC, 0xCCCCC, 0xCCCCCC, 0xCCCCCC, 0xCCCCCCC},
+    //     {0xA, 0xAA, 0xAAA, 0xAAAA, 0xAAAAA, 0xAAAAAA, 0xAAAAAA, 0xAAAAAAA}
+    // };
+    // printData(data[1]);
+    // printData(data[0]);
+    // printf("%X\n", *data[0]);
+    // printf("%X\n", *(data[0] + 1));
+    // printf("%X\n", *(data[0] + 7));
+    // // printf("%X\n", *(data[0] + 8));
+    // printf("%X\n", *(data[1] + 0));
+
+
+    // // *(data[1]+7) = *(data[1] + 6);
+    // // *(data[1]+6) = *(data[1] + 5);
+    // // *(data[1]+5) = *(data[1] + 4);
+    // // *(data[1]+4) = *(data[1] + 3);
+    // // *(data[1]+3) = *(data[1] + 2);
+    // // *(data[1]+2) = *(data[1] + 1);
+    // // *(data[1]+1) = *(data[1] + 0);
+    // // *(data[1]+0) = *(data[0] + 7);
+    // // *(data[0]+7) = *(data[0] + 6);
+    // // *(data[0]+6) = *(data[0] + 5);
+    // // *(data[0]+5) = *(data[0] + 4);
+    // // *(data[0]+4) = *(data[0] + 3);
+    // // *(data[0]+3) = *(data[0] + 2);
+    // // *(data[0]+2) = *(data[0] + 1);
+    // // *(data[0]+1) = *(data[0] + 0);
+    // // *(data[0]+0) = 0;
+
+    // shift_field_data(data, 8);
+
+    // printData(data[1]);
+    // printData(data[0]);
+
 
 // /* === Test for Accuracy === */
     // addition_p256_test();
     // subtraction_p256_test();
-    // multiplication_os_test();
+    multiplication_os_test();
 
 
 /* === Measurement of Cycles === */
@@ -52,17 +87,17 @@ int main(void) {
     //     }
     // }
 
-    u64 cycles;
-    for (u32 i = 0; i < 12000; i++) {
-        assign_rand(src1, SIZE);
-        assign_rand(src2, SIZE);
-        cycles = measure_cycles2(multiplication_single, dst, src1, src2);
-        // cycles = measure_cycles2(multiplication_os, dst, src1, src2);
-        if (i >= 1000 && i < 11000) {
-            printf("%" PRIu64 "\n", cycles);
-            // printf("%" PRIu64 "\n", cycles / (u64)(SIZE * 2));
-        }
-    }
+    // u64 cycles;
+    // for (u32 i = 0; i < 12000; i++) {
+    //     assign_rand(src1, SIZE);
+    //     assign_rand(src2, SIZE);
+    //     cycles = measure_cycles2(multiplication_single, dst, src1, src2);
+    //     // cycles = measure_cycles2(multiplication_os, dst, src1, src2);
+    //     if (i >= 1000 && i < 11000) {
+    //         printf("%" PRIu64 "\n", cycles);
+    //         // printf("%" PRIu64 "\n", cycles / (u64)(SIZE * 2));
+    //     }
+    // }
 
     // field t0, t1; // Define two fields, each with SIZE elements
     // word *ptr_t0, *ptr_t1; // Define pointers to elements of type u32
