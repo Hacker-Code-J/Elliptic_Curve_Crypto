@@ -4,7 +4,7 @@
 X\in\intco{2^{w(n-1)},2^{wn}},\quad
 Y\in\intco{2^{w(m-1)},2^{wm}}
 \] Then
-\[\len_\word(XY)\in\set{n+m-1, n+m}, \ie, XY\in\intco{2^{w(n+m-1)},2^{w(n+m)}}.
+\[\len_\word(XY)\in\set{n+m-1, n+m}.
 \]
 \begin{proof}
 	Since \begin{align*}
@@ -218,21 +218,21 @@ Y=y_{2q-1}\adjacent\cdots\adjacent y_0=\sum_{j=1}^{2q-1}y_j2^{wj}
 \end{tabular}
 \end{center}
 
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$x_{11}:x_{10}$} & \multicolumn{2}{c}{$x_{01}:x_{00}$} \\
-\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$y_{11}:y_{10}$} & \multicolumn{2}{c}{$y_{01}:y_{00}$} \\ \specialrule{1.5pt}{1pt}{1pt}
-\hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{00}$} & \multicolumn{2}{c|}{$x_{00}y_{00}$} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{00}$} & \multicolumn{2}{c|}{$x_{01}y_{00}$} & \hspace{15pt} \\ \hline\hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{01}$} & \multicolumn{2}{c|}{$x_{00}y_{01}$} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{01}$} & \multicolumn{2}{c|}{$x_{01}y_{01}$} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
-\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{10}$} & \multicolumn{2}{c|}{$x_{00}y_{10}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{10}$} & \multicolumn{2}{c|}{$x_{01}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
-\hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{11}$} & \multicolumn{2}{c|}{$x_{00}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\multicolumn{2}{|c|}{$x_{11}y_{11}$} & \multicolumn{2}{c|}{$x_{01}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\end{tabular}
-\end{center}
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|c|c|c|c|}
+%\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$x_{11}:x_{10}$} & \multicolumn{2}{c}{$x_{01}:x_{00}$} \\
+%\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$y_{11}:y_{10}$} & \multicolumn{2}{c}{$y_{01}:y_{00}$} \\ \specialrule{1.5pt}{1pt}{1pt}
+%\hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{00}$} & \multicolumn{2}{c|}{$x_{00}y_{00}$} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{00}$} & \multicolumn{2}{c|}{$x_{01}y_{00}$} & \hspace{15pt} \\ \hline\hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{01}$} & \multicolumn{2}{c|}{$x_{00}y_{01}$} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{01}$} & \multicolumn{2}{c|}{$x_{01}y_{01}$} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+%\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{10}$} & \multicolumn{2}{c|}{$x_{00}y_{10}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{10}$} & \multicolumn{2}{c|}{$x_{01}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+%\hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{11}$} & \multicolumn{2}{c|}{$x_{00}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\multicolumn{2}{|c|}{$x_{11}y_{11}$} & \multicolumn{2}{c|}{$x_{01}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\end{tabular}
+%\end{center}
 \begin{align*}
 Z=XY=\of{\sum_{i=0}^{2p-1}x_i2^{iw}}\of{\sum_{j=0}^{2q-1}y_j2^{jw}}&=\sum_{j=0}^{2q-1}\of{\sum_{i=0}^{2p-1}(x_iy_j)2^{w(i+j)}} \\
 &=\sum_{j=0}^{2q-1}\of{\sum_{i=0}^{p-1}(x_{2i}y_j)2^{w(2i+j)}+\sum_{i=0}^{p-1}(x_{2i+1}y_j)2^{w(2i+1+j)}} \\
@@ -241,25 +241,101 @@ Z=XY=\of{\sum_{i=0}^{2p-1}x_i2^{iw}}\of{\sum_{j=0}^{2q-1}y_j2^{jw}}&=\sum_{j=0}^
 \end{align*}
 \\
 \textbf{Cost:} \[
-\of{\sum_{i=0}^{n-1}x_i2^{iw}}\of{\sum_{j=0}^{m-1}y_j2^{jw}}\implies\of{2n\cdot 2m}\cdot\textbf{M}_{w/2} + (2\cdot nm - 1)\cdot\textbf{A}_{(n+m)w}
+\of{\sum_{i=0}^{2p-1}x_i2^{iw}}\of{\sum_{j=0}^{2q-1}y_j2^{jw}}\implies (2p\cdot 2q)\cdot\textbf{M}_{w} + (2q-1)\cdot\textbf{A}_{(2p+2q)w}
 \]
 
 \begin{example}
 Let $x,y\in\intco{2^{w(t-1)},2^{wt}}$.
 \begin{itemize}
 \item[] ($(w,t)=(32,8)$) \[
-256\cdot\textbf{M}_{16} + 127\cdot\textbf{A}_{512}
+64\cdot\textbf{M}_{32} + 15\cdot\textbf{A}_{512}
 \]
 \item[] ($(w,t)=(64,4)$) \[
-64\cdot\textbf{M}_{32} + 31\cdot\textbf{A}_{512}
+16\cdot\textbf{M}_{64} + 3\cdot\textbf{A}_{512}
 \]
 \end{itemize}
 \end{example}
 
+\section{Multi-Precision Squaring}
 
+\begin{note}[\bf Memory for the Squaring] Let $X$ be a $n$-word strings, \ie, $X\in\intco{2^{w(n-1)},2^{wn}}$. Then
+\[\len_\word(X^2)\in\set{2n-1, 2n}.
+\]
+\end{note}
 
+\begin{note}[Single-Word Squaring]
+\ \begin{table}[h!]\centering\renewcommand{\arraystretch}{1.25}
+{\ttfamily\footnotesize\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cccc}
+&&& 570D:C5EE\\
+$\times$ &&& 570D:C5EE\\ 
+\cline{1-4}
+& (C5EE*C5EE)$\ll 00/2$ = &   & 9908:2944 \\
++&(570D*C5EE)$\ll 32/2$ = &   0000:434D & EF16:0000 \\
++&(570D*C5EE)$\ll 32/2$ = &   0000:434D & EF16:0000 \\
++&(570D*570D)$\ll 32/1$ = &   1D99:D6A9 & 0000:0000 \\
+\cline{1-4}
+& & 1D9A:5D45 & 7734:2944
+\end{tabular*}}
+\end{table}\\
+\noindent 
+The squaring $x^2\in\intco{0,2^{2w}}$ can be calculated using four $w/2$-bit integer squaring operations:
+\begin{center}
+\begin{minipage}{.6\textwidth}\centering
+\begin{tabular}{|c|c|c|c|}
+\multicolumn{2}{l}{} & \multicolumn{2}{l}{$x_1:x_0$}\\
+\multicolumn{2}{l}{$\times$} & \multicolumn{2}{l}{$x_1:x_0$} \\ \specialrule{1.5pt}{1pt}{1pt}
+\hline
+\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_0^2$}\\ \hline
+& \multicolumn{2}{c|}{$x_1x_0$} & \hspace{15pt} \\ \hline
+& \multicolumn{2}{c|}{$x_1x_0$} & ~ \\ \hline
+\multicolumn{2}{|c|}{$x_1^2$} & \hspace{15pt} & ~ \\ \hline
+\end{tabular}
+\end{minipage}
+\begin{minipage}{.25\textwidth}
+\begin{align*}
+x^2&=(x_12^{w/2}+x_0)^2\\
+&=x_1^22^w + x_0^2 + (2x_1x_0)2^{w/2}\\
+&=((x_1^2\ll w) + x_0^2) + (x_1x_0\ll (w/2+1)).
+\end{align*}
+\end{minipage}
+\end{center}
+\noindent\textbf{Cost:} \[
+x^2\in\intco{0,2^{2w}}\implies 3\cdot\textbf{M}_{w/2} + 2\cdot\textbf{A}_{2w}
+\] \[
+X^2\in\intco{0,2^{w(2n)}}\implies(3n)\cdot\textbf{M}_{2/w} + (3n - 1)\cdot\textbf{A}_{(n+m)w}
+\]
+\end{note}
+\vspace{8pt}
+\begin{example}
+\ \begin{itemize}
+\item[(1)] Let $w=32$ then \[
+4\cdot\textbf{M}_{16}+3\cdot\textbf{A}_{64}.
+\]
+\item[(2)] Let $w=64$ then \[
+4\cdot\textbf{M}_{32}+3\cdot\textbf{A}_{128}.
+\]
+\end{itemize}
+\end{example}
 
-
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Single-Word Squaring $x[i]^2$}
+\BlankLine
+\KwIn{\(x\in\intco{0,2^w}\)}
+\KwOut{\(x^2\in\intco{0,2^{2\cdot w}}\)}
+\BlankLine
+\Fn{\textnormal{\Call{Squ\_Single}{$x,y$}}}{
+$x_1,x_0\gets x_{[w:w/2]},x_{[w/2:0]}$\tcp*{$x=x_1\adjacent x_0$}
+\BlankLine
+$z_1,z_0\gets x_1^2,x_0^2$\tcp*{$z_i\in\intco{0,2^w}$}
+$Z\gets (z_1\ll w)+z_0$\tcp*{$Z\in\intco{0,2^{2w}}$}
+$T\gets z_1z_0$\tcp*{$T\in\intco{0,2^{2w}}$}
+$T\ll\gets (w/2+1)$\;
+$Z\gets Z + T$\;
+\BlankLine
+\Return $Z$\;
+}
+\end{algorithm}
 
 
 
