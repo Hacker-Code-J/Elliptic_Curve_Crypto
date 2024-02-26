@@ -63,7 +63,8 @@
     "secp256r1_validation.h": "c",
     "ctype.h": "c",
     "x86intrin.h": "c",
-    "stdint.h": "c"
+    "stdint.h": "c",
+    "limits": "c"
   },
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#93e6fc",
