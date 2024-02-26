@@ -57,15 +57,13 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
-    "p256_utils.h": "c",
-    "secp256k1_utils.h": "c",
-    "secp256k1_config.h": "c",
-    "secp256r1_bigint.h": "c",
     "secp256r1_config.h": "c",
+    "secp256r1_utils.h": "c",
+    "secp256r1_bigint.h": "c",
     "secp256r1_validation.h": "c",
     "ctype.h": "c",
     "x86intrin.h": "c",
-    "secp256r1_utils.h": "c"
+    "stdint.h": "c"
   },
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#93e6fc",

@@ -1,0 +1,127 @@
+\newpage
+\section{Reduction}
+
+\begin{align*}
+p_{256} &= 2^{256} - 2^{224} + 2^{192} + 2^{96} - 1 \\
+0 &\equiv 2^{256} - 2^{224} + 2^{192} + 2^{96} - 1 \pmod{p_{256}} \\
+2^{256=32*8} &\equiv 2^{224} - 2^{192} - 2^{96} + 1 \pmod{p_{256}} \\
+\\
+2^{288=32*9} &\equiv 2^{256} - 2^{224} - 2^{128} + 2^{32} \pmod{p_{256}} \\
+2^{288} &\equiv (2^{224} - 2^{192} - 2^{96} + 1) - 2^{224} - 2^{128} + 2^{32} \pmod{p_{256}} \\
+2^{288} &\equiv - 2^{192} - 2^{128} - 2^{96} + 2^{32} + 1 \pmod{p_{256}} \\
+\\
+2^{320=32*10} &\equiv - 2^{224} - 2^{160} - 2^{128} + 2^{64} + 2^{32} \pmod{p_{256}} \\
+\\
+2^{352=32*11} &\equiv - 2^{256} - 2^{192} - 2^{160} + 2^{96} + 2^{64} \pmod{p_{256}} \\
+2^{352} &\equiv - (2^{224} - 2^{192} - 2^{96} + 1) - 2^{192} - 2^{160} + 2^{96} + 2^{64} \pmod{p_{256}} \\
+2^{352} &\equiv - 2^{224} - 2^{160} + 2\cdot 2^{96} + 2^{64} - 1 \pmod{p_{256}} \\
+\\
+2^{384=32*12} &\equiv - 2^{256} - 2^{192} + 2\cdot 2^{128} + 2^{96} - 2^{32} \pmod{p_{256}} \\
+2^{384} &\equiv - (2^{224} - 2^{192} - 2^{96} + 1) - 2^{192} + 2\cdot 2^{128} + 2^{92} - 2^{32} \pmod{p_{256}} \\
+2^{384} &\equiv - 2^{224} + 2\cdot 2^{128} + 2\cdot 2^{96} - 2^{32} - 1 \pmod{p_{256}} \\
+\\
+2^{416=32*13} &\equiv - 2^{256} + 2\cdot 2^{160} + 2\cdot 2^{128} - 2^{64} - 2^{32} \pmod{p_{256}} \\
+2^{416} &\equiv - (2^{224} - 2^{192} - 2^{96} + 1) + 2\cdot 2^{160} + 2\cdot 2^{128} - 2^{64} - 2^{32} \pmod{p_{256}} \\
+2^{416} &\equiv - 2^{224} + 2^{192} + 2\cdot 2^{160} + 2\cdot 2^{128} + 2^{96} - 2^{64} - 2^{32} - 1 \pmod{p_{256}} \\
+\\
+2^{448=32*14} &\equiv - 2^{256} + 2^{224} + 2\cdot 2^{192} + 2\cdot 2^{160} + 2^{128} - 2^{96} - 2^{64} - 2^{32} \pmod{p_{256}} \\
+2^{448} &\equiv - (2^{224} - 2^{192} - 2^{96} + 1) + 2^{224} + 2\cdot 2^{192} + 2\cdot 2^{160} + 2^{128} - 2^{96} - 2^{64} - 2^{32} \pmod{p_{256}} \\
+2^{448} &\equiv 3\cdot 2^{192} + 2\cdot 2^{160} + 2^{128} - 2^{64} - 2^{32} - 1 \pmod{p_{256}} \\
+\\
+2^{480=32*15} &\equiv 3\cdot 2^{224} + 2\cdot 2^{192} + 2^{160} - 2^{96} - 2^{64} - 2^{32} \pmod{p_{256}} \\
+\end{align*}
+
+\newpage
+\noindent Consider $
+Z=z_{15}\adjacent z_{14}\adjacent\cdots\adjacent z_0=\sum_{i=0}^{15}z_i2^{32i}\quad\text{with}\quad Z\in\intco{0, p_{256}^2}.
+$
+
+\begin{align*}
+%z_0\cdot 2^{0=32*0} &= z_0\cdot (&&&&&&&&+1) \\
+%z_1\cdot 2^{32=32*1} &= z_1\cdot (&&&&&&&+2^{32}&) \\
+%z_2\cdot 2^{64=32*2} &= z_2\cdot (&&&&&&+2^{64}&&) \\
+%z_3\cdot 2^{96=32*3} &= z_3\cdot (&&&&&+1\cdot 2^{96}&&&) \\
+%z_4\cdot 2^{128=32*4} &= z_4\cdot (&&&&+1\cdot 2^{128}&&&&) \\
+%z_5\cdot 2^{160=32*5} &= z_5\cdot (&&&+1\cdot 2^{160}&&&&&) \\
+%z_6\cdot 2^{192=32*6} &= z_6\cdot (&&+1\cdot 2^{192}&&&&&&) \\
+%z_7\cdot 2^{224=32*7} &= z_7\cdot (&+1\cdot 2^{224}&&&&&&&) \\
+z_8\cdot 2^{256=32*8} &\equiv z_8\cdot (&+1\cdot 2^{224} &-1\cdot 2^{192}&&& -1\cdot 2^{96} &&&+ 1) \\
+z_9\cdot 2^{288=32*9} &\equiv z_9\cdot (&&-1\cdot 2^{192}&& -1\cdot 2^{128} &-1\cdot 2^{96} &&+ 2^{32} &+ 1) \\
+z_{10}\cdot 2^{320=32*10} &\equiv z_{10}\cdot (&- 1\cdot 2^{224}&& -1\cdot 2^{160} &-1\cdot 2^{128} &&+ 2^{64} &+ 2^{32}&) \\
+z_{11}\cdot 2^{352=32*11} &\equiv z_{11}\cdot (&- 1\cdot 2^{224}&& -1\cdot 2^{160}&& + 2\cdot 2^{96} &+ 2^{64} &&- 1) \\
+z_{12}\cdot 2^{384=32*12} &\equiv z_{12}\cdot (&- 1\cdot 2^{224}&&& + 2\cdot 2^{128} &+ 2\cdot 2^{96} &&- 2^{32} &- 1) \\
+z_{13}\cdot 2^{416=32*13} &\equiv z_{13}\cdot (&- 1\cdot 2^{224} &+1\cdot 2^{192} &+ 2\cdot 2^{160} &+ 2\cdot 2^{128} &+1\cdot 2^{96} &- 2^{64} &- 2^{32} &- 1) \\
+z_{14}\cdot 2^{448=32*14} &\equiv z_{14}\cdot (&&+3\cdot 2^{192} &+ 2\cdot 2^{160} &+1\cdot 2^{128} &&- 2^{64} &- 2^{32} &- 1) \\
+z_{15}\cdot 2^{480=32*15} &\equiv z_{15}\cdot (&+3\cdot 2^{224} &+ 2\cdot 2^{192} &+1\cdot 2^{160} &&-1\cdot 2^{96} &- 2^{64} &- 2^{32}&)
+\end{align*}
+\begin{table}[h!]\centering
+\begin{tabular}{c|cccccccc}
+& $2^{224}$ & $2^{192}$ & $2^{160}$ & $2^{128}$ & $2^{96}$ & $2^{64}$ & $2^{32}$ & $2^{0}$ \\
+\hline\hline
+- & $+z_7$ & $+z_6$ & $+z_5$ & $+z_4$ & $+z_3$ & $+z_2$ & $+z_1$ & $+z_0$ \\
+$z_8$ 	 & $+1$ & $-1$ & & & & $-1$ & & $+1$ \\
+$z_9$ 	 &  & $-1$ & & $-1$ & $-1$ & & $+1$ & $+1$ \\
+$z_{10}$ & $-1$ & & $-1$ & $-1$ & & $+1$ & $+1$ & \\
+$z_{11}$ & $-1$ & & $-1$ & & $+2$ & $+1$ & & $-1$ \\
+$z_{12}$ & $-1$ & & & $+2$ & $+2$ & & $-1$ & $-1$ \\
+$z_{13}$ & $-1$ & $+1$ & $+2$ & $+2$ & $+1$ & $-1$ & $-1$ & $-1$ \\
+$z_{14}$ &  & $+3$ & $+2$ & $+1$ & & $-1$ & $-1$ & $-1$ \\
+$z_{15}$ & $+3$ & $+2$ & $+1$ & & $-1$ & $-1$ & $-1$ & \\
+\end{tabular}
+\end{table}
+%\begin{align*}
+%2^0 &: &-1\cdot z_{14}&-1\cdot z_{13}&-1\cdot z_{12}&-1\cdot z_{11}&&+z_{9}&+z_{8}&+z_{0} \\
+%2^{32} &: -1\cdot z_{15}&-1\cdot z_{14}&-1\cdot z_{13}&-1\cdot z_{12}&&+z_{10}&+z_{9}&&+z_{1} \\
+%2^{64} &: -1\cdot z_{15}&-1\cdot z_{14}&-1\cdot z_{13}&&+1\cdot z_{11}&+z_{10}&&&+z_{2} \\
+%2^{96} &: -1\cdot z_{15}&&+1\cdot z_{13}&+2\cdot z_{12}&+2\cdot z_{11}&&-z_{9}&-z_{8}&+z_{3} \\
+%2^{128} &: &+1\cdot z_{14}&+2\cdot z_{13}&+2\cdot z_{12}&&-z_{10}&-z_{9}&&+z_{4} \\
+%2^{160} &: +1\cdot z_{15}&+2\cdot z_{14}&+2\cdot z_{13}&&-1\cdot z_{11}&-z_{10}&&&+z_{5} \\
+%2^{192} &: +2\cdot z_{15}&+3\cdot z_{14}&+1\cdot z_{13}&&&&-z_{9}&-z_{8}&+z_{6} \\
+%2^{224} &: +3\cdot z_{15}&&-1\cdot z_{13}&-1\cdot z_{12}&-1\cdot z_{11}&-z_{10}&&+z_{8}&+z_{7}\\
+%\end{align*}
+%\[
+%\begin{bmatrix}
+%z_0 \\ z_1 \\ z_2 \\ z_3 \\ z_4 \\ z_5 \\ z_6 \\ z_7
+%\end{bmatrix}+2\begin{bmatrix}
+%0 \\ 0 \\ 0 \\ z_{11} \\ z_{12} \\ z_{13} \\ z_{14} \\ z_{15}
+%\end{bmatrix}
+%\]
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Fast Reduction modulo $p_{256}=2^{256}-2^{224}+2^{196}+2^{96}-1$}
+\BlankLine
+\KwIn{\(Z=z_{15}\adjacent z_{14}\adjacent\cdots\adjacent z_0=\sum_{i=0}^{15}z_i2^{32i}\in\intco{0,p_{256}^2}\)}
+\KwOut{\(Z\bmod{p_{256}}\)}
+\BlankLine
+$s_1=z_{07}\adjacent z_{06}\adjacent z_{05}\adjacent z_{04}\adjacent z_{03}\adjacent z_{02}\adjacent z_{01}\adjacent z_{00}$\;
+$s_2=z_{15}\adjacent z_{14}\adjacent z_{13}\adjacent z_{12}\adjacent z_{11}\adjacent \zero^{32}\adjacent \zero^{32}\adjacent \zero^{32}$\;
+$s_3=\zero^{32}\adjacent z_{15}\adjacent z_{14}\adjacent z_{13}\adjacent z_{12}\adjacent \zero^{32}\adjacent \zero^{32}\adjacent \zero^{32}$\;
+$s_4= z_{15}\adjacent z_{14}\adjacent \zero^{32}\adjacent \zero^{32}\adjacent \zero^{32}\adjacent z_{10}\adjacent z_{09}\adjacent z_{08}$\;
+$s_5= z_{08}\adjacent z_{13}\adjacent z_{15}\adjacent z_{14}\adjacent z_{13}\adjacent z_{11}\adjacent z_{10}\adjacent z_{09}$\;
+$s_6= z_{10}\adjacent z_{08}\adjacent \zero^{32}\adjacent \zero^{32}\adjacent \zero^{32}\adjacent z_{13}\adjacent z_{12}\adjacent z_{11}$\;
+$s_7= z_{11}\adjacent z_{09}\adjacent \zero^{32}\adjacent \zero^{32}\adjacent z_{15}\adjacent z_{14}\adjacent z_{13}\adjacent z_{12}$\;
+$s_8= z_{12}\adjacent \zero^{32}\adjacent z_{10}\adjacent z_{09}\adjacent z_{08}\adjacent z_{15}\adjacent z_{14}\adjacent z_{13}$\;
+$s_9= z_{13}\adjacent \zero^{32}\adjacent z_{11}\adjacent z_{10}\adjacent z_{09}\adjacent \zero^{32}\adjacent z_{15}\adjacent z_{14}$\;
+\Return ($s_1+2s_2+2s_3+s_4+s_5-s_6-s_7-s_8-s_9\bmod{p_{256}}$)\;
+\end{algorithm}
+
+
+\noindent Consider \begin{align*}
+Z=\zeta_{7}\adjacent \zeta_{6}\adjacent\cdots\adjacent \zeta_0=\sum_{j=0}^{7}\zeta_i2^{64j}
+\end{align*} with $Z\in\intco{0, p_{256}^2}$.
+
+
+\begin{align*}
+	\zeta_4\cdot 2^{256=64*4} &\equiv \zeta_4\cdot (2^{224} - 2^{192} - 2^{96} + 1) \\
+	\zeta_{5}\cdot 2^{320=64*5} &\equiv \zeta_{5}\cdot (- 2^{224} - 2^{160} - 2^{128} + 2^{64} + 2^{32}) \\
+	\zeta_{6}\cdot 2^{384=64*6} &\equiv \zeta_{6}\cdot (- 2^{224} + 2\cdot 2^{128} + 2\cdot 2^{96} - 2^{32} - 1) \\
+	\zeta_{7}\cdot 2^{448=64*7} &\equiv \zeta_{7}\cdot (3\cdot 2^{192} + 2\cdot 2^{160} + 2^{128} - 2^{64} - 2^{32} - 1) \\
+\end{align*}
+
+
+
+
+
+
+

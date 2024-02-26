@@ -218,21 +218,21 @@ Y=y_{2q-1}\adjacent\cdots\adjacent y_0=\sum_{j=1}^{2q-1}y_j2^{wj}
 \end{tabular}
 \end{center}
 
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$x_{11}:x_{10}$} & \multicolumn{2}{c}{$x_{01}:x_{00}$} \\
-\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$y_{11}:y_{10}$} & \multicolumn{2}{c}{$y_{01}:y_{00}$} \\ \specialrule{1.5pt}{1pt}{1pt}
-\hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{00}$} & \multicolumn{2}{c|}{$x_{00}y_{00}$} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{00}$} & \multicolumn{2}{c|}{$x_{01}y_{00}$} & \hspace{15pt} \\ \hline\hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{01}$} & \multicolumn{2}{c|}{$x_{00}y_{01}$} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{01}$} & \multicolumn{2}{c|}{$x_{01}y_{01}$} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
-\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{10}$} & \multicolumn{2}{c|}{$x_{00}y_{10}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{10}$} & \multicolumn{2}{c|}{$x_{01}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
-\hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{11}$} & \multicolumn{2}{c|}{$x_{00}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\multicolumn{2}{|c|}{$x_{11}y_{11}$} & \multicolumn{2}{c|}{$x_{01}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\end{tabular}
-\end{center}
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|c|c|c|c|}
+%\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$x_{11}:x_{10}$} & \multicolumn{2}{c}{$x_{01}:x_{00}$} \\
+%\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$y_{11}:y_{10}$} & \multicolumn{2}{c}{$y_{01}:y_{00}$} \\ \specialrule{1.5pt}{1pt}{1pt}
+%\hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{00}$} & \multicolumn{2}{c|}{$x_{00}y_{00}$} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{00}$} & \multicolumn{2}{c|}{$x_{01}y_{00}$} & \hspace{15pt} \\ \hline\hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{01}$} & \multicolumn{2}{c|}{$x_{00}y_{01}$} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{01}$} & \multicolumn{2}{c|}{$x_{01}y_{01}$} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+%\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{10}$} & \multicolumn{2}{c|}{$x_{00}y_{10}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{10}$} & \multicolumn{2}{c|}{$x_{01}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+%\hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{11}$} & \multicolumn{2}{c|}{$x_{00}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\multicolumn{2}{|c|}{$x_{11}y_{11}$} & \multicolumn{2}{c|}{$x_{01}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\end{tabular}
+%\end{center}
 \begin{align*}
 Z=XY=\of{\sum_{i=0}^{2p-1}x_i2^{iw}}\of{\sum_{j=0}^{2q-1}y_j2^{jw}}&=\sum_{j=0}^{2q-1}\of{\sum_{i=0}^{2p-1}(x_iy_j)2^{w(i+j)}} \\
 &=\sum_{j=0}^{2q-1}\of{\sum_{i=0}^{p-1}(x_{2i}y_j)2^{w(2i+j)}+\sum_{i=0}^{p-1}(x_{2i+1}y_j)2^{w(2i+1+j)}} \\
@@ -241,17 +241,17 @@ Z=XY=\of{\sum_{i=0}^{2p-1}x_i2^{iw}}\of{\sum_{j=0}^{2q-1}y_j2^{jw}}&=\sum_{j=0}^
 \end{align*}
 \\
 \textbf{Cost:} \[
-\of{\sum_{i=0}^{n-1}x_i2^{iw}}\of{\sum_{j=0}^{m-1}y_j2^{jw}}\implies\of{2n\cdot 2m}\cdot\textbf{M}_{w/2} + (2\cdot nm - 1)\cdot\textbf{A}_{(n+m)w}
+\of{\sum_{i=0}^{2p-1}x_i2^{iw}}\of{\sum_{j=0}^{2q-1}y_j2^{jw}}\implies (2p\cdot 2q)\cdot\textbf{M}_{w} + (2q-1)\cdot\textbf{A}_{(2p+2q)w}
 \]
 
 \begin{example}
 Let $x,y\in\intco{2^{w(t-1)},2^{wt}}$.
 \begin{itemize}
 \item[] ($(w,t)=(32,8)$) \[
-256\cdot\textbf{M}_{16} + 127\cdot\textbf{A}_{512}
+64\cdot\textbf{M}_{32} + 15\cdot\textbf{A}_{512}
 \]
 \item[] ($(w,t)=(64,4)$) \[
-64\cdot\textbf{M}_{32} + 31\cdot\textbf{A}_{512}
+16\cdot\textbf{M}_{64} + 3\cdot\textbf{A}_{512}
 \]
 \end{itemize}
 \end{example}
