@@ -223,3 +223,24 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 	// 	}
 	// }
 }
+
+void squaring_single(word* dst, const word src) {
+	// word = 32 -> half_w = 4 * 4 = 16
+	// word = 64 -> half_w = 4 * 8 = 32
+	const u8 half_w = 4 * sizeof(word);
+
+	// word = 32 -> MASK = 0x0000FFFF
+	// word = 64 -> MASK = 0x00000000FFFFFFFF
+	const word MASK = (ONE << half_w) - 1;
+
+	word u0 = src & MASK;
+	word u1 = src >> half_w;
+
+	word z0 = u0 * u0;
+	word z1 = u1 * u1;
+	
+	*(dst + 0) = z0;
+	*(dst + 1) = z1;
+
+	word tmp = u0 * u1;
+}
