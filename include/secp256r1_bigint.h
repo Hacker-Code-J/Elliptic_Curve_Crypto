@@ -60,7 +60,7 @@ void subtraction_p256(field dst, const field src1, const field src2);
 
 void multiplication_single(word* dst, const word src1, const word src2);
 void multiplication_ps(field* dst, const field src1, const field src2);
-// void multiplication_ps(field* dst, const field src1, const field src2);
+void multiplication_ps2(field* dst, const field src1, const field src2);
 
 void squaring_single(word* dst, const word src);
 

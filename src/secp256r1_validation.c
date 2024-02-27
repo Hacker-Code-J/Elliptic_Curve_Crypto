@@ -263,11 +263,11 @@ void create_mul_squ_rspFile(const char* rspFileName, const char* reqFileName1, c
             field result[2];
             stringToWord(data1, line1);
             stringToWord(data2, line2);
-            multiplication_ps(result, data1, data2);
-            // if (!option)
-            //     multiplication_os(result, data1, data2);
-            // else
-            //     multiplication_ps(result, data1, data2);
+            // multiplication_ps(result, data1, data2);
+            if (!option)
+                multiplication_ps(result, data1, data2);
+            else
+                multiplication_ps2(result, data1, data2);
 #ifdef IS_32_BIT_ENV
             for (i32 i = SIZE-1; i >= 0; i--)
                 fprintf(rspFile, "%08X", result[1][i]);
@@ -301,64 +301,6 @@ void multiplication_ps_test() {
     snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_MUL.rsp");
     
     create_mul_squ_rspFile(rspFileName, reqFileName1, reqFileName2, 0);
-
-    printf("\n256-bit Multiplication OS Test:\n");
-
-    FILE *file1, *file2;
-    char line1[MAX_LINE_LENGTH], line2[MAX_LINE_LENGTH];
-    int isEqual = 1; // Assume files are equal until proven otherwise
-
-    // Open both files
-    file1 = fopen(faxFileName, "r");
-    file2 = fopen(rspFileName, "r");
-
-    if (file1 == NULL || file2 == NULL) {
-        perror("Error opening file");
-        return;
-    }
-
-    u32 total = 10000;
-    u32 idx = 1;
-
-    // Read and compare each line
-    while (fgets(line1, sizeof(line1), file1) && fgets(line2, sizeof(line2), file2)) {
-        if (is_blank_line(line1) || is_blank_line(line2)) {
-            continue;
-        } else {    
-            if (strncmp(line1, line2, 128) != 0) {
-                printf("\nAnswer: "); printf("%s\n", line1);
-                printf("My-Ans: "); printf("%s\n", line2);
-                isEqual = 0; // Files are not equal
-                break;
-            }
-            printProgressBar(idx++, total);
-        }
-    }
-
-    // Close the files
-    fclose(file1);
-    fclose(file2);
-
-    // Output the result
-    if (isEqual) {
-        printf("\nPASS!\n");
-    } else {
-        printf("\nFAIL!\n");
-    }
-}
-
-#if 0
-void multiplication_ps_test() {
-    const char* folderPath = "../test_vector/mul_and_squ/";
-    char reqFileName1[100], reqFileName2[100], faxFileName[100], rspFileName[100];
-    
-    // Construct full paths for input and output files
-    snprintf(reqFileName1, sizeof(reqFileName1), "%s%s", folderPath, "TV_opA.txt");
-    snprintf(reqFileName2, sizeof(reqFileName2), "%s%s", folderPath, "TV_opB.txt");
-    snprintf(faxFileName, sizeof(faxFileName), "%s%s", folderPath, "TV_MUL.txt");
-    snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_MUL.rsp");
-    
-    create_mul_squ_rspFile(rspFileName, reqFileName1, reqFileName2, 1);
 
     printf("\n256-bit Multiplication PS Test:\n");
 
@@ -404,4 +346,63 @@ void multiplication_ps_test() {
         printf("\nFAIL!\n");
     }
 }
+
+void multiplication_ps2_test() {
+    const char* folderPath = "../test_vector/mul_and_squ/";
+    char reqFileName1[100], reqFileName2[100], faxFileName[100], rspFileName[100];
+    
+    // Construct full paths for input and output files
+    snprintf(reqFileName1, sizeof(reqFileName1), "%s%s", folderPath, "TV_opA.txt");
+    snprintf(reqFileName2, sizeof(reqFileName2), "%s%s", folderPath, "TV_opB.txt");
+    snprintf(faxFileName, sizeof(faxFileName), "%s%s", folderPath, "TV_MUL.txt");
+    snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_MUL.rsp");
+    
+    create_mul_squ_rspFile(rspFileName, reqFileName1, reqFileName2, 1);
+
+    printf("\n256-bit Multiplication PS2 Test:\n");
+
+    FILE *file1, *file2;
+    char line1[MAX_LINE_LENGTH], line2[MAX_LINE_LENGTH];
+    int isEqual = 1; // Assume files are equal until proven otherwise
+
+    // Open both files
+    file1 = fopen(faxFileName, "r");
+    file2 = fopen(rspFileName, "r");
+
+    if (file1 == NULL || file2 == NULL) {
+        perror("Error opening file");
+        return;
+    }
+
+    u32 total = 10000;
+    u32 idx = 1;
+
+    // Read and compare each line
+    while (fgets(line1, sizeof(line1), file1) && fgets(line2, sizeof(line2), file2)) {
+        if (is_blank_line(line1) || is_blank_line(line2)) {
+            continue;
+        } else {    
+            if (strncmp(line1, line2, 128) != 0) {
+                printf("\nAnswer: "); printf("%s\n", line1);
+                printf("My-Ans: "); printf("%s\n", line2);
+                isEqual = 0; // Files are not equal
+                break;
+            }
+            printProgressBar(idx++, total);
+        }
+    }
+
+    // Close the files
+    fclose(file1);
+    fclose(file2);
+
+    // Output the result
+    if (isEqual) {
+        printf("\nPASS!\n");
+    } else {
+        printf("\nFAIL!\n");
+    }
+}
+
+#if 0
 #endif

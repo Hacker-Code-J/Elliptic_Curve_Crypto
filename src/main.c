@@ -73,6 +73,7 @@ int main(void) {
     addition_p256_test();
     subtraction_p256_test();
     multiplication_ps_test();
+    multiplication_ps2_test();
 
 
 /* === Measurement of Cycles === */

@@ -118,7 +118,7 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 		}
 	}
 }
-#if 0
+
 /*
 x7 || x6 || x5 || x4 || x3 || x2 || x1 || x0
 y7 || y6 || y5 || y4 || y3 || y2 || y1 || y0
@@ -160,7 +160,7 @@ for j = 1
 	Z += T
 */
 
-void multiplication_ps(field* dst, const field src1, const field src2) {
+void multiplication_ps2(field* dst, const field src1, const field src2) {
 	memset(dst, 0, sizeof(field) * 2);
 	
 	field buffer[2];
@@ -177,8 +177,8 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 			// printf("\nj: %u, i: %u\n", j, i);
 			// printf("t0: %08X x %08X\n", src1[2 * i    ], src2[j]);
 			// printf("t1: %08X x %08X\n", src1[2 * i + 1], src2[j]);
-			multiplication_single((field*)(p0 + 2 * i    ), src1[2 * i    ], src2[j]);
-			multiplication_single((field*)(p1 + 2 * i + 1), src1[2 * i + 1], src2[j]);
+			multiplication_single((p0 + 2 * i    ), src1[2 * i    ], src2[j]);
+			multiplication_single((p1 + 2 * i + 1), src1[2 * i + 1], src2[j]);
 		// 	printf("t0: \n"); printData(t0[1]); printData(t0[0]);
 		// 	printf("t1: \n"); printData(t1[1]); printData(t1[0]);
 		}
@@ -225,7 +225,7 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 	// 	}
 	// }
 }
-
+#if 0
 void squaring_single(word* dst, const word src) {
 	// word = 32 -> half_w = 4 * 4 = 16
 	// word = 64 -> half_w = 4 * 8 = 32
