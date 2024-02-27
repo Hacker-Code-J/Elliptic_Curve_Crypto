@@ -106,31 +106,31 @@ XY\in\intco{0,2^{w(n+m)}}\implies(2n\cdot 2m)\cdot\textbf{M}_{2/w} + (2n\cdot 2m
 \end{algorithm}
 
 \newpage
-\subsection{Operand Scanning (School Book)}
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$x_{11}:x_{10}$} & \multicolumn{2}{c}{$x_{01}:x_{00}$} \\
-\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$y_{11}:y_{10}$} & \multicolumn{2}{c}{$y_{01}:y_{00}$} \\ \specialrule{1.5pt}{1pt}{1pt}
-\hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{00}$}\\ \hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{00}$} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{00}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{00}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{01}$} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{01}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{01}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{01}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{10}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\multicolumn{2}{|c|}{$x_{11}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\
-\hline
-\end{tabular}
-\end{center}
+\subsection{School-Book Multiplication}
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|c|c|c|c|}
+%\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$x_{11}:x_{10}$} & \multicolumn{2}{c}{$x_{01}:x_{00}$} \\
+%\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$y_{11}:y_{10}$} & \multicolumn{2}{c}{$y_{01}:y_{00}$} \\ \specialrule{1.5pt}{1pt}{1pt}
+%\hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{00}$}\\ \hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{00}$} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{00}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{00}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{01}$} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{01}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{01}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{01}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{10}$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \multicolumn{2}{c|}{$x_{11}y_{10}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{00}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_{01}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \multicolumn{2}{c|}{$x_{10}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\multicolumn{2}{|c|}{$x_{11}y_{11}$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\
+%\hline
+%\end{tabular}
+%\end{center}
 \begin{align*}
 Z=XY=\of{\sum_{i=0}^{n-1}x_i2^{iw}}\of{\sum_{j=0}^{m-1}y_j2^{jw}}=\sum_{j=0}^{m-1}\of{\sum_{i=0}^{n-1}(x_iy_j)2^{w(i+j)}}\in\intco{0,2^{w(n+m)}}.
 \end{align*}
@@ -161,7 +161,7 @@ Let $x,y\in\intco{2^{w(t-1)},2^{wt}}$.
 $Z\gets 0$\tcp*{Initialization}
 \For{$i=0$ \KwTo $t-1$ \tcp{for $X$}}{
 	\For{$j=0$ \KwTo $t-1$ \tcp{for $Y$}}{
-		$T\gets x_iy_i$\tcp*{$T\in\intco{0, 2^{2w}}$}
+		$T\gets x_iy_j$\tcp*{$T\in\intco{0, 2^{2w}}$}
 		$T\ll\gets w(i+j)$\tcp*{$\in\intco{2^w,2^{3w}},\dots,\intco{2^{w(t-1)},2^{w(t+1)}},\dots,\intco{2^{w(2t-2)},2^{2wt}}$}
 		$Z\gets\Call{Addition\_Core}{Z, T}$\;
 	}
@@ -169,14 +169,38 @@ $Z\gets 0$\tcp*{Initialization}
 \Return $Z$
 \end{algorithm}
 
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|c|c|c|c|}
+%\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$x_{11}x_{10}$} & \multicolumn{2}{c}{$x_{01}x_{00}$} \\
+%\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$y_{11}y_{10}$} & \multicolumn{2}{c}{$y_{01}y_{00}$} \\ \specialrule{1.5pt}{1pt}{1pt} \hline
+%\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{4}{c|}{$(x_{01}x_{00})\times(y_{01}y_{00})$} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \multicolumn{4}{c|}{$(x_{01}x_{00})\times(y_{01}y_{00})$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\hspace{15pt} & \hspace{15pt} & \multicolumn{4}{c|}{$(x_{01}x_{00})\times(y_{11}y_{10})$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\multicolumn{4}{|c|}{$(x_{11}x_{10})\times(y_{11}y_{10})$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+%\end{tabular}
+%\end{center}
+
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$x_{11}x_{10}$} & \multicolumn{2}{c}{$x_{01}x_{00}$} \\
-\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{2}{c||}{$y_{11}y_{10}$} & \multicolumn{2}{c}{$y_{01}y_{00}$} \\ \specialrule{1.5pt}{1pt}{1pt} \hline
-\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{4}{c|}{$(x_{01}x_{00})\times(y_{01}y_{00})$} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \multicolumn{4}{c|}{$(x_{01}x_{00})\times(y_{01}y_{00})$} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\hspace{15pt} & \hspace{15pt} & \multicolumn{4}{c|}{$(x_{01}x_{00})\times(y_{11}y_{10})$} & \hspace{15pt} & \hspace{15pt} \\ \hline
-\multicolumn{4}{|c|}{$(x_{11}x_{10})\times(y_{11}y_{10})$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{1}{c||}{$x_3$} & \multicolumn{1}{c||}{$x_2$} & \multicolumn{1}{c||}{$x_1$} & \multicolumn{1}{c}{$x_0$} \\
+\multicolumn{2}{l}{$\times$} & \multicolumn{2}{c}{} & \multicolumn{1}{c||}{$y_3$} & \multicolumn{1}{c||}{$y_2$} & \multicolumn{1}{c||}{$y_1$} & \multicolumn{1}{c}{$y_0$}\\
+\specialrule{1.5pt}{1pt}{1pt} \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_0y_0$} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_0y_1$} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_0y_2$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_0y_3$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_1y_0$} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_1y_1$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_1y_2$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_1y_3$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_2y_0$} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_2y_1$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_2y_2$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \multicolumn{2}{c|}{$x_2y_3$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline\hline
+\hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_3y_0$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \hspace{15pt} & \multicolumn{2}{c|}{$x_3y_1$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\hspace{15pt} & \multicolumn{2}{c|}{$x_3y_2$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
+\multicolumn{2}{|c|}{$x_3y_3$} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} & \hspace{15pt} \\ \hline
 \end{tabular}
 \end{center}
 \noindent\textbf{Cost:} \[

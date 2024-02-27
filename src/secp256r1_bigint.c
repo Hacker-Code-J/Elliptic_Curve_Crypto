@@ -1,6 +1,6 @@
 #include "secp256r1_bigint.h"
 
-void addition_single(word* epsilon, field dst, const word src1, const word src2) {
+void addition_single(word* epsilon, word* dst, const word src1, const word src2) {
 	word tmp = *epsilon;
 	word sum = src1 + src2;
 	*epsilon = (sum < src1); // Set epsilon to 1 if there was a carry-out, otherwise 0
@@ -20,13 +20,13 @@ void addition_p256(field dst, const field src1, const field src2) {
 	addition_core(&epsilon, buffer, src1, src2);
 	if (epsilon) {
 		epsilon = 0;
-		addition_core(&epsilon, dst, buffer, PRIME_INVERSE);
+		addition_core(&epsilon, dst, buffer, P256_INVERSE);
 	} else {
 		memcpy(dst, buffer, SIZE * sizeof(word));
 	}
 }
 
-void subtraction_single(word* epsilon, field dst, const word src1, const word src2) {
+void subtraction_single(word* epsilon, word* dst, const word src1, const word src2) {
 	word tmp = src1 - *epsilon;
 	*epsilon = (src1 < tmp);
 	*epsilon += (tmp < src2);
@@ -45,13 +45,13 @@ void subtraction_p256(field dst, const field src1, const field src2) {
 	subtraction_core(&epsilon, buffer, src1, src2);
 	if (epsilon) {
 		epsilon = 0;
-		subtraction_core(&epsilon, dst, buffer, PRIME_INVERSE);
+		subtraction_core(&epsilon, dst, buffer, P256_INVERSE);
 	} else {
 		memcpy(dst, buffer, SIZE * sizeof(word));
 	}
 }
 
-void multiplication_single(field* dst, const word src1, const word src2) {
+void multiplication_single(word* dst, const word src1, const word src2) {
 	// word = 32 -> half_w = 4 * 4 = 16
 	// word = 64 -> half_w = 4 * 8 = 32
 	const u8 half_w = 4 * sizeof(word);
@@ -79,11 +79,13 @@ void multiplication_single(field* dst, const word src1, const word src2) {
 	w0 += (t0 << half_w);
 	w1 += (t1 << half_w) + (t0 >> half_w) + (w0 < t);
 
-	**(dst + 0) = w0;
-	*(*(dst + 0) + 1) = w1;
+	*(dst + 0) = w0;
+	*(dst + 1) = w1;
+	// **(dst + 0) = w0;
+	// *(*(dst + 0) + 1) = w1;
 }
 
-void multiplication_os(field* dst, const field src1, const field src2) {
+void multiplication_ps(field* dst, const field src1, const field src2) {
 	memset(dst, 0, sizeof(field) * 2);
 	field tmp[2];
 	field buffer[2];
@@ -93,7 +95,7 @@ void multiplication_os(field* dst, const field src1, const field src2) {
 			memset(tmp, 0, sizeof(field) * 2);
 			// printf("i: %u, j: %u\n", i, j);
 			// printf("%08X x %08X\n", src1[i], src2[j]);
-			multiplication_single(tmp, src1[i], src2[j]);
+			multiplication_single((word*)tmp, src1[i], src2[j]);
     		// printData(tmp[1]);
 			// printData(tmp[0]);
 			// puts("");
@@ -158,7 +160,7 @@ for j = 1
 	Z += T
 */
 
-void multiplication_ps(field* dst, const field src1, const field src2) {
+void multiplication_ps2(field* dst, const field src1, const field src2) {
 	memset(dst, 0, sizeof(field) * 2);
 	
 	field buffer[2];
@@ -175,8 +177,8 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 			// printf("\nj: %u, i: %u\n", j, i);
 			// printf("t0: %08X x %08X\n", src1[2 * i    ], src2[j]);
 			// printf("t1: %08X x %08X\n", src1[2 * i + 1], src2[j]);
-			multiplication_single((field*)(p0 + 2 * i    ), src1[2 * i    ], src2[j]);
-			multiplication_single((field*)(p1 + 2 * i + 1), src1[2 * i + 1], src2[j]);
+			multiplication_single((p0 + 2 * i    ), src1[2 * i    ], src2[j]);
+			multiplication_single((p1 + 2 * i + 1), src1[2 * i + 1], src2[j]);
 		// 	printf("t0: \n"); printData(t0[1]); printData(t0[0]);
 		// 	printf("t1: \n"); printData(t1[1]); printData(t1[0]);
 		}
@@ -223,7 +225,7 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 	// 	}
 	// }
 }
-
+#if 0
 void squaring_single(word* dst, const word src) {
 	// word = 32 -> half_w = 4 * 4 = 16
 	// word = 64 -> half_w = 4 * 8 = 32
@@ -244,3 +246,4 @@ void squaring_single(word* dst, const word src) {
 
 	word tmp = u0 * u1;
 }
+#endif
