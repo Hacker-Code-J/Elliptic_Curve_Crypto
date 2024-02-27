@@ -30,7 +30,7 @@ bool is_blank_line(const char* line) {
     return 1; // Blank line
 }
 
-void create_add_sub_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2, bool option) {
+void create_p256_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2, u8 option) {
     FILE *reqFile1, *reqFile2, *rspFile;
     size_t bufsize = MAX_LINE_LENGTH;
 
@@ -72,10 +72,14 @@ void create_add_sub_rspFile(const char* rspFileName, const char* reqFileName1, c
             stringToWord(data1, line1);
             stringToWord(data2, line2);
             // addition_p256(result, data1, data2);
-            if (!option)
+            if (option == 0)
                 addition_p256(result, data1, data2);
-            else
+            else if (option == 1)
                 subtraction_p256(result, data1, data2);
+            else if (option == 2)
+                multiplication_p256(result, data1, data2);
+            else
+                printf("\nInvalid Option!\n");
             for (i8 i = SIZE-1; i >= 0; i--) {
 #ifdef IS_32_BIT_ENV
                 fprintf(rspFile, "%08X", result[i]);
@@ -106,7 +110,7 @@ void addition_p256_test() {
     snprintf(faxFileName, sizeof(faxFileName), "%s%s", folderPath, "TV_PFADD.txt");
     snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_PFADD.rsp");
     
-    create_add_sub_rspFile(rspFileName, reqFileName1, reqFileName2, 0);
+    create_p256_rspFile(rspFileName, reqFileName1, reqFileName2, 0);
 
     printf("\nP-256 Addition Test:\n");
 
@@ -169,7 +173,7 @@ void subtraction_p256_test() {
     snprintf(faxFileName, sizeof(faxFileName), "%s%s", folderPath, "TV_PFSUB.txt");
     snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_PFSUB.rsp");
     
-    create_add_sub_rspFile(rspFileName, reqFileName1, reqFileName2, 1);
+    create_p256_rspFile(rspFileName, reqFileName1, reqFileName2, 1);
 
     printf("\nP-256 Subtraction Test:\n");
 
@@ -222,7 +226,7 @@ void subtraction_p256_test() {
     }
 }
 
-void create_mul_squ_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2, bool option) {
+void create_mul_squ_rspFile(const char* rspFileName, const char* reqFileName1, const char* reqFileName2, u8 option) {
     FILE *reqFile1, *reqFile2, *rspFile;
     size_t bufsize = MAX_LINE_LENGTH;
 
@@ -306,7 +310,7 @@ void multiplication_ps_test() {
 
     FILE *file1, *file2;
     char line1[MAX_LINE_LENGTH], line2[MAX_LINE_LENGTH];
-    int isEqual = 1; // Assume files are equal until proven otherwise
+    u8 isEqual = 2; // Assume files are equal until proven otherwise
 
     // Open both files
     file1 = fopen(faxFileName, "r");
@@ -324,7 +328,8 @@ void multiplication_ps_test() {
     while (fgets(line1, sizeof(line1), file1) && fgets(line2, sizeof(line2), file2)) {
         if (is_blank_line(line1) || is_blank_line(line2)) {
             continue;
-        } else {    
+        } else {
+            isEqual = 1;    
             if (strncmp(line1, line2, 128) != 0) {
                 printf("\nAnswer: "); printf("%s\n", line1);
                 printf("My-Ans: "); printf("%s\n", line2);
@@ -340,10 +345,13 @@ void multiplication_ps_test() {
     fclose(file2);
 
     // Output the result
-    if (isEqual) {
+    // Output the result
+    if (isEqual == 1) {
         printf("\nPASS!\n");
-    } else {
+    } else if (isEqual == 0) {
         printf("\nFAIL!\n");
+    } else {
+        printf("\nError!\n");
     }
 }
 
@@ -363,7 +371,7 @@ void multiplication_ps2_test() {
 
     FILE *file1, *file2;
     char line1[MAX_LINE_LENGTH], line2[MAX_LINE_LENGTH];
-    int isEqual = 1; // Assume files are equal until proven otherwise
+    u8 isEqual = 1; // Assume files are equal until proven otherwise
 
     // Open both files
     file1 = fopen(faxFileName, "r");
@@ -381,7 +389,8 @@ void multiplication_ps2_test() {
     while (fgets(line1, sizeof(line1), file1) && fgets(line2, sizeof(line2), file2)) {
         if (is_blank_line(line1) || is_blank_line(line2)) {
             continue;
-        } else {    
+        } else {
+            isEqual = 1;    
             if (strncmp(line1, line2, 128) != 0) {
                 printf("\nAnswer: "); printf("%s\n", line1);
                 printf("My-Ans: "); printf("%s\n", line2);
@@ -397,12 +406,108 @@ void multiplication_ps2_test() {
     fclose(file2);
 
     // Output the result
-    if (isEqual) {
+    if (isEqual == 1) {
         printf("\nPASS!\n");
-    } else {
+    } else if (isEqual == 0) {
         printf("\nFAIL!\n");
+    } else {
+        printf("\nError!\n");
     }
 }
 
-#if 0
-#endif
+void multiplication_p256_test() {
+    const char* folderPath = "../test_vector/reduction/";
+    char reqFileName1[100], reqFileName2[100], faxFileName[100], rspFileName[100];
+    char faxFileName2[100], rspFileName2[100];
+
+    // Construct full paths for input and output files
+    snprintf(reqFileName1, sizeof(reqFileName1), "%s%s", folderPath, "TV_opA.txt");
+    snprintf(reqFileName2, sizeof(reqFileName2), "%s%s", folderPath, "TV_opB.txt");
+    snprintf(faxFileName, sizeof(faxFileName), "%s%s", folderPath, "TV_MUL.txt");
+    snprintf(rspFileName, sizeof(rspFileName), "%s%s", folderPath, "TV_MY_MUL.rsp");
+    snprintf(faxFileName2, sizeof(faxFileName2), "%s%s", folderPath, "TV_PFMUL.txt");
+    snprintf(rspFileName2, sizeof(rspFileName2), "%s%s", folderPath, "TV_MY_PFMUL.rsp");
+    
+    create_mul_squ_rspFile(rspFileName, reqFileName1, reqFileName2, 1);
+    create_p256_rspFile(rspFileName2, reqFileName1, reqFileName2, 2);
+
+    printf("\nP-256 Multiplication Test (Non-Reduction):\n");
+
+    FILE *file1, *file2, *file3, *file4;
+    char line1[MAX_LINE_LENGTH], line2[MAX_LINE_LENGTH];
+    u8 isEqual = 2; // Assume files are equal until proven otherwise
+
+    // Open both files
+    file1 = fopen(faxFileName, "r");
+    file2 = fopen(rspFileName, "r");
+    file3 = fopen(faxFileName2, "r");
+    file4 = fopen(rspFileName2, "r");
+
+    if (file1 == NULL || file2 == NULL || file3 == NULL || file4 == NULL) {
+        perror("Error opening file");
+        return;
+    }
+
+    u32 total = 10000;
+    u32 idx = 1;
+
+    // Read and compare each line
+    while (fgets(line1, sizeof(line1), file1) && fgets(line2, sizeof(line2), file2)) {
+        if (is_blank_line(line1) || is_blank_line(line2)) {
+            continue;
+        } else {
+            isEqual = 1;    
+            if (strncmp(line1, line2, 128) != 0) {
+                printf("\nAnswer: "); printf("%s\n", line1);
+                printf("My-Ans: "); printf("%s\n", line2);
+                isEqual = 0; // Files are not equal
+                break;
+            }
+            printProgressBar(idx++, total);
+        }
+    }
+
+    // Close the files
+    fclose(file1);
+    fclose(file2);
+
+    // Output the result
+    if (isEqual == 1) {
+        printf("\nPASS!\n");
+    } else if (isEqual == 0) {
+        printf("\nFAIL!\n");
+    } else {
+        printf("\nError!\n");
+    }
+
+    printf("\nP-256 Multiplication Test (Reduction):\n");
+
+    isEqual = 2;
+    idx = 1;
+
+    while (fgets(line1, sizeof(line1), file3) && fgets(line2, sizeof(line2), file4)) {
+        if (is_blank_line(line1) || is_blank_line(line2)) {
+            continue;
+        } else {
+            isEqual = 1;    
+            if (strncmp(line1, line2, 64) != 0) {
+                printf("\nAnswer: "); printf("%s\n", line1);
+                printf("My-Ans: "); printf("%s\n", line2);
+                isEqual = 0; // Files are not equal
+                break;
+            }
+            printProgressBar(idx++, total);
+        }
+    }
+
+    fclose(file3);
+    fclose(file4);
+
+    if (isEqual == 1) {
+        printf("\nPASS!\n");
+    } else if (isEqual == 0) {
+        printf("\nFAIL!\n");
+    } else {
+        printf("\nError!\n");
+    }
+}

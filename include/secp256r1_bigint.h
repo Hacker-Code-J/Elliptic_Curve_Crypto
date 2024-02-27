@@ -64,6 +64,9 @@ void multiplication_ps2(field* dst, const field src1, const field src2);
 
 void squaring_single(word* dst, const word src);
 
+void multiplication_p256(field dst, const field src1, const field src2);
+
+
 /* === Rubbish === */
 // static inline void shiftField(field dst[2], u8 shiftAmount) {
 //     if (shiftAmount >= 2 * SIZE) {

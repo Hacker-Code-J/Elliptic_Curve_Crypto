@@ -3,31 +3,32 @@
 #include "secp256r1_validation.h"
 
 int main(void) {
-    const char* opA = "7E781AF075DF34221947833F570DC5EEC844DE0DE81A7071CDB374444857A994";
-    const char* opB = "9C3980B6BFA0B75993BE648924B9D298101E46FEF0AC62E19D6BCABB8FF8D324";
+    const char* opA = "EAC8C20CE80D90B3BF6DC08AFD4C8B1D6274839279D9F1469BE87CCD85283FE5";
+    const char* opB = "F54ECAE2F71FC58022DF670B74F41B07195BEEC269F85DDC1368137BC3DD50B3";
 
     // word src1[SIZE];
     // word src2[SIZE];
     // word dst[SIZE] = { 0x00, };
     field src1, src2;
-    // field dst;
-    field dst[2];
+    field dst;
+    // field dst[2];
 
     stringToWord(src1, opA);
     stringToWord(src2, opB);
 
-    printData(src1);
-    printData(src2);
+    // printData(src1);
+    // printData(src2);
 
     // addition_p256(dst, src1, src2);
     // subtraction_p256(dst, src1, src2);
-    // printData(dst);
     
-    multiplication_ps(dst, src1, src2);
+    multiplication_p256(dst, src1, src2);
+    // printData(dst);
+    // multiplication_p256_test();
 
-    // multiplication_os_test();
-    printData(dst[1]);
-    printData(dst[0]);
+    // multiplication_ps2_test();
+    // printData(dst[1]);
+    // printData(dst[0]);
     // for (int i = 0; i < 16; i++) {
 	// 	if (i % 4 == 0) puts("");
 	// 	printf("%08x, ", *dst[i]);
@@ -72,18 +73,20 @@ int main(void) {
 // /* === Test for Accuracy === */
     addition_p256_test();
     subtraction_p256_test();
-    multiplication_ps_test();
-    multiplication_ps2_test();
+    multiplication_p256_test();
+    // multiplication_ps_test();
+    // multiplication_ps2_test();
 
 
 /* === Measurement of Cycles === */
     // u64 cycles;
-    // for (u32 i = 0; i < 12000; i++) {
+    // for (u32 i = 0; i < 1200; i++) {
     //     assign_rand(src1, SIZE);
     //     assign_rand(src2, SIZE);
-    //     cycles = measure_cycles(addition_p256, dst, src1, src2);
+    //     // cycles = measure_cycles(addition_p256, dst, src1, src2);
     //     // cycles = measure_cycles(subtraction_p256, dst, src1, src2);
-    //     if (i >= 1000 && i < 11000) {
+    //     cycles = measure_cycles(multiplication_p256, dst, src1, src2);
+    //     if (i >= 100 && i < 1100) {
     //         printf("%" PRIu64 "\n", cycles);
     //         printf("%" PRIu64 "\n", cycles / (u64)SIZE);
     //     }

@@ -89,7 +89,7 @@ $z_{15}$ & $+3$ & $+2$ & $+1$ & & $-1$ & $-1$ & $-1$ & \\
 
 \begin{algorithm}[H]
 \DontPrintSemicolon
-\caption{Fast Reduction modulo $p_{256}=2^{256}-2^{224}+2^{196}+2^{96}-1$}
+\caption{32-bit Fast Reduction modulo $p_{256}=2^{256}-2^{224}+2^{196}+2^{96}-1$}
 \BlankLine
 \KwIn{\(Z=z_{15}\adjacent z_{14}\adjacent\cdots\adjacent z_0=\sum_{i=0}^{15}z_i2^{32i}\in\intco{0,p_{256}^2}\)}
 \KwOut{\(Z\bmod{p_{256}}\)}
@@ -106,11 +106,10 @@ $s_9= z_{13}\adjacent \zero^{32}\adjacent z_{11}\adjacent z_{10}\adjacent z_{09}
 \Return ($s_1+2s_2+2s_3+s_4+s_5-s_6-s_7-s_8-s_9\bmod{p_{256}}$)\;
 \end{algorithm}
 
-
+\newpage
 \noindent Consider \begin{align*}
 Z=\zeta_{7}\adjacent \zeta_{6}\adjacent\cdots\adjacent \zeta_0=\sum_{j=0}^{7}\zeta_i2^{64j}
 \end{align*} with $Z\in\intco{0, p_{256}^2}$.
-
 
 \begin{align*}
 	\zeta_4\cdot 2^{256=64*4} &\equiv \zeta_4\cdot (2^{224} - 2^{192} - 2^{96} + 1) \\
@@ -119,7 +118,24 @@ Z=\zeta_{7}\adjacent \zeta_{6}\adjacent\cdots\adjacent \zeta_0=\sum_{j=0}^{7}\ze
 	\zeta_{7}\cdot 2^{448=64*7} &\equiv \zeta_{7}\cdot (3\cdot 2^{192} + 2\cdot 2^{160} + 2^{128} - 2^{64} - 2^{32} - 1) \\
 \end{align*}
 
-
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{64-bit Fast Reduction modulo $p_{256}=2^{256}-2^{224}+2^{196}+2^{96}-1$}
+\BlankLine
+\KwIn{\(Z=\zeta_{7}\adjacent\zeta_{6}\adjacent\cdots\adjacent \zeta_0=\sum_{i=0}^{7}z_i2^{64i}\in\intco{0,p_{256}^2}\) with $\zeta_i=z_{2i+1}\adjacent z_{2i}$}
+\KwOut{\(Z\bmod{p_{256}}\)}
+\BlankLine
+$s_1=\zeta_3\adjacent \zeta_2\adjacent \zeta_1\adjacent \zeta_0$\;
+$s_2=\zeta_7\adjacent \zeta_6\adjacent (\zeta_{5}\ \&\ \texttt{0xF}^8\texttt{0}^8) \adjacent \zero^{64}$\;
+$s_3=(\zeta_7\gg 32)\adjacent (((\zeta_7\ \&\ \texttt{0xF}^8)\ll 32)\ |\ (\zeta_6\gg 32))\adjacent (\zeta_6\ll 32) \adjacent \zero^{64}$\;
+$s_4= \zeta_{7}\adjacent \zero^{64}\adjacent \zeta_{5}\ \&\ \texttt{0x0}^8\texttt{F}^8 \adjacent \zeta_4$\;
+$s_5= (((\zeta_4\ \&\ \texttt{0xF}^8)\ll 32)\ |\ (\zeta_6\gg 32))\adjacent \zeta_7\adjacent (\zeta_{6}\ \&\ \texttt{0xF}^8\texttt{0}^8\ |\ \zeta_5\gg 32)\adjacent ((\zeta_{5}\ll 32)\ |\ (\zeta_4\gg 32))$\;
+$s_6= ((\zeta_{5}\ll 32)\ |\ (\zeta_4\ \&\ \texttt{0xF}^8))\adjacent \zero^{64}\adjacent (\zeta_6\gg 32)\adjacent((\zeta_6\ll 32)\ |\ (\zeta_5\gg 32))$\;
+$s_7= ((\zeta_5\ \&\ \texttt{0xF}^8\texttt{0}^8)\ |\ (\zeta_4\gg 32))\adjacent \zero^{64}\adjacent \zeta_7\adjacent\zeta_6$\;
+$s_8= (\zeta_6\ll 32)\adjacent ((\zeta_5\ll 32)\ |\ (\zeta_4\gg 32))\adjacent ((\zeta_4\ll 32)\ |\ (\zeta_{7}\gg 32))\adjacent ((\zeta_7\ll 32)\ |\ (\zeta_{6}\gg 32))$\;
+$s_9= (\zeta_6\ \&\ \texttt{0xF}^8\texttt{0}^8)\adjacent \zeta_5\adjacent (\zeta_4\ \&\ \texttt{0xF}^8\texttt{0}^8)\adjacent\zeta_7$\;
+\Return ($s_1+2s_2+2s_3+s_4+s_5-s_6-s_7-s_8-s_9\bmod{p_{256}}$)\;
+\end{algorithm}
 
 
 
