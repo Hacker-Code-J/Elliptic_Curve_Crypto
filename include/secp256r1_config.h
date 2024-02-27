@@ -71,13 +71,13 @@ typedef uint64_t    u64;
 
 #ifdef IS_32_BIT_ENV
 // 32-bit specific settings
-#define ONE     0x01
+#define ONE     0x1U
 #define SIZE    8
 typedef u32     word;
 typedef word    field[SIZE];
 #else
 // 64-bit specific settings
-#define ONE     0x01LL
+#define ONE     0x1ULL
 #define SIZE    4
 typedef u64     word;
 typedef word    field[SIZE];
