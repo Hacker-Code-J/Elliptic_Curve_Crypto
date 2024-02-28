@@ -62,7 +62,7 @@ typedef uint64_t    u64;
 #endif
 
 // Define this to force 32-bit mode in development
-#define FORCE_32_BIT
+// #define FORCE_32_BIT
 
 // Simplified check for 32-bit or forced 32-bit mode
 #if defined(FORCE_32_BIT) || !defined(_WIN64) && !defined(__x86_64__) && !defined(__ppc64__)

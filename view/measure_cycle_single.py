@@ -10,7 +10,7 @@ function1_speeds = [float(data[i].strip()) for i in range(0, len(data), 1)]
 average_function1 = np.mean(function1_speeds)
 
 # Rolling mean for smoothing
-window_size = 50
+window_size = 1000
 function1_smooth = np.convolve(function1_speeds, np.ones(window_size)/window_size, mode='valid')
 
 # Find the lowest and highest points of the smoothed data
@@ -23,7 +23,7 @@ highest_index_smooth = np.argmax(function1_smooth)
 fig, ax1 = plt.subplots(figsize=(14, 7), dpi=100)
 
 # Plot the smoothed data with distinct designs
-ax1.plot(function1_smooth, color='dodgerblue', label='Cycles', alpha=0.9, linewidth=2, linestyle='-', marker='o', markevery=40)
+ax1.plot(function1_smooth, color='dodgerblue', label='Cycles', alpha=0.9, linewidth=2, linestyle='-', marker='o', markevery=100)
 
 # Mark and directly annotate the lowest and highest points of the smoothed data
 # Mark the lowest point
@@ -44,7 +44,7 @@ ax1.set_title('Measurement of Cycles: 64-bit Multiplication', fontsize=18, fontw
 
 # Combine legends
 lines, labels = ax1.get_legend_handles_labels()
-ax1.legend(lines, labels, loc='upper right', frameon=True, framealpha=0.9, shadow=True, fancybox=True, fontsize=12)
+ax1.legend(lines, labels, loc='upper left', frameon=True, framealpha=0.9, shadow=True, fancybox=True, fontsize=12)
 
 # Customizing the grid and layout
 ax1.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
