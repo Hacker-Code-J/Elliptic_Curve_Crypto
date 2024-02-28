@@ -265,14 +265,44 @@ void multiplication_p256(field dst, const field src1, const field src2) {
 	field s9 = { p[14], p[15], 	   0, p[ 9], p[10], p[11], 	   0, p[13] };
 #else
 	field s1 = { p[0], p[1], p[2], p[3] };
-	field s2 = { 0, p[5] & 0xFFFFFFFF00000000, p[6], p[7] };
-	field s3 = { 0, p[6] << 32, ((p[7] & 0xFFFFFFFF) << 32) | (p[6] >> 32), p[7] >> 32 };
-	field s4 = { p[4], p[5] & 0x00000000FFFFFFFF, 0, p[7] };
-	field s5 = { (p[5] << 32) | (p[4] >> 32), (p[6] & 0xFFFFFFFF00000000) | (p[5] >> 32), p[7], ((p[4] & 0xFFFFFFFF) << 32) | (p[6] >> 32) };
-	field s6 = { (p[6] << 32) | (p[5] >> 32), p[6] >> 32, 0, (p[5] << 32) | (p[4] & 0xFFFFFFFF) };
-	field s7 = { p[6], p[7], 0, (p[5] & 0xFFFFFFFF00000000) | (p[4] >> 32) };
-	field s8 = { (p[7] << 32) | (p[6] >> 32), (p[4] << 32) | (p[7] >> 32), (p[5] << 32) | (p[4] >> 32), p[6] << 32 };
-	field s9 = { p[7], p[4] & 0xFFFFFFFF00000000, p[5], p[6] & 0xFFFFFFFF00000000 };
+	field s2 = { 0, p[5] & 0xFFFFFFFF00000000ULL, p[6], p[7] };
+	field s3 = {
+		0,
+		p[6] << 32,
+		((p[7] & 0xFFFFFFFFU) << 32) | (p[6] >> 32),
+		p[7] >> 32
+	};
+	field s4 = { p[4], p[5] & 0x00000000FFFFFFFFULL, 0, p[7] };
+	field s5 = {
+		(p[5] << 32) | (p[4] >> 32),
+		(p[6] & 0xFFFFFFFF00000000ULL) | (p[5] >> 32),
+		p[7],
+		((p[4] & 0xFFFFFFFF) << 32) | (p[6] >> 32)
+	};
+	field s6 = {
+		(p[6] << 32) | (p[5] >> 32),
+		p[6] >> 32,
+		0,
+		(p[5] << 32) | (p[4] & 0xFFFFFFFFU)
+	};
+	field s7 = {
+		p[6],
+		p[7],
+		0,
+		(p[5] & 0xFFFFFFFF00000000ULL) | (p[4] >> 32)
+	};
+	field s8 = {
+		(p[7] << 32) | (p[6] >> 32),
+		(p[4] << 32) | (p[7] >> 32),
+		(p[5] << 32) | (p[4] >> 32),
+		p[6] << 32
+	};
+	field s9 = {
+		p[7],
+		p[4] & 0xFFFFFFFF00000000ULL,
+		p[5],
+		p[6] & 0xFFFFFFFF00000000ULL
+	};
 #endif
 
 	memset(dst, 0, sizeof(field));
