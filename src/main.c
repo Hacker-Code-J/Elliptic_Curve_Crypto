@@ -93,17 +93,17 @@ int main(void) {
     //     }
     // }
 
-    u64 cycles;
-    for (u32 i = 0; i < 12000; i++) {
-        assign_rand(src1, SIZE);
-        assign_rand(src2, SIZE);
-        // cycles = measure_cycles2(multiplication_single, dst, src1, src2);
-        // cycles = measure_cycles2(multiplication_os, dst, src1, src2);
-        cycles = measure_cycles2(multiplication_ps, dst, src1, src2);
-        if (i >= 1000 && i < 11000) {
-            printf("%" PRIu64 "\n", cycles);
-        }
-    }
+    // u64 cycles;
+    // for (u32 i = 0; i < 12000; i++) {
+    //     assign_rand(src1, SIZE);
+    //     assign_rand(src2, SIZE);
+    //     // cycles = measure_cycles2(multiplication_single, dst, src1, src2);
+    //     // cycles = measure_cycles2(multiplication_os, dst, src1, src2);
+    //     cycles = measure_cycles2(multiplication_ps, dst, src1, src2);
+    //     if (i >= 1000 && i < 11000) {
+    //         printf("%" PRIu64 "\n", cycles);
+    //     }
+    // }
 
     // field t0, t1; // Define two fields, each with SIZE elements
     // word *ptr_t0, *ptr_t1; // Define pointers to elements of type u32
