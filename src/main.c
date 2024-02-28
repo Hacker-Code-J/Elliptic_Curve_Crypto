@@ -10,8 +10,8 @@ int main(void) {
     // word src2[SIZE];
     // word dst[SIZE] = { 0x00, };
     field src1, src2;
-    // field dst;
-    field dst[2];
+    field dst;
+    // field dst[2];
 
     stringToWord(src1, opA);
     stringToWord(src2, opB);
@@ -22,12 +22,12 @@ int main(void) {
     // addition_p256(dst, src1, src2);
     // subtraction_p256(dst, src1, src2);
     
-    // multiplication_p256(dst, src1, src2);
+    multiplication_p256(dst, src1, src2);
     // printData(dst);
     // multiplication_p256_test();
 
     // multiplication_ps2_test();
-    multiplication_ps2(dst, src1, src2);
+    // multiplication_ps2(dst, src1, src2);
     // printData(dst[1]);
     // printData(dst[0]);
     // for (int i = 0; i < 16; i++) {
@@ -72,9 +72,9 @@ int main(void) {
 
 
 // /* === Test for Accuracy === */
-    // addition_p256_test();
-    // subtraction_p256_test();
-    // multiplication_p256_test();
+    addition_p256_test();
+    subtraction_p256_test();
+    multiplication_p256_test();
     // multiplication_ps_test();
     // multiplication_ps2_test();
 
