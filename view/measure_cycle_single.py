@@ -23,7 +23,7 @@ highest_index_smooth = np.argmax(function1_smooth)
 fig, ax1 = plt.subplots(figsize=(14, 7), dpi=100)
 
 # Plot the smoothed data with distinct designs
-ax1.plot(function1_smooth, color='dodgerblue', label='Total Cycles', alpha=0.9, linewidth=2, linestyle='-', marker='o', markevery=40)
+ax1.plot(function1_smooth, color='dodgerblue', label='Cycles', alpha=0.9, linewidth=2, linestyle='-', marker='o', markevery=40)
 
 # Mark and directly annotate the lowest and highest points of the smoothed data
 # Mark the lowest point
@@ -35,7 +35,7 @@ ax1.plot(highest_index_smooth, highest_point_smooth, '^', color='red', markersiz
 ax1.text(highest_index_smooth, highest_point_smooth, f'Highest: {highest_point_smooth:.2f}', color='red', va='bottom', ha='center')
 
 # Add horizontal line to indicate the average value
-ax1.axhline(average_function1, color='dodgerblue', linestyle='dashdot', linewidth=2, label=f'Avg Total Cycles: {average_function1:.2f}')
+ax1.axhline(average_function1, color='dodgerblue', linestyle='dashdot', linewidth=2, label=f'Avg Cycles: {average_function1:.2f}')
 
 # Setting labels, titles, and legends
 ax1.set_ylabel('Total Cycles', fontsize=16, fontweight='bold', color='dodgerblue')
