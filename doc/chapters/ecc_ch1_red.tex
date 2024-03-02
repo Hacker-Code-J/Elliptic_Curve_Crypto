@@ -1,5 +1,5 @@
 \newpage
-\section{Reduction}
+\section{Fast Reduction}
 
 \begin{align*}
 p_{256} &= 2^{256} - 2^{224} + 2^{192} + 2^{96} - 1 \\
@@ -137,7 +137,191 @@ $s_9= (\zeta_6\ \&\ \texttt{0xF}^8\texttt{0}^8)\adjacent \zeta_5\adjacent (\zeta
 \Return ($s_1+2s_2+2s_3+s_4+s_5-s_6-s_7-s_8-s_9\bmod{p_{256}}$)\;
 \end{algorithm}
 
+\newpage
+\section{Montgomery Reduction}
+\begin{table}[ht]
+\centering
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c|cc}
+\toprule
+ & \textbf{Division-Based Reduction} & \textbf{Montgomery-Based Reduction} \\
+\midrule
+Domain & Standard domain $\mathbb{F}_N$ & Montgomery domain $\mathbb{F}_N$ \\
+\midrule
+Input Values & $a, b \in \mathbb{F}_N$ & $\widetilde{a}, \widetilde{b} \in \mathbb{F}_N$ \\
+\midrule
+Operations & Compute $ab \mod p$ directly & Compute $\widetilde{a} \times \widetilde{b} \times R^{-1} \mod p$ \\
+\midrule
+Final Transformations & Direct result in $\mathbb{F}_p$ & Requires back transformation to $\mathbb{F}_p$ from $\widetilde{\mathbb{F}}_p$ \\
+\bottomrule
+\end{tabular*}
+\caption{Comparison of Division-Based and Montgomery-Based Reductions}
+\label{tab:comparison}
+\end{table}
+
+Note: In Montgomery-based reduction, $R$ is a power of 2 such that $R > p$, and the inputs are transformed into the Montgomery domain prior to multiplication.
+
+\subsection{Algebraic Relationships between Montgomery and Standard Domains}
+
+\begin{itemize}
+\item \textbf{Standard (Integer) Domain:} In this domain, elements (integers) are represented in their standard form, i.e., any integer $a$ within the range $0 \leq a < p$, where $p$ is a prime defining the modulus of the arithmetic field.
+\item \textbf{Montgomery Domain:} In the Montgomery domain, elements are transformed into a scaled representation. An integer $a$ in the standard domain is mapped to $\widetilde{a} = aR \mod p$ in the Montgomery domain, where $R$ is a power of 2, typically chosen as the smallest power of 2 greater than or equal to $p$, such that $R > p$.
+\end{itemize}
+
+\section*{Algebraic Relationships}
+
+\begin{enumerate}
+	\item \textbf{Transformation to Montgomery Domain:} The transformation from the standard domain to the Montgomery domain involves scaling the integer by a factor of $R$ modulo $p$. If $a$ is an integer in the standard domain, its Montgomery form $\widetilde{a}$ is computed as $\widetilde{a} = aR \mod p$.
+	\item \textbf{Montgomery Multiplication:} In the Montgomery domain, the multiplication of two integers $\widetilde{a}$ and $\widetilde{b}$ is defined as $\widetilde{c} = \widetilde{a} \cdot \widetilde{b} \cdot R^{-1} \mod p$, where $R^{-1}$ is the modular inverse of $R$ modulo $p$.
+	\item \textbf{Conversion Back to Standard Domain:} To convert an element $\widetilde{a}$ from the Montgomery domain back to the standard domain, we compute $a = \widetilde{a} \cdot R^{-1} \mod p$.
+\end{enumerate}
+
+\begin{center}
+\begin{tikzcd}
+\mathbb{Z}_N \arrow[rrrr, "f(x)=xR \bmod N", shift left=2] &  &  &  & \mathbb{Z}_N \arrow[llll, "f^{-1}(u) = uR^{-1}\bmod N", shift left=2] \\
+a \arrow[rrrr, maps to]                                    &  &  &  & \tilde{a}=aR\bmod N                                                   \\
+b \arrow[rrrr, maps to]                                    &  &  &  & \tilde{b}=bR\bmod N                                                   \\
+ab\bmod N \arrow[rrrr, maps to]                            &  &  &  & (\tilde{a}\tilde{b}R^{-1})\bmod N                                    
+\end{tikzcd}
+\end{center}
 
 
+In this diagram:
+- $f$ represents the transformation function from the standard domain to the Montgomery domain.\\
+- $f^{-1}$ represents the inverse transformation from the Montgomery domain back to the standard domain.\\
+- $a, b$ are elements of the standard domain $\mathbb{F}_p$.\\
+- $\widetilde{a}, \widetilde{b}$ are their respective images in the Montgomery domain.
 
+
+\section*{Mathematical Properties}
+
+\begin{itemize}
+	\item \textbf{Identity and Inversion:} The Montgomery representation of 1 (the multiplicative identity in the standard domain) is $R \mod p$. Conversely, the standard representation of the Montgomery multiplicative identity is computed by $R^{-1} \mod p$.
+	\item \textbf{Consistency:} Operations performed in the Montgomery domain are consistent with those in the standard domain when converted back.
+	\item \textbf{Efficiency:} The main advantage of Montgomery reduction is that it allows for modular multiplication without direct modular division by $p$.
+\end{itemize}
+
+\section*{Diagrammatic Representation}
+
+The algebraic relationship between the standard domain and the Montgomery domain can be visualized as follows:
+
+\begin{center}
+	\begin{tikzpicture}
+		\node (A) at (0,0) {$a \in \text{Standard Domain}$};
+		\node (B) at (6,0) {$\widetilde{a} = aR \mod p \in \text{Montgomery Domain}$};
+		\draw[->] (A) -- (B) node[midway,above] {Transformation};
+		\draw[->] (B) -- (A) node[midway,below] {Reversion};
+	\end{tikzpicture}
+\end{center}
+
+\subsection{Montgomery Reduction}
+Montgomery Reduction transforms the problem of modular multiplication into a more efficiently computable form by redefining the multiplication operation in terms of alternative representations of the numbers involved. Specifically, it introduces a mapping function based on a chosen constant $R$, which is co-prime to the modulus $m$ and typically a power of $2$ for computational efficiency.
+\vspace{8pt}
+\begin{example}
+Compute \[
+3\cdot 7\bmod{11}
+\] \begin{proof}[\sol]
+Let $R=2^4=16>11$. 
+
+\begin{itemize}
+\item[] \textbf{Step 1: Transformation to Montgomery Space}
+
+We transform $X=3$ and $Y=7$ into Montgomery space: \begin{align*}
+X'&=3\cdot R\bmod 11=3\cdot16\bmod 11 = 4 \\
+Y'&=7\cdot R\bmod 11=7\cdot16\bmod 11 = 2
+\end{align*} Here, $X'$ and $Y'$ are the Montgomery representations of $X$ and $Y$, respectively.
+\item[] \textbf{Step 2: Montgomery Multiplication}
+
+Note that $R^{-1}$ satisfies $RR^{-1}\equiv 1\pmod{11}$: \begin{align*}
+	R^{-1}R=R^{-1}\cdot 2^4&\equiv 1\pmod{11} \\
+	R^{-1}R=R^{-1}\cdot 5&\equiv 1\pmod{11}\quad\because 16\equiv 5\pmod{11} \\
+	R^{-1}&\equiv 9\pmod{11}\quad\because 5\cdot 9\equiv 1\pmod{11} \\
+\end{align*} 
+We multiply $X'$ and $Y'$ but the result is in Montgomery form: for $Z'=X'Y'$, \[
+Z'R^{-1}\bmod 11 = 8\cdot 9\bmod 11 = 6.
+\]
+\item[] \textbf{Step 3: Conversion Back from Montgomery Space}
+\end{itemize}
+\end{proof}
+\end{example}
+\vspace{8pt}
+\begin{tcolorbox}[colframe=defcolor,title={\color{white}\bf The Montgomery Representation and the inverse Montgomery Transformation}]
+\begin{definition}
+The Montgomery representation of a finite field element $x\in\intco{0,N}$, \[
+\fullfunction{M}{\Z_N}{\Z_N}{x}{(xR)\bmod N},
+\] is a mapping from the standard representation to the Montgomery domain, where $R=2^k$ for some $k$, a constant such that $R\geq m$ $\gcd(R,m)=1$.
+
+The inverse Montgomery transformation, \[
+\fullfunction{M^{-1}}{\Z_N}{\Z_N}{u}{(uR^{-1})\bmod N},
+\] is a mapping back form the Montgomery domain to the standard representation, where $R^{-1}$ is the modular inverse of $R$ modulo $m$, \ie, $RR^{-1}\equiv 1\pmod{m}$.
+\end{definition}
+\end{tcolorbox}
+
+\newpage
+\begin{tcolorbox}[colframe=defcolor,title={\color{white}\bf The Montgomery Reduction}]
+\begin{definition}
+Define a mapping \textbf{Montgomery Reduction} $\mathsf{MontRed}:\Z_{NR}\to\Z_{N}$ as follows: \[
+\mathsf{MontRed}(x):=xR^{-1}\bmod N,
+\] for $x\in\intco{0,NR}$, where \begin{enumerate}[(i)]
+\item $R=2^{wt}>N$
+\item $\gcd(R=2^{wt}, N)=1$.
+\end{enumerate}
+\end{definition}	
+\end{tcolorbox}
+\begin{itemize}
+	\item Let \( \mathcal{M} : \mathbb{F}_p \to \widetilde{\mathbb{F}}_p \) be the Montgomery transformation function, where \( \mathcal{M}(a) = aR \mod p \) transforms an element from the standard domain \( \mathbb{F}_p \) to the Montgomery domain \( \widetilde{\mathbb{F}}_p \).
+	\item Let \( \mathcal{M}^{-1} : \widetilde{\mathbb{F}}_p \to \mathbb{F}_p \) be the inverse Montgomery transformation function, where \( \mathcal{M}^{-1}(\widetilde{a}) = \widetilde{a}R^{-1} \mod p \) transforms an element back from the Montgomery domain \( \widetilde{\mathbb{F}}_p \) to the standard domain \( \mathbb{F}_p \).
+\end{itemize}
+
+\newpage
+\section{Montgomery Reduction}
+
+\begin{tcolorbox}[colframe=defcolor,title={\color{white}\bf Montgomery From}]
+\begin{definition}
+Consider a element of finite field $\F_N$: \[
+x\in\intco{0,N}.
+\] Montgomery representation is defined as: \[
+[x]:=(xR)\bmod N,
+\] where \begin{enumerate}[(i)]
+\item $R=2^{wt}>N$
+\item $\gcd(R=2^{wt}, N)=1$.
+\end{enumerate}
+\end{definition}	
+\end{tcolorbox}
+
+\begin{tcolorbox}[colframe=defcolor,title={\color{white}\bf Montgomery Reduction}]
+\begin{definition}
+Define a mapping \textbf{Montgomery Reduction} $\mathsf{MontRed}:\Z_{NR}\to\Z_{N}$ as follows: \[
+\mathsf{MontRed}(u):=uR^{-1}\bmod N,
+\] for $u\in\set{[u]: u\in \F_N}$.
+\end{definition}	
+\end{tcolorbox}
+\begin{remark}
+\ \begin{itemize}
+\item $\MontRed (xR^2\bmod N)=[x]$
+\item $\MontRed ([x])=x$
+\end{itemize}
+\end{remark}
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Montgomery Reduction: $\MontRed(x)=xR^{-1}\bmod N$}
+\BlankLine
+\Comment{$R^{-1}$ satisfies $RR^{-1}\equiv 1\pmod N$}
+\Comment{$N^{-1}$ satisfies $NN^{-1}\equiv 1\pmod R$}
+\KwIn{$(xR)\bmod N$ with the pre-computed values $R$, $N^{-1}$}
+\KwOut{$\MontRed(x)=xR^{-1}\bmod N$}
+\BlankLine
+$s\gets(x\bmod R)\cdot N^{-1}\bmod R$\tcp*{$s\gets (x\land \one^{wt})\cdots N^{-1}\bmod R$}
+$t\gets(x+s\cdot N) / R$\tcp*{$t\gets (x+sN)\gg wt$}
+\If{$t\geq N$}{
+	$t\gets t-N$
+} \Return $t$\;
+\end{algorithm}
+\begin{proof}[Correctness for Montogmery Reduction]
+\begin{align*}
+s&=(x\bmod R)\cdot N^{-1}\bmod R, \\
+sN&\equiv (x\bmod R)N^{-1}N\pmod R \\
+&\equiv xN^{-1}N\pmod R \\
+\end{align*}
+\end{proof}
 

@@ -23,4 +23,4 @@
 | P-256 Subtraction $\mathbb{F}_2^{256}\times\mathbb{F}_2^{256}\to\mathbb{F}_2^{256}$ | 23.86 | 16.00 |
 | Multiplication I $\mathbb{F}_2^{256}\times\mathbb{F}_2^{256}\to\mathbb{F}_2^{512}$ | 4878.74 | 915.33 |
 | Multiplication II $\mathbb{F}_2^{256}\times\mathbb{F}_2^{256}\to\mathbb{F}_2^{512}$ | 1091.18 | 304.60 |
-| P-256 Multiplication $\mathbb{F}_2^{256}\times\mathbb{F}_2^{256}\to\mathbb{F}_2^{256}$ | 1393.11 | 521.08 |
+| P-256 Multiplication $\mathbb{F}_2^{256}\times\mathbb{F}_2^{256}\to\mathbb{F}_2^{512}\to\mathbb{F}_2^{256}$ | 1393.11 | 521.08 |

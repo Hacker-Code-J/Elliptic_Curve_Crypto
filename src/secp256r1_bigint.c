@@ -107,9 +107,11 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 			// puts("");
 			
 			word epsilon = 0;
-			for (u8 k = 0; k < 2; k++) {
-				addition_core(&epsilon, buffer[k], dst[k], tmp[k]);
-			}
+			addition_core(&epsilon, buffer[0], dst[0], tmp[0]);
+			addition_core(&epsilon, buffer[1], dst[1], tmp[1]);
+			// for (u8 k = 0; k < 2; k++) {
+			// 	addition_core(&epsilon, buffer[k], dst[k], tmp[k]);
+			// }
 			memcpy(dst[0], buffer[0], sizeof(field));
     		memcpy(dst[1], buffer[1], sizeof(field));
 			// printData(dst[1]);
