@@ -213,23 +213,35 @@ The algebraic relationship between the standard domain and the Montgomery domain
 	\end{tikzpicture}
 \end{center}
 
+\newpage
 \subsection{Montgomery Reduction}
 Montgomery Reduction transforms the problem of modular multiplication into a more efficiently computable form by redefining the multiplication operation in terms of alternative representations of the numbers involved. Specifically, it introduces a mapping function based on a chosen constant $R$, which is co-prime to the modulus $m$ and typically a power of $2$ for computational efficiency.
 \vspace{8pt}
 \begin{example}
 Compute \[
-3\cdot 7\bmod{11}
+5\cdot 7\bmod{17}
 \] \begin{proof}[\sol]
-Let $R=2^4=16>11$. 
-
+Let $N=17$ and $R=2^5=32>17$. Then \begin{itemize}
+	\item $R^{-1}=8$ since $R^{-1}R=256\equiv 1\pmod{17}$;
+	\item $N^{-1}=17$ since $N^{-1}N=289\equiv 1\pmod{32}$;
+	\item $N'=R-N^{-1}=15$.
+\end{itemize} 
 \begin{itemize}
 \item[] \textbf{Step 1: Transformation to Montgomery Space}
 
-We transform $X=3$ and $Y=7$ into Montgomery space: \begin{align*}
-X'&=3\cdot R\bmod 11=3\cdot16\bmod 11 = 4 \\
-Y'&=7\cdot R\bmod 11=7\cdot16\bmod 11 = 2
-\end{align*} Here, $X'$ and $Y'$ are the Montgomery representations of $X$ and $Y$, respectively.
+We transform $a=5$ and $b=7$ into Montgomery space: \begin{align*}
+\tilde{a}&=5\cdot R\bmod 17\\
+&=5\cdot32\bmod 17 = 7, \\
+\tilde{b}&=7\cdot R\bmod 17\\
+&=7\cdot32\bmod 17 = 3.
+\end{align*} Here, $\tilde{a}$ and $\tilde{b}$ are the Montgomery representations of $a$ and $b$, respectively.
 \item[] \textbf{Step 2: Montgomery Multiplication}
+
+\begin{enumerate}
+	\item \textit{Compute the product:} \[
+	\tilde{a}\times\tilde{b}=21.
+	\]
+\end{enumerate}
 
 Note that $R^{-1}$ satisfies $RR^{-1}\equiv 1\pmod{11}$: \begin{align*}
 	R^{-1}R=R^{-1}\cdot 2^4&\equiv 1\pmod{11} \\
