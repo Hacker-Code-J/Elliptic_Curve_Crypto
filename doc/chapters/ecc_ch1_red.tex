@@ -324,7 +324,7 @@ Define a mapping \textbf{Montgomery Reduction} $\mathsf{MontRed}:\Z_{NR}\to\Z_{N
 \KwIn{$(x{2^{wt}})\bmod N$ with the pre-computed values ${2^{wt}}$, $N'$}
 \KwOut{$\MontRed(x)=x{2^{wt}}^{-1}\bmod N$}
 \BlankLine
-$s\gets(x\bmod {2^{wt}})\cdot N^{-1}\bmod {2^{wt}}$\tcp*{$s\gets (x\land \one^{wt})\cdot N^{-1}\bmod {2^{wt}}$}
+$s\gets(x\bmod {2^{wt}})\cdot N'\bmod {2^{wt}}$\tcp*{$s\gets (x\land \one^{wt})\cdot N^{-1}\bmod {2^{wt}}$}
 $t\gets(x+s\cdot N) / {2^{wt}}$\tcp*{$t\gets (x+sN)\gg wt$ and then $t\in\intco{0,2N}$}
 \If{$t\geq N$}{
 	$t\gets t-N$
@@ -332,9 +332,16 @@ $t\gets(x+s\cdot N) / {2^{wt}}$\tcp*{$t\gets (x+sN)\gg wt$ and then $t\in\intco{
 \end{algorithm}
 \begin{proof}[Correctness for Montogmery Reduction]
 \begin{align*}
-s&=(x\bmod R)\cdot N^{-1}\bmod R, \\
-sN&\equiv (x\bmod R)N^{-1}N\pmod R \\
-&\equiv xN^{-1}N\pmod R \\
+s&=(x\bmod {2^{wt}})\cdot N'\bmod {2^{wt}}, \\
+s&\equiv(x\bmod {2^{wt}})\cdot N'\pmod {2^{wt}}\\
+&\implies\\
+sN&\equiv(x\bmod {2^{wt}})\cdot N'N\pmod {2^{wt}}, \\
+&\equiv (x\bmod {2^{wt}})(-N^{-1})N\pmod {2^{wt}}, \\
+&\equiv -x\pmod{2^{wt}}\\
+&\implies\\ 
+&2^{wt}\mid sN-(-x)=sN+x\\
+&\implies\\ 
+&\frac{x+sN}{2^{wt}}\in\Z.
 \end{align*}
 \end{proof}
 
