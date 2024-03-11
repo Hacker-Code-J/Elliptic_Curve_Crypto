@@ -316,15 +316,16 @@ Define a mapping \textbf{Montgomery Reduction} $\mathsf{MontRed}:\Z_{NR}\to\Z_{N
 
 \begin{algorithm}[H]
 \DontPrintSemicolon
-\caption{Montgomery Reduction: $\MontRed(x)=xR^{-1}\bmod N$}
+\caption{Montgomery Reduction: $\MontRed(x)=x{2^{wt}}^{-1}\bmod N$}
 \BlankLine
-\Comment{$R^{-1}$ satisfies $RR^{-1}\equiv 1\pmod N$}
-\Comment{$N^{-1}$ satisfies $NN^{-1}\equiv 1\pmod R$}
-\KwIn{$(xR)\bmod N$ with the pre-computed values $R$, $N^{-1}$}
-\KwOut{$\MontRed(x)=xR^{-1}\bmod N$}
+\Comment{${2^{wt}}^{-1}$ satisfies ${2^{wt}}{2^{wt}}^{-1}\equiv 1\pmod N$}
+\Comment{$N^{-1}$ satisfies $NN^{-1}\equiv 1\pmod {2^{wt}}$}
+\Comment{$N'$ satisfies $N'={2^{wt}}-N^{-1}$}
+\KwIn{$(x{2^{wt}})\bmod N$ with the pre-computed values ${2^{wt}}$, $N'$}
+\KwOut{$\MontRed(x)=x{2^{wt}}^{-1}\bmod N$}
 \BlankLine
-$s\gets(x\bmod R)\cdot N^{-1}\bmod R$\tcp*{$s\gets (x\land \one^{wt})\cdots N^{-1}\bmod R$}
-$t\gets(x+s\cdot N) / R$\tcp*{$t\gets (x+sN)\gg wt$}
+$s\gets(x\bmod {2^{wt}})\cdot N^{-1}\bmod {2^{wt}}$\tcp*{$s\gets (x\land \one^{wt})\cdot N^{-1}\bmod {2^{wt}}$}
+$t\gets(x+s\cdot N) / {2^{wt}}$\tcp*{$t\gets (x+sN)\gg wt$ and then $t\in\intco{0,2N}$}
 \If{$t\geq N$}{
 	$t\gets t-N$
 } \Return $t$\;
