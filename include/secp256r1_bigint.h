@@ -66,6 +66,7 @@ void squaring_single(word* dst, const word src);
 
 void multiplication_p256(field dst, const field src1, const field src2);
 
+void mont_red_p256();
 
 /* === Rubbish === */
 // static inline void shiftField(field dst[2], u8 shiftAmount) {

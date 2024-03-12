@@ -139,6 +139,7 @@ $s_9= (\zeta_6\ \&\ \texttt{0xF}^8\texttt{0}^8)\adjacent \zeta_5\adjacent (\zeta
 
 \newpage
 \section{Montgomery Reduction}
+\iffalse
 \begin{table}[ht]
 \centering
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c|cc}
@@ -159,7 +160,123 @@ Final Transformations & Direct result in $\mathbb{F}_p$ & Requires back transfor
 \end{table}
 
 Note: In Montgomery-based reduction, $R$ is a power of 2 such that $R > p$, and the inputs are transformed into the Montgomery domain prior to multiplication.
+\fi
 
+\subsection{Modular Multiplication without Trivial Division}
+\begin{enumerate}[\bf 1.]
+	\item \textbf{Residue Classes and Modular Arithmetic:}
+	
+	A residue class modulo $N>1$ is a set, $N$-residue, \[
+	[a]_N:=\Z/N\Z=\set{a + kN: k\in\Z }.
+	\]
+	The complete set of distinct residue classes modulo $N$ forms a complete residue system: \[
+	\set{[0]_N,[1]_N,[2]_N,\dots, [N-1]_N}=\set{0,1,2,\dots, N-1}.
+	\]
+	\item \textbf{Choice of Radix $R$:}
+	
+	The radix $R$ is chosen such that 
+	\begin{itemize}
+		\item $\gcd(R,N)=1$, and
+		\item $R=2^k>N$ for some integer $k$ due to binary computational efficiency. 
+	\end{itemize}
+	\item \textbf{Bézout's Identity and Inverses:}
+	
+	Bézout's identity states that for any non-zero integers $a$ and $b$, there exist integers $x$ and $y$ such that: \[
+	ax+by=\gcd(a,b).
+	\] Since $\gcd(R,N)=1$, $\exists R^{-1}, N'$ s.t. \[
+	RR^{-1}-NN'=1.
+	\] Here, \begin{align*}
+		RR^{-1}&\equiv 1\pmod{N},\\
+		N(-N')&\equiv 1\pmod{R}.
+	\end{align*}
+	\item \textbf{Computation of Modular Inverses and Fast Computation:}
+	
+	Consider an integer \[
+	T\in\intco{0,RN}.
+	\] We are interested in computing \[
+	TR^{-1}\bmod{N}.
+	\] The objective in computational terms is to map values from the standard residue system to a system that enables faster computation. For any integer $i\in\intco{0,N}$ we use $i$ to represent the residue class 
+	\[
+	[iR^{-1}]_N=\set{iR^{-1}+kN:k\in\Z}.
+	\]
+\end{enumerate}
+
+Define an $N$-residue to be a residue class modulo $N$. Select a radix $R$
+coprime to N (possibly the machine word size or a power thereof) such that $R > N$
+and such that computations modulo R are inexpensive to process. Let $R^{-1}$ and $N'$ be
+integers satisfying $0 < R^{-1} < N$ and $0 < N' < R$ and $RR^{-1} - NN' = 1$.
+
+For $0\leq i < N$, let $i$ represent the residue class containing i$R^{-1}\bmod N$. This is a
+complete residue system.  The rationale behind this selection is our ability to quickly
+compute $TR^{-1}\bmod N$ from $T$ if $0\leq T < RN$.
+
+\vspace{16pt}
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Montgomery Reduction: $\MontRed(T)$ with $T\in\intco{0,RN}$}
+\BlankLine
+\Comment{${2^{wt}}^{-1}$ satisfies ${2^{wt}}{2^{wt}}^{-1}\equiv 1\pmod N$}
+\Comment{$N^{-1}$ satisfies $NN^{-1}\equiv 1\pmod {2^{wt}}$}
+\Comment{$N'$ satisfies $N'={2^{wt}}-N^{-1}$}
+\KwIn{$({2^{wt}})\bmod N$ with the pre-computed values ${2^{wt}}$, $N'$}
+\KwOut{$\MontRed(x)=x{2^{wt}}^{-1}\bmod N$}
+\BlankLine
+\Fn{\Call{MontRed}{$T$}}{
+	$s\gets(T\bmod R)\cdot N'\bmod R$\tcp*{$s\in\intco{0,R}$}
+	$t\gets(T+s\cdot N) / {R}$\tcp*{$t\in\intco{0,2N}$}
+	\If{$t\geq N$}{
+		$t\gets t-N$\;
+	} \Return $t$\;
+}
+\end{algorithm}
+
+\begin{proof}[Correctness for $\MontRed$]
+We observe that
+\begin{align*}
+	s&=(T\bmod R)\cdot N'\bmod {R}, \\
+	s&\equiv(T\bmod {R})\cdot N'\pmod {R}\\
+	&\implies\\
+	sN&\equiv(T\bmod {R})\cdot N'N\pmod {R}, \\
+	&\equiv (T\bmod {R})(-N^{-1})N\pmod {R}, \\
+	&\equiv -T\pmod{R}\\
+	&\implies\\ 
+	&R\mid sN-(-T)=sN+T\\
+	&\implies\\ 
+	&\frac{T+sN}{R}\in\Z.
+\end{align*}
+Also, \begin{align*}
+tR&\equiv T\pmod{N},\\
+t&\equiv TR^{-1}\pmod{N}
+\end{align*} and
+\begin{align*}
+	0&\leq T+sN<RN+RN,\\
+	0&\leq \frac{T+sN}{R}<\frac{2RN}{R},\\
+	0&\leq t< 2N.
+\end{align*}
+\end{proof}
+
+\newpage
+\subsection{Implementation}
+\begin{algorithm}[H]
+	\DontPrintSemicolon
+	\caption{Montgomery Reduction on P-256}
+	\BlankLine
+	\Comment{$RR^{-1}\equiv 1\pmod{2^{wt}}$}
+	\KwIn{Modulus $N=p_{256}$ with $\gcd(N,2^{wt})=1$, $R=2^{wt}$ and $N'=1$}
+	\KwOut{\(Z=X\cdot Y\in\intco{2^{2w(t-1)},2^{wt+wt}}\)}
+	\BlankLine
+	$Z\gets 0$\tcp*{Initialization}
+	\For{$i=0$ \KwTo $t-1$ \tcp{for $X$}}{
+		\For{$j=0$ \KwTo $t-1$ \tcp{for $Y$}}{
+			$T\gets x_iy_j$\tcp*{$T\in\intco{0, 2^{2w}}$}
+			$T\ll\gets w(i+j)$\tcp*{$\in\intco{2^w,2^{3w}},\dots,\intco{2^{w(t-1)},2^{w(t+1)}},\dots,\intco{2^{w(2t-2)},2^{2wt}}$}
+			$Z\gets\Call{Addition\_Core}{Z, T}$\;
+		}
+	}
+	\Return $Z$
+\end{algorithm}
+
+\newpage
 \subsection{Algebraic Relationships between Montgomery and Standard Domains}
 
 \begin{itemize}
@@ -190,7 +307,6 @@ In this diagram:
 - $f^{-1}$ represents the inverse transformation from the Montgomery domain back to the standard domain.\\
 - $a, b$ are elements of the standard domain $\mathbb{F}_p$.\\
 - $\widetilde{a}, \widetilde{b}$ are their respective images in the Montgomery domain.
-
 
 \section*{Mathematical Properties}
 
