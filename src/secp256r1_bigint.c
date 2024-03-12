@@ -320,3 +320,73 @@ void multiplication_p256(field dst, const field src1, const field src2) {
 	subtraction_p256(dst, dst, s8);
 	subtraction_p256(dst, dst, s9);
 }
+
+void fast_red(field dst, const field* src) {
+	word* p = &src[0][0];
+
+	#ifdef IS_32_BIT_ENV
+	field s1 = { p[ 0], p[ 1], p[ 2], p[ 3], p[ 4], p[ 5], p[ 6], p[ 7] };
+	field s2 = { 	 0, 	0, 	   0, p[11], p[12], p[13], p[14], p[15] };
+	field s3 = { 	 0, 	0, 	   0, p[12], p[13], p[14], p[15], 	  0 };
+	field s4 = { p[ 8], p[ 9], p[10], 	  0, 	 0, 	0, p[14], p[15] };
+	field s5 = { p[ 9], p[10], p[11], p[13], p[14], p[15], p[13], p[ 8] };
+	field s6 = { p[11], p[12], p[13], 	  0, 	 0, 	0, p[ 8], p[10] };
+	field s7 = { p[12], p[13], p[14], p[15], 	 0, 	0, p[ 9], p[11] };
+	field s8 = { p[13], p[14], p[15], p[ 8], p[ 9], p[10], 	   0, p[12] };
+	field s9 = { p[14], p[15], 	   0, p[ 9], p[10], p[11], 	   0, p[13] };
+#else
+	field s1 = { p[0], p[1], p[2], p[3] };
+	field s2 = { 0, p[5] & 0xFFFFFFFF00000000ULL, p[6], p[7] };
+	field s3 = {
+		0,
+		p[6] << 32,
+		((p[7] & 0xFFFFFFFFU) << 32) | (p[6] >> 32),
+		p[7] >> 32
+	};
+	field s4 = { p[4], p[5] & 0x00000000FFFFFFFFULL, 0, p[7] };
+	field s5 = {
+		(p[5] << 32) | (p[4] >> 32),
+		(p[6] & 0xFFFFFFFF00000000ULL) | (p[5] >> 32),
+		p[7],
+		((p[4] & 0xFFFFFFFF) << 32) | (p[6] >> 32)
+	};
+	field s6 = {
+		(p[6] << 32) | (p[5] >> 32),
+		p[6] >> 32,
+		0,
+		(p[5] << 32) | (p[4] & 0xFFFFFFFFU)
+	};
+	field s7 = {
+		p[6],
+		p[7],
+		0,
+		(p[5] & 0xFFFFFFFF00000000ULL) | (p[4] >> 32)
+	};
+	field s8 = {
+		(p[7] << 32) | (p[6] >> 32),
+		(p[4] << 32) | (p[7] >> 32),
+		(p[5] << 32) | (p[4] >> 32),
+		p[6] << 32
+	};
+	field s9 = {
+		p[7],
+		p[4] & 0xFFFFFFFF00000000ULL,
+		p[5],
+		p[6] & 0xFFFFFFFF00000000ULL
+	};
+#endif
+
+	memset(dst, 0, sizeof(field));
+	addition_p256(dst, dst, s1);
+	addition_p256(dst, dst, s2);
+	addition_p256(dst, dst, s2);
+	addition_p256(dst, dst, s3);
+	addition_p256(dst, dst, s3);
+	addition_p256(dst, dst, s4);
+	addition_p256(dst, dst, s5);
+	subtraction_p256(dst, dst, s6);
+	subtraction_p256(dst, dst, s7);
+	subtraction_p256(dst, dst, s8);
+	subtraction_p256(dst, dst, s9);
+}
+void mont_red(field dst, const field* src);

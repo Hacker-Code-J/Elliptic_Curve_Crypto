@@ -5,22 +5,36 @@
 #define _SECP256R1_BIGINT_H
 
 #ifdef IS_32_BIT_ENV
+// 0x ffffffff 00000001 00000000 00000000 00000000 ffffffff ffffffff ffffffff
 static const field P256 = {
 	0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFFU, 0x00000000U,
 	0x00000000U, 0x00000000U, 0x00000001U, 0xFFFFFFFFU
 };
+// 0x 00000000 fffffffe ffffffff ffffffff ffffffff 00000000 00000000 00000001
 static const field P256_INVERSE = {
 	0x00000001U, 0x00000000U, 0x00000000U, 0xFFFFFFFFU,
 	0xFFFFFFFFU, 0xFFFFFFFFU, 0xFFFFFFFEU, 0x00000000U
 };
+// 0x fffffffe 00000003 fffffffd 00000002 00000001 fffffffe 00000003 00000000
+static const field MONT_RADIX_INVERSE = {
+    0x00000000U, 0x00000003U, 0xFFFFFFFEU, 0x00000001U,
+    0x00000002U, 0xFFFFFFFDU, 0x00000003U, 0xFFFFFFFEU
+};
 #else
+// 0x ffffffff00000001 0000000000000000 00000000ffffffff ffffffffffffffff
 static const field P256 = {
 	0xFFFFFFFFFFFFFFFFU, 0x00000000FFFFFFFFU,
 	0x0000000000000000U, 0xFFFFFFFF00000001U
 };
+// 0x 00000000fffffffe ffffffffffffffff ffffffff00000000 0000000000000001
 static const field P256_INVERSE = {
 	0x0000000000000001U, 0xFFFFFFFF00000000U,
 	0xFFFFFFFFFFFFFFFFU, 0x00000000FFFFFFFEU
+};
+// 0x fffffffe00000003 fffffffd00000002 00000001fffffffe 0000000300000000
+static const field MONT_RADIX_INVERSE = {
+    0x0000000300000000U, 0x00000001FFFFFFFEU,
+    0xFFFFFFFD00000002U, 0xFFFFFFFE00000003U
 };
 #endif
 
@@ -66,7 +80,8 @@ void squaring_single(word* dst, const word src);
 
 void multiplication_p256(field dst, const field src1, const field src2);
 
-void mont_red_p256();
+void fast_red(field dst, const field* src);
+void mont_red(field dst, const field* src);
 
 /* === Rubbish === */
 // static inline void shiftField(field dst[2], u8 shiftAmount) {

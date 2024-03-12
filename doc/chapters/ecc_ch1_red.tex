@@ -261,19 +261,19 @@ t&\equiv TR^{-1}\pmod{N}
 	\DontPrintSemicolon
 	\caption{Montgomery Reduction on P-256}
 	\BlankLine
-	\Comment{$RR^{-1}\equiv 1\pmod{2^{wt}}$}
-	\KwIn{Modulus $N=p_{256}$ with $\gcd(N,2^{wt})=1$, $R=2^{wt}$ and $N'=1$}
-	\KwOut{\(Z=X\cdot Y\in\intco{2^{2w(t-1)},2^{wt+wt}}\)}
+	\Comment{$2^{256}R^{-1}\equiv 1\pmod{p_{256}}$}
+	\Comment{$N(-N')\equiv 1\pmod{2^{256}}$}
 	\BlankLine
-	$Z\gets 0$\tcp*{Initialization}
-	\For{$i=0$ \KwTo $t-1$ \tcp{for $X$}}{
-		\For{$j=0$ \KwTo $t-1$ \tcp{for $Y$}}{
-			$T\gets x_iy_j$\tcp*{$T\in\intco{0, 2^{2w}}$}
-			$T\ll\gets w(i+j)$\tcp*{$\in\intco{2^w,2^{3w}},\dots,\intco{2^{w(t-1)},2^{w(t+1)}},\dots,\intco{2^{w(2t-2)},2^{2wt}}$}
-			$Z\gets\Call{Addition\_Core}{Z, T}$\;
-		}
+	\KwIn{Modulus $N=p_{256}=n_{t}\adjacent n_{t-1}\adjacent\cdots\adjacent n_{0}$ with $\gcd(N,2^{wt=256})=1$, $R=2^{wt=256}$, $N'=1$ and $T=\tau_{2t-1}\adjacent\tau_{2t-2}\adjacent\tau_0 <p_{256}\cdot 2^{256}\in\binaryfield^{512}$}
+	\KwOut{\(TR^{-1}\bmod p_{256}\)}
+	\BlankLine
+	\Fn{\Call{MontRed}{$T$}}{
+		$s\gets(T\bmod R)\cdot N'\bmod R$\tcp*{$s\in\intco{0,R}$}
+		$t\gets(T+s\cdot N) / {R}$\tcp*{$t\in\intco{0,2N}$}
+		\If{$t\geq N$}{
+			$t\gets t-N$\;
+		} \Return $t$\;
 	}
-	\Return $Z$
 \end{algorithm}
 
 \newpage
