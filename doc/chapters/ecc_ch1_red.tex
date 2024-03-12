@@ -162,7 +162,16 @@ Final Transformations & Direct result in $\mathbb{F}_p$ & Requires back transfor
 Note: In Montgomery-based reduction, $R$ is a power of 2 such that $R > p$, and the inputs are transformed into the Montgomery domain prior to multiplication.
 \fi
 
+The goal is to compute the a product of two numbers, $a$ and $b$, modulo $p$. Typically, $a$ and $b$ are already transformed into Montgomery form before multiplication. Let's assume we're dealing with the Montgomery form of some inputs, and we want to compute 
+\[
+c=abR^{-1}\bmod p
+\] where $a$, $b$, and $c$ are in Montgomery form.
+
+The steps are a follows:
+
 \subsection{Modular Multiplication without Trivial Division}
+
+
 \begin{enumerate}[\bf 1.]
 	\item \textbf{Residue Classes and Modular Arithmetic:}
 	
@@ -267,6 +276,10 @@ t&\equiv TR^{-1}\pmod{N}
 	\KwIn{Modulus $N=p_{256}=n_{t}\adjacent n_{t-1}\adjacent\cdots\adjacent n_{0}$ with $\gcd(N,2^{wt=256})=1$, $R=2^{wt=256}$, $N'=1$ and $T=\tau_{2t-1}\adjacent\tau_{2t-2}\adjacent\tau_0 <p_{256}\cdot 2^{256}\in\binaryfield^{512}$}
 	\KwOut{\(TR^{-1}\bmod p_{256}\)}
 	\BlankLine
+	$U\gets T$\tcp*{$U=u_{2t-1}\adjacent u_{2t-2}\adjacent\cdots\adjacent u_1\adjacent u_0$}
+	\For{$i=0$ \KwTo $n-1$}{
+		$v_i\gets u_i\boxdot N'$\;
+	}
 	\Fn{\Call{MontRed}{$T$}}{
 		$s\gets(T\bmod R)\cdot N'\bmod R$\tcp*{$s\in\intco{0,R}$}
 		$t\gets(T+s\cdot N) / {R}$\tcp*{$t\in\intco{0,2N}$}

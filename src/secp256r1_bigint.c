@@ -389,4 +389,6 @@ void fast_red(field dst, const field* src) {
 	subtraction_p256(dst, dst, s8);
 	subtraction_p256(dst, dst, s9);
 }
-void mont_red(field dst, const field* src);
+void mont_red(field dst, const field* src) {
+	
+}
