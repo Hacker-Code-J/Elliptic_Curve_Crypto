@@ -269,9 +269,9 @@ void create_mul_squ_rspFile(const char* rspFileName, const char* reqFileName1, c
             stringToWord(data2, line2);
             // multiplication_ps(result, data1, data2);
             if (!option)
-                multiplication_ps(result, data1, data2);
+                multiplication_txtbk(result, data1, data2);
             else
-                multiplication_ps2(result, data1, data2);
+                multiplication_imptxtbk(result, data1, data2);
 #ifdef IS_32_BIT_ENV
             for (i32 i = SIZE-1; i >= 0; i--)
                 fprintf(rspFile, "%08X", result[1][i]);
@@ -294,7 +294,7 @@ void create_mul_squ_rspFile(const char* rspFileName, const char* reqFileName1, c
     fclose(rspFile);
 }
 
-void multiplication_ps_test() {
+void multiplication_txtbk_test() {
     const char* folderPath = "../test_vector/mul_and_squ/";
     char reqFileName1[100], reqFileName2[100], faxFileName[100], rspFileName[100];
     
@@ -355,7 +355,7 @@ void multiplication_ps_test() {
     }
 }
 
-void multiplication_ps2_test() {
+void multiplication_imptxtbk_test() {
     const char* folderPath = "../test_vector/mul_and_squ/";
     char reqFileName1[100], reqFileName2[100], faxFileName[100], rspFileName[100];
     

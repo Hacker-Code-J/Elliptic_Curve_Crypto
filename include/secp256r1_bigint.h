@@ -48,7 +48,7 @@ static const field MONT_CONSTANT = {
 };
 #endif
 
-static inline void shift_field_data(field data[2], u32 n) {
+static inline void lshift_field_data(field data[2], u32 n) {
     word temp[SIZE * 2]; // Temporary storage for both fields combined
 
     // Calculate actual shift amount within the total size of the two fields
@@ -74,6 +74,32 @@ static inline void shift_field_data(field data[2], u32 n) {
     memcpy(data[1], temp + SIZE, SIZE * sizeof(word)); // Restore second field
 }
 
+static inline void rshift_field_data(field data[2], u32 n) {
+    word temp[SIZE * 2]; // Temporary storage for both fields combined
+
+    // Calculate actual shift amount within the total size of the two fields
+    n = n % (SIZE * 2); // Ensure n is within bounds [0, SIZE * 2)
+
+    // If n is 0, no need to shift
+    if (n == 0) {
+        return;
+    }
+
+    // Backup the entire data structure
+    memcpy(temp + n, data[0], SIZE * sizeof(word)); // Backup first field with offset
+    memcpy(temp + SIZE + n, data[1], SIZE * sizeof(word)); // Backup second field with offset
+
+    // Shift data within the entire structure
+    memmove(temp, temp + n, (SIZE * 2 - n) * sizeof(word));
+
+    // Clear the vacated positions by setting them to zero
+    memset(temp + SIZE * 2 - n, 0, n * sizeof(word));
+
+    // Copy back the shifted and cleared data into the original structure
+    memcpy(data[0], temp, SIZE * sizeof(word)); // Restore first field
+    memcpy(data[1], temp + SIZE, SIZE * sizeof(word)); // Restore second field
+}
+
 void addition_single(word* epsilon, word* dst, const word src1, const word src2);
 void addition_core(word* epsilon, field dst, const field src1, const field src2);
 void addition_p256(field dst, const field src1, const field src2);
@@ -83,12 +109,13 @@ void subtraction_core(word* epsilon, field dst, const field src1, const field sr
 void subtraction_p256(field dst, const field src1, const field src2);
 
 void multiplication_single(word* dst, const word src1, const word src2);
-void multiplication_ps(field* dst, const field src1, const field src2);
-void multiplication_ps2(field* dst, const field src1, const field src2);
+void multiplication_txtbk(field* dst, const field src1, const field src2);
+void multiplication_imptxtbk(field* dst, const field src1, const field src2);
 
 void squaring_single(word* dst, const word src);
 
 void multiplication_p256(field dst, const field src1, const field src2);
+void multiplication_montgomery_p256(field dst, const field src1, const field src2);
 
 void fast_red(field dst, const field* src);
 void mont_red(field dst, const field* src);

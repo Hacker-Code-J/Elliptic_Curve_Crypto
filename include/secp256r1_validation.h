@@ -21,8 +21,8 @@ void create_mul_squ_rspFile(const char* rspFileName,
                             const char* reqFileName1, const char* reqFileName2,
                             u8 option);
                             
-void multiplication_ps_test();
-void multiplication_ps2_test();
+void multiplication_txtbk_test();
+void multiplication_imptxtbk_test();
 
 void multiplication_p256_test();
 

@@ -16,14 +16,15 @@ int main(void) {
     stringToWord(src1, opA);
     stringToWord(src2, opB);
 
-    // printData(src1);
-    // printData(src2);
+    printData(src1);
+    printData(src2);
 
     // addition_p256(dst, src1, src2);
     // subtraction_p256(dst, src1, src2);
     
-    multiplication_p256(dst, src1, src2);
+    // multiplication_p256(dst, src1, src2);
     // printData(dst);
+    multiplication_montgomery_p256(dst, src1, src2);
     // multiplication_p256_test();
 
     // multiplication_ps2_test();
@@ -72,9 +73,9 @@ int main(void) {
 
 
 // /* === Test for Accuracy === */
-    addition_p256_test();
-    subtraction_p256_test();
-    multiplication_p256_test();
+    // addition_p256_test();
+    // subtraction_p256_test();
+    // multiplication_p256_test();
     // multiplication_ps_test();
     // multiplication_ps2_test();
 

@@ -301,35 +301,80 @@ Let $R=100^2>2971$ with base $100$. Then \begin{itemize}
 \item $R=100^2=10000$
 \item $N(-N^{-1})\equiv 1\pmod{R}\implies -N^{-1}=5069\implies -N^{-1} \bmod 100 = 69$.
 \end{itemize}
-Test:
+Test loop 0:
 \begin{itemize}
 	\item $37\cdot 69=2553$; $2553\bmod 100 = 53$
 	\item $53*2971*100^0=157463$
+	\item $157463+27311837=27|| 46|| 93|| 00$
 \end{itemize}
-\begin{table}[h!]\centering
-\begin{tabular}{ccccc}
-line & loop & $v$ & $k_i$ & $t$ \\
-1 & - & \\
-2 & - & \\
-  & 0 & & &\\
-\end{tabular}
-\end{table}
+Test loop 1:
+\begin{itemize}
+	\item $93\cdot 69=6417$; $6417\bmod 100 = 17$
+	\item $17*2971*100^1=5||05||07||00$
+	\item $27469300+5050700=32||52||00||00$
+\end{itemize}
+Test loop OUT:\begin{itemize}
+	\item $32520000 / 10000 = 3252$
+	\item $3252 - 2917 = 281$
+\end{itemize}
+Test Final:\begin{itemize}
+	\item $281*10000\bmod 2971 = 2405$
+\end{itemize}
 \end{proof}
 \end{example}
 
 \newpage
 \begin{example}[Montgomery Reduction of Multi-precision Integer]
 Let \begin{align*}
-U = &\ \texttt{E0FA64F4 0B0204C9 A245A2E1 BA35254B F342087C C4600BE8 5AB506E3 6FA5F190}\\
+U = \texttt{0x}&\ \texttt{E0FA64F4 0B0204C9 A245A2E1 BA35254B F342087C C4600BE8 5AB506E3 6FA5F190}\\
 &\ \texttt{AB840858 11050B0F 4372273F A5522A10 6EE1785D 607CDA60 DF85CBC2 46CD3D1F},\\
-N = &\ \texttt{FFFFFFFF 00000001 00000000 00000000 00000000 FFFFFFFF FFFFFFFF FFFFFFFF}.
+N = \texttt{0x}&\ \texttt{FFFFFFFF 00000001 00000000 00000000 00000000 FFFFFFFF FFFFFFFF FFFFFFFF}.
 \end{align*}
 Compute \[
 U\bmod N.
 \]\begin{proof}[\sol]
-Let \begin{itemize}
-	\item $R=2^{256}=\texttt{0x}\ \one\adjacent\zero^{64}$
+Note that\\ 
+\begin{algorithm}[h!]
+	\DontPrintSemicolon
+	\caption{Montgomery Reduction of P-256 (32-bit)}
+	\BlankLine
+	\KwIn{An $8$-word modulo integer $N=n_{7}\adjacent\cdots\adjacent n_{0}$ and $16$-word integer $U=u_{15}\adjacent\cdots\adjacent u_{0} < RN\in\binaryfield^{513}$.}
+	\KwOut{The $8$-word integer $V=v_{7}\adjacent\cdots\adjacent v_0$ such that $V=\MontRed(U)=UR^{-1}\bmod N$.}
+	\BlankLine
+	$V\gets U$\tcp*{$V=v_{2t-1}\adjacent\cdots\adjacent v_1\adjacent v_0$}
+	\For{$i=0$ \KwTo $t-1$}{
+		$k_i\gets t_i\boxdot N'$\tcp*{$a\boxdot b:=a\cdot b\bmod 2^{w}$}
+		$V\gets V+k_iN(2^w)^i$\;
+	}
+	$V\gets V / R$\;
+	\If{$V\geq N$}{
+		$V\gets V-N$\;
+	}
+	\Return $V$\;
+\end{algorithm}
+\begin{itemize}
+	\item $U=u_{15}\adjacent\cdots\adjacent u_0$, where $u_0=\texttt{0x46CD3D1F}$, $u_1=\texttt{0xDF85CBC2}$, $\dots$, $u_{15}=\texttt{0xE0FA64F4}$.
+	\item $N=n_{7}\adjacent\cdots\adjacent n_0$, where $n_0=\texttt{0xFFFFFFFF}$, $\dots$, $n_{6}=\texttt{0x00000001}$, $n_{7}=\texttt{FFFFFFFF}$.
+	\item $R=(2^{32})^8=2^{256}=$ \[
+	\texttt{0x 1}\ \texttt{00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000},
+	\] where $R>p_{256}$ and with base $2^{32}$.
+	\item $N(-N^{-1})\equiv 1\pmod{R=2^{256}}$ implies $-N^{-1}=$ \[
+	\texttt{0x FFFFFFFF 00000002 00000000 00000000 00000001 00000000 00000000 00000001},
+	\] and so
+	$-N^{-1}\bmod 2^{32}=\texttt{0x00000001}$.
 \end{itemize}
+\begin{table}[h!]\centering
+\begin{tabular}{c||c|c|cc}
+\toprule[1.2pt]
+loop & $s_i=u_iN^{-1}\bmod 2^w$ & $s_iN(2^{w})^i$ & $t\gets t+s_iN(2^w)^i$\\
+\midrule
+- & - & - & $t\gets U$\\
+\hline
+\multirow{2}{*}{0} & $\texttt{46CD3D1F} * \texttt{0x1}\bmod 2^{32}$ & $\texttt{46CD3D1F} *\texttt{N}*\texttt{1}$ \\
+& $=\texttt{46CD3D1F}$ & $=\texttt{0x46cd3d1e}\cdots\in\binaryfield^{288}$\\
+  \bottomrule[1.2pt]
+\end{tabular}
+\end{table}
 \end{proof}
 \end{example}
 
