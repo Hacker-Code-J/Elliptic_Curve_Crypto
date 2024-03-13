@@ -162,15 +162,153 @@ Final Transformations & Direct result in $\mathbb{F}_p$ & Requires back transfor
 Note: In Montgomery-based reduction, $R$ is a power of 2 such that $R > p$, and the inputs are transformed into the Montgomery domain prior to multiplication.
 \fi
 
-The goal is to compute the a product of two numbers, $a$ and $b$, modulo $p$. Typically, $a$ and $b$ are already transformed into Montgomery form before multiplication. Let's assume we're dealing with the Montgomery form of some inputs, and we want to compute 
-\[
-c=abR^{-1}\bmod p
-\] where $a$, $b$, and $c$ are in Montgomery form.
+Let's say we want to reduce \[
+z = x\cdot y \bmod N
+\]
+\begin{enumerate}
+\item \textbf{Convert $z$ to Montgomery form:} \[
+\tilde{z}=(x\cdot y)R\bmod N
+\]
+\item \textbf{Perform Montgomery Reduction:}
+\begin{itemize}
+	\item[] \textbf{Function} \Call{MontRed}{$\tilde{z}, N, N', R$}:
+	\item[] | \hspace{16pt} $s=(\tilde{z}\cdot N')\bmod R$
+	\item[] | \hspace{16pt} $\displaystyle t=\floor*{\frac{\tilde{z} + s\cdot N}{R}}$
+	\item[] | \hspace{16pt} \textbf{if} $t\geq N$:
+	\item[] | \hspace{32pt} $t\gets t-N$:
+	\item[] | \hspace{16pt} \textbf{Return} $t$
+	\item[] \textbf{end}
+\end{itemize}
+\item \textbf{Convert back from Montgomery form:} \[
+t\bmod N
+\]
+\end{enumerate}
 
-The steps are a follows:
+\begin{example}[Basic Montgomery Reduction]
+Compute \[
+(43\cdot 56)\bmod 97
+\]
+\begin{proof}[\sol]
+Let $a=43$, $b=56$ and $N=97$ \begin{enumerate}[\bf 1.]
+	\item Choose $R=2^7=128>97.$ Note that $R^{-1}=72$.
+	\item \[
+	N'=-N^{-1}\bmod R=-(97)^{-1}\bmod 128=95\bmod 128
+	\]
+	\item \[
+	\tilde{R}=(R)^2\bmod N=2^{14}\bmod 97=88.
+	\]
+	\item \[
+	\tilde{a} = \Call{Redc}{a, \tilde{R}}=\frac{t+(t\cdot N'\bmod R)*N}{R}
+	\] where $t=a\cdot\tilde{R}$.
+	Then \begin{align*}
+		\tilde{43}&=\Call{Redc}{43, 88}=\frac{43\cdot 88+((3784\cdot95)\bmod 2^7)\cdot 97}{2^7}=72\bmod 97,\\
+		\tilde{56}&=\Call{Redc}{56, 88}=\frac{56\cdot 88+((4928\cdot95)\bmod 2^7)\cdot 97}{2^7}=87\bmod 97,\\
+		\tilde{c}&=\Call{Redc}{\tilde{43}, \tilde{56}}=\frac{72\cdot 87+((6264\cdot95)\bmod 2^7)\cdot 97}{2^7}=55\bmod 97,
+	\end{align*} Thus, \[
+	\tilde{c}R^{-1}\bmod N= 55\cdot 72\bmod 97 = 80\bmod 97.
+	\]
+\end{enumerate}
+\end{proof}
+\end{example}
+
+\newpage
+\begin{example}[Intermediate Montgomery Reduction]
+Compute \[
+(941\cdot 509)\bmod 1433
+\]
+\begin{proof}[\sol]
+Let \begin{align*}
+	a = 941  &= \texttt{0b 011 10101101},\\
+	b = 509  &= \texttt{0b 001 11111101},\\
+	N = 1433 &= \texttt{0b 101 10011001}.
+\end{align*} \begin{enumerate}[\bf 1.]
+	\item Choose $R=2^{11}=2048>1433.$ Now find $R^{-1}$ s.t. $RR^{-1}\bmod N=1$, \ie, $R^{-1}=240$.
+	\item Note that following algorithm: 
+	\begin{itemize}
+		\item[1:] $c = 0$
+		\item[2:] \textbf{for} $i = 0$ \textbf{to} $\mathsf{len}_{{\mathsf{Bit}}}(N)-1$
+		\item[3:] \hspace{16pt} $c\gets c + a_i\cdot b$
+		\item[3:] \hspace{16pt} \textbf{if} $c \bmod 2 \neq 0$:
+		\item[4:] \hspace{32pt} $c\gets c + N$:
+		\item[5:] \hspace{16pt} $c\gets c / 2$
+		\item[6:] \textbf{if} $c\geq N$:
+		\item[7:] \hspace{16pt} $c\gets c - N$
+	\end{itemize}
+	This calculates, $abR^{-1}\bmod N$. Our aim is $ab\bmod N$.
+	\begin{table}[h!]\centering
+	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c||c|c|c|c}
+	\toprule[1.2pt]
+	$a$ (bit) & $c+a_i\cdot b$ & $c$ (partial) & even or odd & $c$ (final) \\
+	\midrule
+	$1$ & $0+509$ & $509$ & $(509+1433) / 2$ & $971$ \\
+	$0$ & $971+0$ & $971$ & $(971+1433) / 2$ & $1202$ \\
+	$1$ & $1202+509$ & $1711$ & $(1711+1433) / 2$ & $1572$ \\
+	$1$ & $1572+509$ & $2081$ & $(2081+1433) / 2$ & $1757$ \\
+	$\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ \\
+	$0$ & $1765 + 0$ & $1765$ & $(1765+1433) / 2$ & $1599$\\
+	\bottomrule[1.2pt]
+	\end{tabular*}
+	\end{table}
+	\item $R\bmod N=2^{11}\bmod 1433 = 615$.
+	\item $ab\bmod N=(166\cdot 615)\bmod 1433=347$.
+\end{enumerate}
+\end{proof}
+\end{example}
+
+\begin{example}[Advanced Montgomery Reduction]
+Let \begin{align*}
+a &= \texttt{0x EAC8C20C E80D90B3 BF6DC08A FD4C8B1D 62748392 79D9F146 9BE87CCD 85283FE5},\\
+b &= \texttt{0x F54ECAE2 F71FC580 22DF670B 74F41B07 195BEEC2 69F85DDC 1368137B C3DD50B3},\\
+N &= \texttt{0x FFFFFFFF 00000001 00000000 00000000 00000000 FFFFFFFF FFFFFFFF FFFFFFFF}.
+\end{align*} \begin{enumerate}[\bf 1.]
+\item Choose $R=2^{256}>N.$ Now find $R^{-1}$ s.t. $RR^{-1}\bmod N=1$, \ie, \[
+R^{-1}=\texttt{0x FFFFFFFE 00000003 FFFFFFFD 00000002 00000001 FFFFFFFE 00000003 00000000}.
+\]
+\end{enumerate}
+\end{example}
+
+\newpage
+\begin{algorithm}[H]
+	\DontPrintSemicolon
+	\caption{Montgomery Reduction of Multi-precision Integers}
+	\BlankLine
+	\Comment{$\gcd (N, X) = 1$ and $R=2^{wt}$}
+	\Comment{Pre-computed Value: $N'=-N^{-1}\bmod 2^{w}$}
+	\BlankLine
+	\KwIn{An $t$-word integer $N=n_{t-1}\adjacent\cdots\adjacent n_{0}$ and $2t$-word integer $U=u_{2t-1}\adjacent\cdots\adjacent u_{0} < RN$.}
+	\KwOut{The $t$-word integer $Z=z_{t-1}\adjacent\cdots\adjacent z_0$ such that $Z=\MontRed(U)=UR^{-1}\bmod N$.}
+	\BlankLine
+	$V\gets U$\tcp*{$V=v_{2t-1}\adjacent\cdots\adjacent v_1\adjacent v_0$}
+	\For{$i=0$ \KwTo $t-1$}{
+		$k_i\gets t_i\boxdot N'$\tcp*{$a\boxdot b:=a\cdot b\bmod 2^{w}$}
+		$V\gets V+k_iN(2^w)^i$\;
+	}
+	$V\gets V / R$\;
+	\If{$V\geq N$}{
+		$V\gets V-N$\;
+	}
+	\Return $V$\;
+\end{algorithm}
+
+\begin{example}
+Compute \[
+27311837\bmod 7129
+\]
+\begin{proof}[\sol]
+Let $R=100^2>2971$ with base $100$. Then \begin{itemize}
+\item $N=N_1\adjacent N_0 = 29\adjacent71$.
+\item $U=u_3\adjacent u_2\adjacent u_1\adjacent u_0=27\adjacent 31\adjacent 18\adjacent 37$.
+\item $R=100^2=10000$
+\item $N(-N^{-1})\equiv 1\pmod{R}\implies -N^{-1}=5069=50\adjacent 69$.
+\end{itemize}
+\end{proof}
+\begin{table}[h!]\centering
+	
+\end{table}
+\end{example}
+
 
 \subsection{Modular Multiplication without Trivial Division}
-
 
 \begin{enumerate}[\bf 1.]
 	\item \textbf{Residue Classes and Modular Arithmetic:}
@@ -209,6 +347,7 @@ The steps are a follows:
 	[iR^{-1}]_N=\set{iR^{-1}+kN:k\in\Z}.
 	\]
 \end{enumerate}
+
 
 Define an $N$-residue to be a residue class modulo $N$. Select a radix $R$
 coprime to N (possibly the machine word size or a power thereof) such that $R > N$
