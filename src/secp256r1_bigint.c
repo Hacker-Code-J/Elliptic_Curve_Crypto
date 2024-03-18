@@ -85,7 +85,7 @@ void multiplication_single(word* dst, const word src1, const word src2) {
 	// *(*(dst + 0) + 1) = w1;
 }
 
-void multiplication_ps(field* dst, const field src1, const field src2) {
+void multiplication_txtbk(field* dst, const field src1, const field src2) {
 	memset(dst, 0, sizeof(field) * 2);
 	field tmp[2];
 	field buffer[2];
@@ -101,7 +101,7 @@ void multiplication_ps(field* dst, const field src1, const field src2) {
 			// puts("");
 
 			// shiftField(tmp, i+j);
-			shift_field_data(tmp, i+j);
+			lshift_field_data(tmp, i+j);
 			// printData(tmp[1]);
 			// printData(tmp[0]);
 			// puts("");
@@ -162,7 +162,7 @@ for j = 1
 	Z += T
 */
 
-void multiplication_ps2(field* dst, const field src1, const field src2) {
+void multiplication_imptxtbk(field* dst, const field src1, const field src2) {
 	memset(dst, 0, sizeof(field) * 2);
 	
 	field buffer[2];
@@ -191,7 +191,7 @@ void multiplication_ps2(field* dst, const field src1, const field src2) {
 		// printData(tmp[1]);
 		// printData(tmp[0]);
 		// printf("T << %d: \n", j);
-		shift_field_data(tmp, j);
+		lshift_field_data(tmp, j);
 		if (epsilon) {
 			*(*(tmp+1)+j) += 1;
 		}
@@ -252,10 +252,124 @@ void squaring_single(word* dst, const word src) {
 
 void multiplication_p256(field dst, const field src1, const field src2) {
 	field buffer[2];
-	multiplication_ps2(buffer, src1, src2);
-	word* p = &buffer[0][0];
+	multiplication_imptxtbk(buffer, src1, src2);
+	fast_red(dst, buffer);
+// 	word* p = &buffer[0][0];
 
-#ifdef IS_32_BIT_ENV
+// #ifdef IS_32_BIT_ENV
+// 	field s1 = { p[ 0], p[ 1], p[ 2], p[ 3], p[ 4], p[ 5], p[ 6], p[ 7] };
+// 	field s2 = { 	 0, 	0, 	   0, p[11], p[12], p[13], p[14], p[15] };
+// 	field s3 = { 	 0, 	0, 	   0, p[12], p[13], p[14], p[15], 	  0 };
+// 	field s4 = { p[ 8], p[ 9], p[10], 	  0, 	 0, 	0, p[14], p[15] };
+// 	field s5 = { p[ 9], p[10], p[11], p[13], p[14], p[15], p[13], p[ 8] };
+// 	field s6 = { p[11], p[12], p[13], 	  0, 	 0, 	0, p[ 8], p[10] };
+// 	field s7 = { p[12], p[13], p[14], p[15], 	 0, 	0, p[ 9], p[11] };
+// 	field s8 = { p[13], p[14], p[15], p[ 8], p[ 9], p[10], 	   0, p[12] };
+// 	field s9 = { p[14], p[15], 	   0, p[ 9], p[10], p[11], 	   0, p[13] };
+// #else
+// 	field s1 = { p[0], p[1], p[2], p[3] };
+// 	field s2 = { 0, p[5] & 0xFFFFFFFF00000000ULL, p[6], p[7] };
+// 	field s3 = {
+// 		0,
+// 		p[6] << 32,
+// 		((p[7] & 0xFFFFFFFFU) << 32) | (p[6] >> 32),
+// 		p[7] >> 32
+// 	};
+// 	field s4 = { p[4], p[5] & 0x00000000FFFFFFFFULL, 0, p[7] };
+// 	field s5 = {
+// 		(p[5] << 32) | (p[4] >> 32),
+// 		(p[6] & 0xFFFFFFFF00000000ULL) | (p[5] >> 32),
+// 		p[7],
+// 		((p[4] & 0xFFFFFFFF) << 32) | (p[6] >> 32)
+// 	};
+// 	field s6 = {
+// 		(p[6] << 32) | (p[5] >> 32),
+// 		p[6] >> 32,
+// 		0,
+// 		(p[5] << 32) | (p[4] & 0xFFFFFFFFU)
+// 	};
+// 	field s7 = {
+// 		p[6],
+// 		p[7],
+// 		0,
+// 		(p[5] & 0xFFFFFFFF00000000ULL) | (p[4] >> 32)
+// 	};
+// 	field s8 = {
+// 		(p[7] << 32) | (p[6] >> 32),
+// 		(p[4] << 32) | (p[7] >> 32),
+// 		(p[5] << 32) | (p[4] >> 32),
+// 		p[6] << 32
+// 	};
+// 	field s9 = {
+// 		p[7],
+// 		p[4] & 0xFFFFFFFF00000000ULL,
+// 		p[5],
+// 		p[6] & 0xFFFFFFFF00000000ULL
+// 	};
+// #endif
+
+// 	memset(dst, 0, sizeof(field));
+// 	addition_p256(dst, dst, s1);
+// 	addition_p256(dst, dst, s2);
+// 	addition_p256(dst, dst, s2);
+// 	addition_p256(dst, dst, s3);
+// 	addition_p256(dst, dst, s3);
+// 	addition_p256(dst, dst, s4);
+// 	addition_p256(dst, dst, s5);
+// 	subtraction_p256(dst, dst, s6);
+// 	subtraction_p256(dst, dst, s7);
+// 	subtraction_p256(dst, dst, s8);
+// 	subtraction_p256(dst, dst, s9);
+}
+
+void multiplication_montgomery_p256(field dst, const field src1, const field src2) {
+	field t = { 0, };
+	
+	for (u8 i = 0; i < SIZE-7; i++) {
+		field u = { 0, };
+		u[0] = *(word*)t + (src1[i] * src2[0]);
+		field _u[2];
+		
+		multiplication_imptxtbk(_u, u, P256);
+
+		printData(_u[1]);
+		printData(_u[0]);
+		puts("");
+
+		field v = { 0, };
+		v[0] = src1[i];
+		field _v[2];
+		multiplication_imptxtbk(_v, v, src2);
+		
+		printData(_v[1]);
+		printData(_v[0]);
+		puts("");
+
+		field buffer = { 0, };
+		word epsilon = 0;
+		for(u8 i = 0; i < SIZE; i++)
+			addition_single(&epsilon, buffer + (i), src1[i] , src2[i]);
+
+		printData(buffer);
+		puts("");
+		// word epsilon = 0;
+		// word buffer[SIZE] = { 0x00, };
+		// addition_core(&epsilon, buffer, src1, src2);
+		// if (epsilon) {
+		// 	epsilon = 0;
+		// 	addition_core(&epsilon, dst, buffer, P256_INVERSE);
+		// } else {
+		// 	memcpy(dst, buffer, SIZE * sizeof(word));
+		// }
+	}
+}
+
+void fast_red(field dst, const field* src) {
+	field buffer[2];
+	memcpy(buffer, src, sizeof(field) * 2);
+	word* p = &buffer[0][0];
+	
+	#ifdef IS_32_BIT_ENV
 	field s1 = { p[ 0], p[ 1], p[ 2], p[ 3], p[ 4], p[ 5], p[ 6], p[ 7] };
 	field s2 = { 	 0, 	0, 	   0, p[11], p[12], p[13], p[14], p[15] };
 	field s3 = { 	 0, 	0, 	   0, p[12], p[13], p[14], p[15], 	  0 };
@@ -320,3 +434,17 @@ void multiplication_p256(field dst, const field src1, const field src2) {
 	subtraction_p256(dst, dst, s8);
 	subtraction_p256(dst, dst, s9);
 }
+// void mont_red(field dst, const field* src) {
+// 	field buffer[2];
+// 	field temp[2];
+// 	field temp_buffer[2];
+// 	memcpy(temp, src, sizeof(field) * 2);
+
+// 	// for (u8 i = 0; i < SIZE; i++) {
+// 	// 	memcpy(temp_buffer, temp, sizeof(field) * 2);
+// 	// 	multiplication_imptxtbk(buffer, src[i], P256);
+// 	// 	lshift_field_data(buffer, i);
+// 	// 	addition_p256(temp, temp_buffer, buffer);
+// 	// }
+// 	// rshift_field_data(temp, 8);
+// }
