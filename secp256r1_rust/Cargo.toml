@@ -1,0 +1,12 @@
+[package]
+name = "secp256r1_rust"
+version = "0.1.0"
+edition = "2021"
+authors = ["hacker3740@gmail.com>"] # Ji, Yong-Hyeon
+description = "A Rust project showcasing Big-Number arithmetic on P-256 (secp256r1)."
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[features]
+force_32_bit = []
