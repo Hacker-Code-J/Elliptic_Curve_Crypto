@@ -19,7 +19,7 @@ def montgomery_reduction(a, m, m_prime, r):
 m = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff  # Example modulus
 R = 0x10000000000000000000000000000000000000000000000000000000000000000  # R is a power of 2 larger than m, choose appropriately
 m_prime = -pow(m, -1, R)  # Compute m' such that m * m' ≡ -1 (mod R)
-print(hex(m_prime + R))
+# print(hex(m_prime + R))
 # Let's say we want to reduce a = 'val' mod 'm'
 # First, convert a to Montgomery form: 'aR' mod 'm'
 val = 0xEAC8C20CE80D90B3BF6DC08AFD4C8B1D6274839279D9F1469BE87CCD85283FE5 * 0xF54ECAE2F71FC58022DF670B74F41B07195BEEC269F85DDC1368137BC3DD50B3
@@ -32,7 +32,7 @@ reduced = montgomery_reduction(aR, m, precomputed_m_prime, R)
 
 # Convert back from Montgomery form
 result = (reduced * 1) % m  # Here, 1 is the Montgomery representation of 1, i.e., R mod m
-print("Reduced result:", hex(result))
+# print("Reduced result:", hex(result))
 
 def mont_debugging(u):
     N = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff
@@ -52,9 +52,9 @@ def mont_debugging(u):
         t -= N
     print(f"{t:#x}")
     res = (t * R) % N
-    print(f"{res:#x}")
+    print(f"{res:#X}")
         
-u = 0xe0fa64f40b0204c9a245a2e1ba35254bf342087cc4600be85ab506e36fa5f190ab84085811050b0f4372273fa5522a106ee1785d607cda60df85cbc246cd3d1f
+# u = 0xe0fa64f40b0204c9a245a2e1ba35254bf342087cc4600be85ab506e36fa5f190ab84085811050b0f4372273fa5522a106ee1785d607cda60df85cbc246cd3d1f
 # mont_debugging(u)
 
 # u7 = 0xEAC8C20C
@@ -74,6 +74,7 @@ u = 0xe0fa64f40b0204c9a245a2e1ba35254bf342087cc4600be85ab506e36fa5f190ab84085811
 # v1 = 0x1368137B
 # v0 = 0xC3DD50B3
 
+'''
 def mont_test():
     u = 0xEAC8C20CE80D90B3BF6DC08AFD4C8B1D6274839279D9F1469BE87CCD85283FE5
     v = 0xF54ECAE2F71FC58022DF670B74F41B07195BEEC269F85DDC1368137BC3DD50B3
@@ -109,6 +110,8 @@ def mont_test():
     # ]
     t = 0
     for i in range(1):
+        N = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff  # Example modulus
+        R = 0x10000000000000000000000000000000000000000000000000000000000000000  # R is a power of 2 larger than m, choose appropriately
         print(f"{(u >> (32 * i)) & 0xFFFFFFFF:#x}")
         print(f"{(v & 0xFFFFFFFF):#x}")
         # m = (((t & 0xFFFFFFFF) + ((u >> (32 * i)) & 0xFFFFFFFF)*(v & 0xFFFFFFFF)) * 0xffffffff00000002000000000000000000000001000000000000000000000001) % (2 ** 32)
@@ -123,10 +126,47 @@ def mont_test():
         print(f"t: {t:#x}")
         if t >= 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff:
             t -= 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff
-        print(f"{t:X}")
-        print(f"{(t*0x10000000000000000000000000000000000000000000000000000000000000000) % 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff:#X}")
-        print(f"{(0x10000000000000000000000000000000000000000000000000000000000000000) % 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff:#x}")
-        print(f"{t % (2**256):#x}")
+        print(f"{t % N:X}")
+        # print(f"{(t*0x10000000000000000000000000000000000000000000000000000000000000000) % 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff:#X}")
+        # print(f"{(0x10000000000000000000000000000000000000000000000000000000000000000) % 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff:#x}")
+        # print(f"{t % N:#x}")
+        # print(f"{t % (2**256):#x}")
+        
+# mont_test()
+'''
+
+# 24-03-26
+def mont_test():
+    N = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff      # p_256
+    R = 0x10000000000000000000000000000000000000000000000000000000000000000     # R = 2 ** 256    
+    u = 0xEAC8C20CE80D90B3BF6DC08AFD4C8B1D6274839279D9F1469BE87CCD85283FE5      # Operand 1
+    v = 0xF54ECAE2F71FC58022DF670B74F41B07195BEEC269F85DDC1368137BC3DD50B3      # Operand 2
+    t = 0
+    for i in range(8):
+        print(f"\n==== {i} ====\n")
+        print(f"u_{i} = {(u >> (32 * i)) & 0xFFFFFFFF:#x}") # u_i for u= u7 || ... || u_0
+        print(f"v_0 = {(v & 0xFFFFFFFF):#x}")               # v_0
+        
+        # m = (((t & 0xFFFFFFFF) + ((u >> (32 * i)) & 0xFFFFFFFF)*(v & 0xFFFFFFFF)) * 0xffffffff00000002000000000000000000000001000000000000000000000001) % (2 ** 32)
+        # m = (((t & 0xFFFFFFFF) + (((u >> (32 * i)) & 0xFFFFFFFF)*(v & 0xFFFFFFFF) % (2**32)) ) * 1)
+        m = (((t & 0xFFFFFFFF) + (((u >> (32 * i)) & 0xFFFFFFFF)*(v & 0xFFFFFFFF) % (2**32)) ))
+        print(f"((t_0 + u_iv_0) x N') mod (2 ** 32):\n m_{i} = {m:#X}")
+        
+        s = m * N 
+        # s = m * 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff
+        print(f"m_{i} x N = {m:#X} x N \n = {s:#X}")
+        
+        t += ((u >> (32 * i)) & 0xFFFFFFFF)*v + s
+        print(f"u_{i} x v:\n {((u >> (32 * i)) & 0xFFFFFFFF)*v:#x}")
+        print(f"u_{i} x v + (m_{i} x N):\n {((u >> (32 * i)) & 0xFFFFFFFF)*v + s:#x}")
+        print(f"Check:\n {t:#X}")
+        
+        t >>= 32
+        print(f"% (2 ** 32): {t:#X}")
+        
+    if t >= N:
+        t -= N
+    print(f"{t*R % N:#X}")
         
 mont_test()
     

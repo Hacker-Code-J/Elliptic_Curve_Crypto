@@ -1,4 +1,5 @@
-CC=gcc
+# CC=gcc
+CC=clang
 CFLAGS=-Wall -std=c99 -g -O2 -I./include
 LDFLAGS=
 OBJDIR=./obj

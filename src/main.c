@@ -18,6 +18,7 @@ int main(void) {
 
     printData(src1);
     printData(src2);
+    puts("");
 
     // addition_p256(dst, src1, src2);
     // subtraction_p256(dst, src1, src2);

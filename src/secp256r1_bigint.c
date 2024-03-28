@@ -326,32 +326,45 @@ void multiplication_montgomery_p256(field dst, const field src1, const field src
 	field t = { 0, };
 	
 	for (u8 i = 0; i < SIZE-7; i++) {
+		printf("\n=== %u ===\n", i);
+		
 		field u = { 0, };
 		u[0] = *(word*)t + (src1[i] * src2[0]);
 		field _u[2];
 		
+		/*
+		 *  _u <- u x P256		// _u in 288 bits (512-bit)
+		*/
 		multiplication_imptxtbk(_u, u, P256);
 
 		printData(_u[1]);
 		printData(_u[0]);
 		puts("");
 
+		/*
+		 * _v <- v x src2 = .
+		*/
 		field v = { 0, };
 		v[0] = src1[i];
-		field _v[2];
+		field _v[2] = { 0, };
 		multiplication_imptxtbk(_v, v, src2);
 		
 		printData(_v[1]);
 		printData(_v[0]);
 		puts("");
 
-		field buffer = { 0, };
-		word epsilon = 0;
-		for(u8 i = 0; i < SIZE; i++)
-			addition_single(&epsilon, buffer + (i), src1[i] , src2[i]);
+		// field w = { 0, };
+		// addition_p256(w, _u, _v);
 
-		printData(buffer);
-		puts("");
+		// printData(w);
+
+		// field buffer = { 0, };
+		// word epsilon = 0;
+		// for(u8 i = 0; i < SIZE; i++)
+		// 	addition_single(&epsilon, buffer + (i), src1[i] , src2[i]);
+
+		// printData(buffer);
+		// puts("");
 		// word epsilon = 0;
 		// word buffer[SIZE] = { 0x00, };
 		// addition_core(&epsilon, buffer, src1, src2);
